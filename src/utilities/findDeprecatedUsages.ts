@@ -1,14 +1,12 @@
-// @flow strict
+import { GraphQLError } from '../error/GraphQLError.ts';
 
-import { GraphQLError } from '../error/GraphQLError';
+import { visit } from '../language/visitor.ts';
+import { DocumentNode } from '../language/ast.ts';
 
-import { visit } from '../language/visitor';
-import { type DocumentNode } from '../language/ast';
+import { getNamedType } from '../type/definition.ts';
+import { GraphQLSchema } from '../type/schema.ts';
 
-import { getNamedType } from '../type/definition';
-import { type GraphQLSchema } from '../type/schema';
-
-import { TypeInfo, visitWithTypeInfo } from './TypeInfo';
+import { TypeInfo, visitWithTypeInfo } from './TypeInfo.ts';
 
 /**
  * A validation rule which reports deprecated usages.
@@ -19,7 +17,7 @@ export function findDeprecatedUsages(
   schema: GraphQLSchema,
   ast: DocumentNode,
 ): Array<GraphQLError> {
-  const errors = [];
+  const errors: GraphQLError[] = [];
   const typeInfo = new TypeInfo(schema);
 
   visit(

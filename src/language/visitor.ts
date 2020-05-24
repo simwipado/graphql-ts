@@ -1,52 +1,60 @@
-// @flow strict
+import inspect from '../jsutils/inspect.ts';
 
-import inspect from '../jsutils/inspect';
-
-import { type ASTNode, type ASTKindToNode, isNode } from './ast';
+import { 
+  ASTNode, 
+  ASTKindToNode,
+  isNode,
+} from './ast.ts';
+import Maybe from '../tsutils/Maybe.ts';
 
 /**
  * A visitor is provided to visit, it contains the collection of
  * relevant functions to be called during the visitor's traversal.
  */
 export type ASTVisitor = Visitor<ASTKindToNode>;
-export type Visitor<KindToNode, Nodes = $Values<KindToNode>> =
-  | EnterLeave<
-      | VisitFn<Nodes>
-      | ShapeMap<KindToNode, <Node>(Node) => VisitFn<Nodes, Node>>,
-    >
-  | ShapeMap<
-      KindToNode,
-      <Node>(Node) => VisitFn<Nodes, Node> | EnterLeave<VisitFn<Nodes, Node>>,
-    >;
-type EnterLeave<T> = {| +enter?: T, +leave?: T |};
-type ShapeMap<O, F> = $Shape<$ObjMap<O, F>>;
+export type Visitor<KindToNode, Nodes = KindToNode[keyof KindToNode]> =
+  | EnterLeaveVisitor<KindToNode, Nodes>
+  | ShapeMapVisitor<KindToNode, Nodes>;
+
+interface EnterLeave<T> {
+  readonly enter?: T;
+  readonly leave?: T;
+}
+
+type EnterLeaveVisitor<KindToNode, Nodes> = EnterLeave<
+  VisitFn<Nodes> | { [K in keyof KindToNode]?: VisitFn<Nodes, KindToNode[K]> }
+>;
+
+type ShapeMapVisitor<KindToNode, Nodes> = {
+  [K in keyof KindToNode]?:
+    | VisitFn<Nodes, KindToNode[K]>
+    | EnterLeave<VisitFn<Nodes, KindToNode[K]>>;
+};
 
 /**
  * A visitor is comprised of visit functions, which are called on each node
  * during the visitor's traversal.
  */
-export type VisitFn<TAnyNode, TVisitedNode: TAnyNode = TAnyNode> = (
-  // The current node being visiting.
+export type VisitFn<TAnyNode, TVisitedNode = TAnyNode> = (
+  /** The current node being visiting.*/
   node: TVisitedNode,
-  // The index or key to this node from the parent node or Array.
-  key: string | number | void,
-  // The parent immediately above this node, which may be an Array.
-  parent: TAnyNode | $ReadOnlyArray<TAnyNode> | void,
-  // The key path to get to this node from the root node.
-  path: $ReadOnlyArray<string | number>,
-  // All nodes and Arrays visited before reaching parent of this node.
-  // These correspond to array indices in `path`.
-  // Note: ancestors includes arrays which contain the parent of visited node.
-  ancestors: $ReadOnlyArray<TAnyNode | $ReadOnlyArray<TAnyNode>>,
+  /** The index or key to this node from the parent node or Array. */
+  key: string | number | undefined,
+  /** The parent immediately above this node, which may be an Array. */
+  parent: TAnyNode | ReadonlyArray<TAnyNode> | undefined,
+  /** The key path to get to this node from the root node. */
+  path: ReadonlyArray<string | number>,
+  /** All nodes and Arrays visited before reaching parent of this node.
+   * These correspond to array indices in `path`.
+   * Note: ancestors includes arrays which contain the parent of visited node.
+   */
+  ancestors: ReadonlyArray<TAnyNode | ReadonlyArray<TAnyNode>>,
 ) => any;
 
 /**
  * A KeyMap describes each the traversable properties of each kind of node.
  */
-export type VisitorKeyMap<KindToNode> = $ObjMap<
-  KindToNode,
-  <T>(T) => $ReadOnlyArray<$Keys<T>>,
->;
+export type VisitorKeyMap<T> = { [P in keyof T]: ReadonlyArray<keyof T[P]> };
 
 export const QueryDocumentKeys: VisitorKeyMap<ASTKindToNode> = {
   Name: [],
@@ -135,7 +143,7 @@ export const QueryDocumentKeys: VisitorKeyMap<ASTKindToNode> = {
   InputObjectTypeExtension: ['name', 'directives', 'fields'],
 };
 
-export const BREAK: { ... } = Object.freeze({});
+export const BREAK: any = {};
 
 /**
  * visit() will walk through an AST using a depth first traversal, calling
@@ -277,7 +285,7 @@ export function visit(
       }
       index = stack.index;
       keys = stack.keys;
-      edits = stack.edits;
+      edits = stack.edits';
       inArray = stack.inArray;
       stack = stack.prev;
     } else {
@@ -356,7 +364,7 @@ export function visit(
  * If a prior visitor edits a node, no following visitors will see that node.
  */
 export function visitInParallel(
-  visitors: $ReadOnlyArray<Visitor<ASTKindToNode>>,
+  visitors: ReadonlyArray<Visitor<ASTKindToNode>>,
 ): Visitor<ASTKindToNode> {
   const skipping = new Array(visitors.length);
 
@@ -406,7 +414,7 @@ export function getVisitFn(
   visitor: Visitor<any>,
   kind: string,
   isLeaving: boolean,
-): ?VisitFn<any> {
+): Maybe<VisitFn<any>> {
   const kindVisitor = visitor[kind];
   if (kindVisitor) {
     if (!isLeaving && typeof kindVisitor === 'function') {

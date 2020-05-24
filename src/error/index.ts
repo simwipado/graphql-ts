@@ -1,10 +1,8 @@
-// @flow strict
+export { GraphQLError, printError } from './GraphQLError.ts';
 
-export { GraphQLError, printError } from './GraphQLError';
+export { syntaxError } from './syntaxError.ts';
 
-export { syntaxError } from './syntaxError';
+export { locatedError } from './locatedError.ts';
 
-export { locatedError } from './locatedError';
-
-export { formatError } from './formatError';
-export type { GraphQLFormattedError } from './formatError';
+export { formatError } from './formatError.ts';
+export type { GraphQLFormattedError } from './formatError.ts';

@@ -1,32 +1,29 @@
-// @flow strict
+import find from '../polyfills/find.ts';
+import flatMap from '../polyfills/flatMap.ts';
 
-import find from '../polyfills/find';
-import flatMap from '../polyfills/flatMap';
-import objectValues from '../polyfills/objectValues';
+import inspect from '../jsutils/inspect.ts';
 
-import inspect from '../jsutils/inspect';
-
-import { GraphQLError } from '../error/GraphQLError';
-import { locatedError } from '../error/locatedError';
+import { GraphQLError } from '../error/GraphQLError.ts';
+import { locatedError } from '../error/locatedError.ts';
 
 import {
-  type ASTNode,
-  type NamedTypeNode,
-  type OperationTypeNode,
-} from '../language/ast';
+ASTNode,
+NamedTypeNode,
+OperationTypeNode,
+} from '../language/ast.ts';
 
-import { isValidNameError } from '../utilities/assertValidName';
-import { isEqualType, isTypeSubTypeOf } from '../utilities/typeComparators';
+import { isValidNameError } from '../utilities/assertValidName.ts';
+import { isEqualType, isTypeSubTypeOf } from '../utilities/typeComparators.ts';
 
-import { isDirective } from './directives';
-import { isIntrospectionType } from './introspection';
-import { type GraphQLSchema, assertSchema } from './schema';
+import { isDirective } from './directives.ts';
+import { isIntrospectionType } from './introspection.ts';
+import { GraphQLSchema, assertSchema } from './schema.ts';
 import {
-  type GraphQLObjectType,
-  type GraphQLInterfaceType,
-  type GraphQLUnionType,
-  type GraphQLEnumType,
-  type GraphQLInputObjectType,
+GraphQLObjectType,
+GraphQLInterfaceType,
+GraphQLUnionType,
+GraphQLEnumType,
+GraphQLInputObjectType,
   isObjectType,
   isInterfaceType,
   isUnionType,
@@ -37,7 +34,7 @@ import {
   isInputType,
   isOutputType,
   isRequiredArgument,
-} from './definition';
+} from './definition.ts';
 
 /**
  * Implements the "Type Validation" sub-sections of the specification's
@@ -48,7 +45,7 @@ import {
  */
 export function validateSchema(
   schema: GraphQLSchema,
-): $ReadOnlyArray<GraphQLError> {
+): ReadonlyArray<GraphQLError> {
   // First check to ensure the provided value is in fact a GraphQLSchema.
   assertSchema(schema);
 
@@ -82,8 +79,8 @@ export function assertValidSchema(schema: GraphQLSchema): void {
 }
 
 class SchemaValidationContext {
-  +_errors: Array<GraphQLError>;
-  +schema: GraphQLSchema;
+  _errors: Array<GraphQLError>;
+  schema: GraphQLSchema;
 
   constructor(schema) {
     this._errors = [];
@@ -92,7 +89,7 @@ class SchemaValidationContext {
 
   reportError(
     message: string,
-    nodes?: $ReadOnlyArray<?ASTNode> | ?ASTNode,
+    nodes?: ReadonlyArray<?ASTNode> | ?ASTNode,
   ): void {
     const _nodes = Array.isArray(nodes) ? nodes.filter(Boolean) : nodes;
     this.addError(new GraphQLError(message, _nodes));
@@ -102,7 +99,7 @@ class SchemaValidationContext {
     this._errors.push(error);
   }
 
-  getErrors(): $ReadOnlyArray<GraphQLError> {
+  getErrors(): ReadonlyArray<GraphQLError> {
     return this._errors;
   }
 }
@@ -143,7 +140,7 @@ function validateRootTypes(context) {
 function getOperationTypeNode(
   schema: GraphQLSchema,
   operation: OperationTypeNode,
-): ?ASTNode {
+): Maybe<ASTNode>; {
   const operationNodes = getAllSubNodes(schema, (node) => node.operationTypes);
   for (const node of operationNodes) {
     if (node.operation === operation) {
@@ -202,7 +199,7 @@ function validateTypes(context: SchemaValidationContext): void {
     context,
   );
   const typeMap = context.schema.getTypeMap();
-  for (const type of objectValues(typeMap)) {
+  for (const type of Object.values(typeMap)) {
     // Ensure all provided types are in fact GraphQL type.
     if (!isNamedType(type)) {
       context.reportError(
@@ -249,7 +246,7 @@ function validateFields(
   context: SchemaValidationContext,
   type: GraphQLObjectType | GraphQLInterfaceType,
 ): void {
-  const fields = objectValues(type.getFields());
+  const fields = Object.values(type.getFields());
 
   // Objects and Interfaces both must define one or more fields.
   if (fields.length === 0) {
@@ -337,7 +334,7 @@ function validateTypeImplementsInterface(
   const typeFieldMap = type.getFields();
 
   // Assert each interface field is implemented.
-  for (const ifaceField of objectValues(iface.getFields())) {
+  for (const ifaceField of Object.values(iface.getFields())) {
     const fieldName = ifaceField.name;
     const typeField = typeFieldMap[fieldName];
 
@@ -490,7 +487,7 @@ function validateInputFields(
   context: SchemaValidationContext,
   inputObj: GraphQLInputObjectType,
 ): void {
-  const fields = objectValues(inputObj.getFields());
+  const fields = Object.values(inputObj.getFields());
 
   if (fields.length === 0) {
     context.reportError(
@@ -542,7 +539,7 @@ function createInputObjectCircularRefsValidator(
     visitedTypes[inputObj.name] = true;
     fieldPathIndexByTypeName[inputObj.name] = fieldPath.length;
 
-    const fields = objectValues(inputObj.getFields());
+    const fields = Object.values(inputObj.getFields());
     for (const field of fields) {
       if (isNonNullType(field.type) && isInputObjectType(field.type.ofType)) {
         const fieldType = field.type.ofType;
@@ -569,13 +566,13 @@ function createInputObjectCircularRefsValidator(
 
 type SDLDefinedObject<T, K> = {
   +astNode: ?T,
-  +extensionASTNodes?: ?$ReadOnlyArray<K>,
+  +extensionASTNodes?: ?ReadonlyArray<K>,
   ...
 };
 
 function getAllNodes<T: ASTNode, K: ASTNode>(
   object: SDLDefinedObject<T, K>,
-): $ReadOnlyArray<T | K> {
+): ReadonlyArray<T | K> {
   const { astNode, extensionASTNodes } = object;
   return astNode
     ? extensionASTNodes
@@ -586,8 +583,8 @@ function getAllNodes<T: ASTNode, K: ASTNode>(
 
 function getAllSubNodes<T: ASTNode, K: ASTNode, L: ASTNode>(
   object: SDLDefinedObject<T, K>,
-  getter: (T | K) => ?(L | $ReadOnlyArray<L>),
-): $ReadOnlyArray<L> {
+  getter: (T | K) => ?(L | ReadonlyArray<L>),
+): ReadonlyArray<L> {
   // istanbul ignore next (See https://github.com/graphql/graphql-js/issues/2203)
   return flatMap(getAllNodes(object), (item) => getter(item) ?? []);
 }
@@ -595,7 +592,7 @@ function getAllSubNodes<T: ASTNode, K: ASTNode, L: ASTNode>(
 function getAllImplementsInterfaceNodes(
   type: GraphQLObjectType | GraphQLInterfaceType,
   iface: GraphQLInterfaceType,
-): $ReadOnlyArray<NamedTypeNode> {
+): ReadonlyArray<NamedTypeNode> {
   return getAllSubNodes(type, (typeNode) => typeNode.interfaces).filter(
     (ifaceNode) => ifaceNode.name.value === iface.name,
   );
@@ -604,7 +601,7 @@ function getAllImplementsInterfaceNodes(
 function getUnionMemberTypeNodes(
   union: GraphQLUnionType,
   typeName: string,
-): ?$ReadOnlyArray<NamedTypeNode> {
+): ?ReadonlyArray<NamedTypeNode> {
   return getAllSubNodes(union, (unionNode) => unionNode.types).filter(
     (typeNode) => typeNode.name.value === typeName,
   );

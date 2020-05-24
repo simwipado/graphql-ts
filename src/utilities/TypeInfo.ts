@@ -1,27 +1,25 @@
-// @flow strict
+import find from '../polyfills/find.ts';
 
-import find from '../polyfills/find';
-
-import { Kind } from '../language/kinds';
-import { type Visitor, getVisitFn } from '../language/visitor';
+import { Kind } from '../language/kinds.ts';
+import { Visitor, getVisitFn } from '../language/visitor.ts';
 import {
-  type ASTNode,
-  type ASTKindToNode,
-  type FieldNode,
+ASTNode,
+ASTKindToNode,
+FieldNode,
   isNode,
-} from '../language/ast';
+} from '../language/ast.ts';
 
-import { type GraphQLSchema } from '../type/schema';
-import { type GraphQLDirective } from '../type/directives';
+import { GraphQLSchema } from '../type/schema.ts';
+import { GraphQLDirective } from '../type/directives.ts';
 import {
-  type GraphQLType,
-  type GraphQLInputType,
-  type GraphQLOutputType,
-  type GraphQLCompositeType,
-  type GraphQLField,
-  type GraphQLArgument,
-  type GraphQLInputField,
-  type GraphQLEnumValue,
+GraphQLType,
+GraphQLInputType,
+GraphQLOutputType,
+GraphQLCompositeType,
+GraphQLField,
+GraphQLArgument,
+GraphQLInputField,
+GraphQLEnumValue,
   isObjectType,
   isInterfaceType,
   isEnumType,
@@ -32,14 +30,15 @@ import {
   isOutputType,
   getNullableType,
   getNamedType,
-} from '../type/definition';
+} from '../type/definition.ts';
 import {
   SchemaMetaFieldDef,
   TypeMetaFieldDef,
   TypeNameMetaFieldDef,
-} from '../type/introspection';
+} from '../type/introspection.ts';
 
-import { typeFromAST } from './typeFromAST';
+import { typeFromAST } from './typeFromAST.ts';
+import Maybe from '../tsutils/Maybe.ts';
 
 /**
  * TypeInfo is a utility class which, given a GraphQL schema, can keep track
@@ -48,14 +47,14 @@ import { typeFromAST } from './typeFromAST';
  */
 export class TypeInfo {
   _schema: GraphQLSchema;
-  _typeStack: Array<?GraphQLOutputType>;
-  _parentTypeStack: Array<?GraphQLCompositeType>;
-  _inputTypeStack: Array<?GraphQLInputType>;
-  _fieldDefStack: Array<?GraphQLField<mixed, mixed>>;
-  _defaultValueStack: Array<?mixed>;
-  _directive: ?GraphQLDirective;
-  _argument: ?GraphQLArgument;
-  _enumValue: ?GraphQLEnumValue;
+  _typeStack: Maybe<GraphQLOutputType>[];
+  _parentTypeStack: Maybe<GraphQLCompositeType>[];
+  _inputTypeStack: Maybe<GraphQLInputType>[];
+  _fieldDefStack: Maybe<GraphQLField<any, any>>[];
+  _defaultValueStack: Maybe<any>[];
+  _directive: Maybe<GraphQLDirective>;
+  _argument: Maybe<GraphQLArgument>;
+  _enumValue: Maybe<GraphQLEnumValue>;
   _getFieldDef: typeof getFieldDef;
 
   constructor(
@@ -67,7 +66,7 @@ export class TypeInfo {
     // Initial type may be provided in rare cases to facilitate traversals
     // beginning somewhere other than documents.
     initialType?: GraphQLType,
-  ): void {
+  ) {
     this._schema = schema;
     this._typeStack = [];
     this._parentTypeStack = [];
@@ -91,63 +90,63 @@ export class TypeInfo {
     }
   }
 
-  getType(): ?GraphQLOutputType {
+  getType(): Maybe<GraphQLOutputType> {
     if (this._typeStack.length > 0) {
       return this._typeStack[this._typeStack.length - 1];
     }
   }
 
-  getParentType(): ?GraphQLCompositeType {
+  getParentType(): Maybe<GraphQLCompositeType> {
     if (this._parentTypeStack.length > 0) {
       return this._parentTypeStack[this._parentTypeStack.length - 1];
     }
   }
 
-  getInputType(): ?GraphQLInputType {
+  getInputType(): Maybe<GraphQLInputType> {
     if (this._inputTypeStack.length > 0) {
       return this._inputTypeStack[this._inputTypeStack.length - 1];
     }
   }
 
-  getParentInputType(): ?GraphQLInputType {
+  getParentInputType(): Maybe<GraphQLInputType> {
     if (this._inputTypeStack.length > 1) {
       return this._inputTypeStack[this._inputTypeStack.length - 2];
     }
   }
 
-  getFieldDef(): ?GraphQLField<mixed, mixed> {
+  getFieldDef(): Maybe<GraphQLField<any, any>> {
     if (this._fieldDefStack.length > 0) {
       return this._fieldDefStack[this._fieldDefStack.length - 1];
     }
   }
 
-  getDefaultValue(): ?mixed {
+  getDefaultValue(): Maybe<any> {
     if (this._defaultValueStack.length > 0) {
       return this._defaultValueStack[this._defaultValueStack.length - 1];
     }
   }
 
-  getDirective(): ?GraphQLDirective {
+  getDirective(): Maybe<GraphQLDirective> {
     return this._directive;
   }
 
-  getArgument(): ?GraphQLArgument {
+  getArgument(): Maybe<GraphQLArgument> {
     return this._argument;
   }
 
-  getEnumValue(): ?GraphQLEnumValue {
+  getEnumValue(): Maybe<GraphQLEnumValue> {
     return this._enumValue;
   }
 
   enter(node: ASTNode) {
     const schema = this._schema;
-    // Note: many of the types below are explicitly typed as "mixed" to drop
+    // Note: many of the types below are explicitly typed as "any" to drop
     // any assumptions of a valid schema to ensure runtime types are properly
     // checked before continuing since TypeInfo is used as part of validation
     // which occurs before guarantees of schema and document validity.
     switch (node.kind) {
       case Kind.SELECTION_SET: {
-        const namedType: mixed = getNamedType(this.getType());
+        const namedType: any = getNamedType(this.getType());
         this._parentTypeStack.push(
           isCompositeType(namedType) ? namedType : undefined,
         );
@@ -156,7 +155,7 @@ export class TypeInfo {
       case Kind.FIELD: {
         const parentType = this.getParentType();
         let fieldDef;
-        let fieldType: mixed;
+        let fieldType: any;
         if (parentType) {
           fieldDef = this._getFieldDef(schema, parentType, node);
           if (fieldDef) {
@@ -171,16 +170,16 @@ export class TypeInfo {
         this._directive = schema.getDirective(node.name.value);
         break;
       case Kind.OPERATION_DEFINITION: {
-        let type: mixed;
+        let type: any;
         switch (node.operation) {
           case 'query':
-            type = schema.getQueryType();
+          type = schema.getQueryType();
             break;
           case 'mutation':
-            type = schema.getMutationType();
+          type = schema.getMutationType();
             break;
           case 'subscription':
-            type = schema.getSubscriptionType();
+          type = schema.getSubscriptionType();
             break;
         }
         this._typeStack.push(isObjectType(type) ? type : undefined);
@@ -189,30 +188,33 @@ export class TypeInfo {
       case Kind.INLINE_FRAGMENT:
       case Kind.FRAGMENT_DEFINITION: {
         const typeConditionAST = node.typeCondition;
-        const outputType: mixed = typeConditionAST
+        const outputType: any = typeConditionAST
           ? typeFromAST(schema, typeConditionAST)
           : getNamedType(this.getType());
         this._typeStack.push(isOutputType(outputType) ? outputType : undefined);
         break;
       }
       case Kind.VARIABLE_DEFINITION: {
-        const inputType: mixed = typeFromAST(schema, node.type);
+        const inputType: any = typeFromAST(schema, node.type);
         this._inputTypeStack.push(
           isInputType(inputType) ? inputType : undefined,
         );
         break;
       }
       case Kind.ARGUMENT: {
-        let argDef;
-        let argType: mixed;
+        let argDef = null;
+        let argType: any;
         const fieldOrDirective = this.getDirective() ?? this.getFieldDef();
         if (fieldOrDirective) {
           argDef = find(
             fieldOrDirective.args,
             (arg) => arg.name === node.name.value,
           );
+
           if (argDef) {
             argType = argDef.type;
+          } else {
+            argDef = null;
           }
         }
         this._argument = argDef;
@@ -221,8 +223,8 @@ export class TypeInfo {
         break;
       }
       case Kind.LIST: {
-        const listType: mixed = getNullableType(this.getInputType());
-        const itemType: mixed = isListType(listType)
+        const listType: any = getNullableType(this.getInputType());
+        const itemType: any = isListType(listType)
           ? listType.ofType
           : listType;
         // List positions never have a default value.
@@ -231,7 +233,7 @@ export class TypeInfo {
         break;
       }
       case Kind.OBJECT_FIELD: {
-        const objectType: mixed = getNamedType(this.getInputType());
+        const objectType: any = getNamedType(this.getInputType());
         let inputFieldType: GraphQLInputType | void;
         let inputField: GraphQLInputField | void;
         if (isInputObjectType(objectType)) {
@@ -249,7 +251,7 @@ export class TypeInfo {
         break;
       }
       case Kind.ENUM: {
-        const enumType: mixed = getNamedType(this.getInputType());
+        const enumType: any = getNamedType(this.getInputType());
         let enumValue;
         if (isEnumType(enumType)) {
           enumValue = enumType.getValue(node.value);
@@ -306,7 +308,7 @@ function getFieldDef(
   schema: GraphQLSchema,
   parentType: GraphQLType,
   fieldNode: FieldNode,
-): ?GraphQLField<mixed, mixed> {
+): GraphQLField<any, any> | undefined {
   const name = fieldNode.name.value;
   if (
     name === SchemaMetaFieldDef.name &&
@@ -338,7 +340,7 @@ export function visitWithTypeInfo(
       typeInfo.enter(node);
       const fn = getVisitFn(visitor, node.kind, /* isLeaving */ false);
       if (fn) {
-        const result = fn.apply(visitor, arguments);
+        const result = fn.apply(visitor, arguments[0]);
         if (result !== undefined) {
           typeInfo.leave(node);
           if (isNode(result)) {

@@ -1,27 +1,25 @@
-// @flow strict
+export { Source } from './source.ts';
 
-export { Source } from './source';
+export { getLocation } from './location.ts';
+export type { SourceLocation } from './location.ts';
 
-export { getLocation } from './location';
-export type { SourceLocation } from './location';
+export { printLocation, printSourceLocation } from './printLocation.ts';
 
-export { printLocation, printSourceLocation } from './printLocation';
+export { Kind } from './kinds.ts';
+export type { KindEnum } from './kinds.ts';
 
-export { Kind } from './kinds';
-export type { KindEnum } from './kinds';
+export { TokenKind } from './tokenKind.ts';
+export type { TokenKindEnum } from './tokenKind.ts';
 
-export { TokenKind } from './tokenKind';
-export type { TokenKindEnum } from './tokenKind';
+export { Lexer } from './lexer.ts';
 
-export { Lexer } from './lexer';
+export { parse, parseValue, parseType } from './parser.ts';
+export type { ParseOptions } from './parser.ts';
 
-export { parse, parseValue, parseType } from './parser';
-export type { ParseOptions } from './parser';
+export { print } from './printer.ts';
 
-export { print } from './printer';
-
-export { visit, visitInParallel, getVisitFn, BREAK } from './visitor';
-export type { ASTVisitor, Visitor, VisitFn, VisitorKeyMap } from './visitor';
+export { visit, visitInParallel, getVisitFn, BREAK } from './visitor.ts';
+export type { ASTVisitor, Visitor, VisitFn, VisitorKeyMap } from './visitor.ts';
 
 export type {
   Location,
@@ -82,7 +80,7 @@ export type {
   UnionTypeExtensionNode,
   EnumTypeExtensionNode,
   InputObjectTypeExtensionNode,
-} from './ast';
+} from './ast.ts';
 
 export {
   isDefinitionNode,
@@ -94,7 +92,7 @@ export {
   isTypeDefinitionNode,
   isTypeSystemExtensionNode,
   isTypeExtensionNode,
-} from './predicates';
+} from './predicates.ts';
 
-export { DirectiveLocation } from './directiveLocation';
-export type { DirectiveLocationEnum } from './directiveLocation';
+export { DirectiveLocation } from './directiveLocation.ts';
+export type { DirectiveLocationEnum } from './directiveLocation.ts';

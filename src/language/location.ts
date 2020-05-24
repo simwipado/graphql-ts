@@ -1,14 +1,12 @@
-// @flow strict
-
-import { type Source } from './source';
+import { Source } from './source.ts';
 
 /**
  * Represents a location in a Source.
  */
-export type SourceLocation = {|
-  +line: number,
-  +column: number,
-|};
+export type SourceLocation = {
+  readonly line: number;
+  readonly column: number;
+};
 
 /**
  * Takes a Source and a UTF-8 character offset, and returns the corresponding

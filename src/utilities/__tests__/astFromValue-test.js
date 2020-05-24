@@ -1,5 +1,3 @@
-// @flow strict
-
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 
@@ -9,14 +7,14 @@ import {
   GraphQLFloat,
   GraphQLString,
   GraphQLBoolean,
-} from '../../type/scalars';
+} from '../../type/scalars.ts';
 import {
   GraphQLList,
   GraphQLNonNull,
   GraphQLScalarType,
   GraphQLEnumType,
   GraphQLInputObjectType,
-} from '../../type/definition';
+} from '../../type/definition.ts';
 
 import { astFromValue } from '../astFromValue';
 
@@ -223,7 +221,7 @@ describe('astFromValue', () => {
 
     expect(astFromValue('value', returnNullScalar)).to.equal(null);
 
-    class SomeClass {}
+    class SomeClass { }
 
     const returnCustomClassScalar = new GraphQLScalarType({
       name: 'ReturnCustomClassScalar',

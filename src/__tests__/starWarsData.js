@@ -1,5 +1,3 @@
-// @flow strict
-
 /**
  * This defines a basic set of data for our Star Wars Schema.
  *
@@ -96,20 +94,20 @@ export type Character = {
 
 export type Human = {|
   type: 'Human',
-  id: string,
-  name: string,
-  friends: Array<string>,
-  appearsIn: Array<number>,
-  homePlanet: string,
+    id: string,
+      name: string,
+        friends: Array < string >,
+          appearsIn: Array < number >,
+            homePlanet: string,
 |};
 
 export type Droid = {|
   type: 'Droid',
-  id: string,
-  name: string,
-  friends: Array<string>,
-  appearsIn: Array<number>,
-  primaryFunction: string,
+    id: string,
+      name: string,
+        friends: Array < string >,
+          appearsIn: Array < number >,
+            primaryFunction: string,
 |};
 
 /**

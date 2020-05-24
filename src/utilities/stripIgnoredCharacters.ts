@@ -1,14 +1,12 @@
-// @flow strict
+import inspect from '../jsutils/inspect.ts';
 
-import inspect from '../jsutils/inspect';
-
-import { Source } from '../language/source';
-import { TokenKind } from '../language/tokenKind';
-import { Lexer, isPunctuatorTokenKind } from '../language/lexer';
+import { Source } from '../language/source.ts';
+import { TokenKind } from '../language/tokenKind.ts';
+import { Lexer, isPunctuatorTokenKind } from '../language/lexer.ts';
 import {
   dedentBlockStringValue,
   getBlockStringIndentation,
-} from '../language/blockString';
+} from '../language/blockString.ts';
 
 /**
  * Strips characters that are not significant to the validity or execution
@@ -104,7 +102,7 @@ export function stripIgnoredCharacters(source: string | Source): string {
   return strippedBody;
 }
 
-function dedentBlockString(blockStr) {
+function dedentBlockString(blockStr: string) {
   // skip leading and trailing triple quotations
   const rawStr = blockStr.slice(3, -3);
   let body = dedentBlockStringValue(rawStr);

@@ -1,12 +1,10 @@
-// @flow strict
+import inspect from '../jsutils/inspect.ts';
+import invariant from '../jsutils/invariant.ts';
+import keyValMap from '../jsutils/keyValMap.ts';
+import { ObjMap } from '../jsutils/ObjMap.ts';
 
-import inspect from '../jsutils/inspect';
-import invariant from '../jsutils/invariant';
-import keyValMap from '../jsutils/keyValMap';
-import { type ObjMap } from '../jsutils/ObjMap';
-
-import { Kind } from '../language/kinds';
-import { type ValueNode } from '../language/ast';
+import { Kind } from '../language/kinds.ts';
+import { ValueNode } from '../language/ast.ts';
 
 /**
  * Produces a JavaScript value given a GraphQL Value AST.
@@ -26,8 +24,8 @@ import { type ValueNode } from '../language/ast';
  */
 export function valueFromASTUntyped(
   valueNode: ValueNode,
-  variables?: ?ObjMap<mixed>,
-): mixed {
+  variables?: ?ObjMap<any>,
+): any {
   switch (valueNode.kind) {
     case Kind.NULL:
       return null;

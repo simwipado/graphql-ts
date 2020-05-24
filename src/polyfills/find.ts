@@ -1,7 +1,5 @@
-// @flow strict
-
 declare function find<T>(
-  list: $ReadOnlyArray<T>,
+  list: ReadonlyArray<T>,
   predicate: (item: T) => boolean,
 ): T | void;
 

@@ -1,5 +1,3 @@
-// @flow strict
-
 /**
  * Produces the value of a block string from its parsed raw value, similar to
  * CoffeeScript's block string, Python's docstring trim or Ruby's strip_heredoc.
@@ -36,7 +34,7 @@ export function dedentBlockStringValue(rawString: string): string {
  * @internal
  */
 export function getBlockStringIndentation(
-  lines: $ReadOnlyArray<string>,
+  lines: ReadonlyArray<string>,
 ): number {
   let commonIndent = null;
 
@@ -58,7 +56,7 @@ export function getBlockStringIndentation(
   return commonIndent === null ? 0 : commonIndent;
 }
 
-function leadingWhitespace(str) {
+function leadingWhitespace(str: string) {
   let i = 0;
   while (i < str.length && (str[i] === ' ' || str[i] === '\t')) {
     i++;
@@ -66,7 +64,7 @@ function leadingWhitespace(str) {
   return i;
 }
 
-function isBlank(str) {
+function isBlank(str: string) {
   return leadingWhitespace(str) === str.length;
 }
 
@@ -79,8 +77,8 @@ function isBlank(str) {
  */
 export function printBlockString(
   value: string,
-  indentation?: string = '',
-  preferMultipleLines?: boolean = false,
+  indentation?: string,
+  preferMultipleLines?: boolean,
 ): string {
   const isSingleLine = value.indexOf('\n') === -1;
   const hasLeadingSpace = value[0] === ' ' || value[0] === '\t';

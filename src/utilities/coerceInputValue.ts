@@ -1,29 +1,26 @@
-// @flow strict
+import arrayFrom from '../polyfills/arrayFrom.ts';
 
-import arrayFrom from '../polyfills/arrayFrom';
-import objectValues from '../polyfills/objectValues';
+import inspect from '../jsutils/inspect.ts';
+import invariant from '../jsutils/invariant.ts';
+import didYouMean from '../jsutils/didYouMean.ts';
+import isObjectLike from '../jsutils/isObjectLike.ts';
+import isCollection from '../jsutils/isCollection.ts';
+import suggestionList from '../jsutils/suggestionList.ts';
+import printPathArray from '../jsutils/printPathArray.ts';
+import { Path, addPath, pathToArray } from '../jsutils/Path.ts';
 
-import inspect from '../jsutils/inspect';
-import invariant from '../jsutils/invariant';
-import didYouMean from '../jsutils/didYouMean';
-import isObjectLike from '../jsutils/isObjectLike';
-import isCollection from '../jsutils/isCollection';
-import suggestionList from '../jsutils/suggestionList';
-import printPathArray from '../jsutils/printPathArray';
-import { type Path, addPath, pathToArray } from '../jsutils/Path';
-
-import { GraphQLError } from '../error/GraphQLError';
+import { GraphQLError } from '../error/GraphQLError.ts';
 import {
-  type GraphQLInputType,
+GraphQLInputType,
   isLeafType,
   isInputObjectType,
   isListType,
   isNonNullType,
-} from '../type/definition';
+} from '../type/definition.ts';
 
 type OnErrorCB = (
-  path: $ReadOnlyArray<string | number>,
-  invalidValue: mixed,
+  path: ReadonlyArray<string | number>,
+  invalidValue: any,
   error: GraphQLError,
 ) => void;
 
@@ -31,16 +28,16 @@ type OnErrorCB = (
  * Coerces a JavaScript value given a GraphQL Input Type.
  */
 export function coerceInputValue(
-  inputValue: mixed,
+  inputValue: any,
   type: GraphQLInputType,
   onError?: OnErrorCB = defaultOnError,
-): mixed {
+): any {
   return coerceInputValueImpl(inputValue, type, onError);
 }
 
 function defaultOnError(
-  path: $ReadOnlyArray<string | number>,
-  invalidValue: mixed,
+  path: ReadonlyArray<string | number>,
+  invalidValue: any,
   error: GraphQLError,
 ) {
   let errorPrefix = 'Invalid value ' + inspect(invalidValue);
@@ -52,11 +49,11 @@ function defaultOnError(
 }
 
 function coerceInputValueImpl(
-  inputValue: mixed,
+  inputValue: any,
   type: GraphQLInputType,
   onError: OnErrorCB,
   path: Path | void,
-): mixed {
+): any {
   if (isNonNullType(type)) {
     if (inputValue != null) {
       return coerceInputValueImpl(inputValue, type.ofType, onError, path);
@@ -101,7 +98,7 @@ function coerceInputValueImpl(
     const coercedValue = {};
     const fieldDefs = type.getFields();
 
-    for (const field of objectValues(fieldDefs)) {
+    for (const field of Object.values(fieldDefs)) {
       const fieldValue = inputValue[field.name];
 
       if (fieldValue === undefined) {

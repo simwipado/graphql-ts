@@ -1,8 +1,6 @@
-// @flow strict
+import { Source } from '../language/source.ts';
 
-import { type Source } from '../language/source';
-
-import { GraphQLError } from './GraphQLError';
+import { GraphQLError } from './GraphQLError.ts';
 
 /**
  * Produces a GraphQLError representing a syntax error, containing useful

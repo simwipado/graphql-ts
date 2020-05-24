@@ -1,17 +1,15 @@
-// @flow strict
+import { SYMBOL_ASYNC_ITERATOR } from '../polyfills/symbols.ts';
 
-import { SYMBOL_ASYNC_ITERATOR } from '../polyfills/symbols';
+import inspect from '../jsutils/inspect.ts';
+import { addPath, pathToArray } from '../jsutils/Path.ts';
 
-import inspect from '../jsutils/inspect';
-import { addPath, pathToArray } from '../jsutils/Path';
+import { GraphQLError } from '../error/GraphQLError.ts';
+import { locatedError } from '../error/locatedError.ts';
 
-import { GraphQLError } from '../error/GraphQLError';
-import { locatedError } from '../error/locatedError';
-
-import { type DocumentNode } from '../language/ast';
+import { DocumentNode } from '../language/ast.ts';
 
 import {
-  type ExecutionResult,
+ExecutionResult,
   assertValidExecutionArguments,
   buildExecutionContext,
   buildResolveInfo,
@@ -19,25 +17,26 @@ import {
   execute,
   getFieldDef,
   resolveFieldValueOrError,
-} from '../execution/execute';
+} from '../execution/execute.ts';
 
-import { type GraphQLSchema } from '../type/schema';
-import { type GraphQLFieldResolver } from '../type/definition';
+import { GraphQLSchema } from '../type/schema.ts';
+import { GraphQLFieldResolver } from '../type/definition.ts';
 
-import { getOperationRootType } from '../utilities/getOperationRootType';
+import { getOperationRootType } from '../utilities/getOperationRootType.ts';
 
-import mapAsyncIterator from './mapAsyncIterator';
+import mapAsyncIterator from './mapAsyncIterator.ts';
+import Maybe from '../tsutils/Maybe.ts';
 
-export type SubscriptionArgs = {|
-  schema: GraphQLSchema,
-  document: DocumentNode,
-  rootValue?: mixed,
-  contextValue?: mixed,
-  variableValues?: ?{ +[variable: string]: mixed, ... },
-  operationName?: ?string,
-  fieldResolver?: ?GraphQLFieldResolver<any, any>,
-  subscribeFieldResolver?: ?GraphQLFieldResolver<any, any>,
-|};
+export interface SubscriptionArgs {
+  schema: GraphQLSchema;
+  document: DocumentNode;
+  rootValue?: any;
+  contextValue?: any;
+  variableValues?: Maybe<Record<string, any>>;
+  operationName?: Maybe<string>;
+  fieldResolver?: Maybe<GraphQLFieldResolver<any, any>>;
+  subscribeFieldResolver?: Maybe<GraphQLFieldResolver<any, any>>;
+}
 
 /**
  * Implements the "Subscribe" algorithm described in the GraphQL specification.
@@ -60,30 +59,29 @@ export type SubscriptionArgs = {|
  *
  * Accepts either an object with named arguments, or individual arguments.
  */
-declare function subscribe(
-  SubscriptionArgs,
-  ..._: []
-): Promise<AsyncIterator<ExecutionResult> | ExecutionResult>;
+export function subscribe(
+  args: SubscriptionArgs,
+): Promise<AsyncIterableIterator<ExecutionResult> | ExecutionResult>;
 /* eslint-disable no-redeclare */
-declare function subscribe(
+export function subscribe(
   schema: GraphQLSchema,
   document: DocumentNode,
-  rootValue?: mixed,
-  contextValue?: mixed,
-  variableValues?: ?{ +[variable: string]: mixed, ... },
-  operationName?: ?string,
-  fieldResolver?: ?GraphQLFieldResolver<any, any>,
-  subscribeFieldResolver?: ?GraphQLFieldResolver<any, any>,
-): Promise<AsyncIterator<ExecutionResult> | ExecutionResult>;
+  rootValue?: any,
+  contextValue?: any,
+  variableValues?: Maybe<{ [key: string]: any }>,
+  operationName?: Maybe<string>,
+  fieldResolver?: Maybe<GraphQLFieldResolver<any, any>>,
+  subscribeFieldResolver?: Maybe<GraphQLFieldResolver<any, any>>,
+): Promise<AsyncIterableIterator<ExecutionResult> | ExecutionResult>;
 export function subscribe(
-  argsOrSchema,
-  document,
-  rootValue,
-  contextValue,
-  variableValues,
-  operationName,
-  fieldResolver,
-  subscribeFieldResolver,
+  argsOrSchema: GraphQLSchema,
+  document?: DocumentNode,
+  rootValue?: any,
+  contextValue?: any,
+  variableValues?: Maybe<{ [key: string]: any }>,
+  operationName?: Maybe<string>,
+  fieldResolver?: Maybe<GraphQLFieldResolver<any, any>>,
+  subscribeFieldResolver?: Maybe<GraphQLFieldResolver<any, any>>,
 ) {
   /* eslint-enable no-redeclare */
   // Extract arguments from object args if provided.
@@ -160,7 +158,7 @@ function subscribeImpl(
     // Note: Flow can't refine isAsyncIterable, so explicit casts are used.
     isAsyncIterable(resultOrStream)
       ? mapAsyncIterator(
-          ((resultOrStream: any): AsyncIterable<mixed>),
+          resultOrStream,
           mapSourceToResponse,
           reportGraphQLError,
         )
@@ -199,12 +197,12 @@ function subscribeImpl(
 export function createSourceEventStream(
   schema: GraphQLSchema,
   document: DocumentNode,
-  rootValue?: mixed,
-  contextValue?: mixed,
-  variableValues?: ?{ +[variable: string]: mixed, ... },
-  operationName?: ?string,
-  fieldResolver?: ?GraphQLFieldResolver<any, any>,
-): Promise<AsyncIterable<mixed> | ExecutionResult> {
+  rootValue?: any,
+  contextValue?: any,
+  variableValues?: { [key: string]: any },
+  operationName?: Maybe<string>,
+  fieldResolver?: Maybe<GraphQLFieldResolver<any, any>>,
+): Promise<AsyncIterable<any> | ExecutionResult> {
   // If arguments are missing or incorrectly typed, this is an internal
   // developer mistake which should throw an early error.
   assertValidExecutionArguments(schema, document, variableValues);
@@ -281,7 +279,7 @@ export function createSourceEventStream(
       // Assert field returned an event stream, otherwise yield an error.
       if (isAsyncIterable(eventStream)) {
         // Note: isAsyncIterable above ensures this will be correct.
-        return ((eventStream: any): AsyncIterable<mixed>);
+        return ((eventStream: any): AsyncIterable<any>);
       }
 
       throw new Error(
@@ -303,7 +301,7 @@ export function createSourceEventStream(
  * Returns true if the provided object implements the AsyncIterator protocol via
  * either implementing a `Symbol.asyncIterator` or `"@@asyncIterator"` method.
  */
-function isAsyncIterable(maybeAsyncIterable: mixed): boolean {
+function isAsyncIterable(maybeAsyncIterable: any): boolean {
   if (maybeAsyncIterable == null || typeof maybeAsyncIterable !== 'object') {
     return false;
   }

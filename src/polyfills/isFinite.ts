@@ -1,7 +1,5 @@
-// @flow strict
-
 declare function isFinitePolyfill(
-  value: mixed,
+  value: any,
 ): boolean %checks(typeof value === 'number');
 
 /* eslint-disable no-redeclare */

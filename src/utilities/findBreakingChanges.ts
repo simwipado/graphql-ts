@@ -1,26 +1,23 @@
-// @flow strict
 
-import objectValues from '../polyfills/objectValues';
+import keyMap from '../jsutils/keyMap.ts';
+import inspect from '../jsutils/inspect.ts';
+import invariant from '../jsutils/invariant.ts';
 
-import keyMap from '../jsutils/keyMap';
-import inspect from '../jsutils/inspect';
-import invariant from '../jsutils/invariant';
+import { print } from '../language/printer.ts';
+import { visit } from '../language/visitor.ts';
 
-import { print } from '../language/printer';
-import { visit } from '../language/visitor';
-
-import { type GraphQLSchema } from '../type/schema';
-import { isSpecifiedScalarType } from '../type/scalars';
+import { GraphQLSchema } from '../type/schema.ts';
+import { isSpecifiedScalarType } from '../type/scalars.ts';
 import {
-  type GraphQLField,
-  type GraphQLType,
-  type GraphQLInputType,
-  type GraphQLNamedType,
-  type GraphQLEnumType,
-  type GraphQLUnionType,
-  type GraphQLObjectType,
-  type GraphQLInterfaceType,
-  type GraphQLInputObjectType,
+GraphQLField,
+GraphQLType,
+GraphQLInputType,
+GraphQLNamedType,
+GraphQLEnumType,
+GraphQLUnionType,
+GraphQLObjectType,
+GraphQLInterfaceType,
+GraphQLInputObjectType,
   isScalarType,
   isObjectType,
   isInterfaceType,
@@ -32,11 +29,11 @@ import {
   isNamedType,
   isRequiredArgument,
   isRequiredInputField,
-} from '../type/definition';
+} from '../type/definition.ts';
 
-import { astFromValue } from './astFromValue';
+import { astFromValue } from './astFromValue.ts';
 
-export const BreakingChangeType = Object.freeze({
+export const BreakingChangeType = {
   TYPE_REMOVED: 'TYPE_REMOVED',
   TYPE_CHANGED_KIND: 'TYPE_CHANGED_KIND',
   TYPE_REMOVED_FROM_UNION: 'TYPE_REMOVED_FROM_UNION',
@@ -53,26 +50,26 @@ export const BreakingChangeType = Object.freeze({
   REQUIRED_DIRECTIVE_ARG_ADDED: 'REQUIRED_DIRECTIVE_ARG_ADDED',
   DIRECTIVE_REPEATABLE_REMOVED: 'DIRECTIVE_REPEATABLE_REMOVED',
   DIRECTIVE_LOCATION_REMOVED: 'DIRECTIVE_LOCATION_REMOVED',
-});
+} as const;
 
-export const DangerousChangeType = Object.freeze({
+export const DangerousChangeType = {
   VALUE_ADDED_TO_ENUM: 'VALUE_ADDED_TO_ENUM',
   TYPE_ADDED_TO_UNION: 'TYPE_ADDED_TO_UNION',
   OPTIONAL_INPUT_FIELD_ADDED: 'OPTIONAL_INPUT_FIELD_ADDED',
   OPTIONAL_ARG_ADDED: 'OPTIONAL_ARG_ADDED',
   IMPLEMENTED_INTERFACE_ADDED: 'IMPLEMENTED_INTERFACE_ADDED',
   ARG_DEFAULT_VALUE_CHANGE: 'ARG_DEFAULT_VALUE_CHANGE',
-});
+} as const;
 
-export type BreakingChange = {|
-  type: $Keys<typeof BreakingChangeType>,
-  description: string,
-|};
+export interface BreakingChange {
+  type: keyof typeof BreakingChangeType;
+  description: string;
+}
 
-export type DangerousChange = {|
-  type: $Keys<typeof DangerousChangeType>,
-  description: string,
-|};
+export interface DangerousChange {
+  type: keyof typeof DangerousChangeType;
+  description: string;
+}
 
 /**
  * Given two schemas, returns an Array containing descriptions of all the types
@@ -85,7 +82,7 @@ export function findBreakingChanges(
   const breakingChanges = findSchemaChanges(oldSchema, newSchema).filter(
     (change) => change.type in BreakingChangeType,
   );
-  return ((breakingChanges: any): Array<BreakingChange>);
+  return breakingChanges;
 }
 
 /**
@@ -99,7 +96,7 @@ export function findDangerousChanges(
   const dangerousChanges = findSchemaChanges(oldSchema, newSchema).filter(
     (change) => change.type in DangerousChangeType,
   );
-  return ((dangerousChanges: any): Array<DangerousChange>);
+  return dangerousChanges;
 }
 
 function findSchemaChanges(
@@ -176,8 +173,8 @@ function findTypeChanges(
   const schemaChanges = [];
 
   const typesDiff = diff(
-    objectValues(oldSchema.getTypeMap()),
-    objectValues(newSchema.getTypeMap()),
+    Object.values(oldSchema.getTypeMap()),
+    Object.values(newSchema.getTypeMap()),
   );
 
   for (const oldType of typesDiff.removed) {
@@ -225,8 +222,8 @@ function findInputObjectTypeChanges(
 ): Array<BreakingChange | DangerousChange> {
   const schemaChanges = [];
   const fieldsDiff = diff(
-    objectValues(oldType.getFields()),
-    objectValues(newType.getFields()),
+    Object.values(oldType.getFields()),
+    Object.values(newType.getFields()),
   );
 
   for (const newField of fieldsDiff.added) {
@@ -346,8 +343,8 @@ function findFieldChanges(
 ): Array<BreakingChange | DangerousChange> {
   const schemaChanges = [];
   const fieldsDiff = diff(
-    objectValues(oldType.getFields()),
-    objectValues(newType.getFields()),
+    Object.values(oldType.getFields()),
+    Object.values(newType.getFields()),
   );
 
   for (const oldField of fieldsDiff.removed) {
@@ -379,8 +376,8 @@ function findFieldChanges(
 
 function findArgChanges(
   oldType: GraphQLObjectType | GraphQLInterfaceType,
-  oldField: GraphQLField<mixed, mixed>,
-  newField: GraphQLField<mixed, mixed>,
+  oldField: GraphQLField<any, any>,
+  newField: GraphQLField<any, any>,
 ): Array<BreakingChange | DangerousChange> {
   const schemaChanges = [];
   const argsDiff = diff(oldField.args, newField.args);
@@ -531,10 +528,10 @@ function typeKindName(type: GraphQLNamedType): string {
   }
 
   // Not reachable. All possible named types have been considered.
-  invariant(false, 'Unexpected type: ' + inspect((type: empty)));
+  invariant(false, 'Unexpected type: ' + inspect(type));
 }
 
-function stringifyValue(value: mixed, type: GraphQLInputType): string {
+function stringifyValue(value: any, type: GraphQLInputType): string {
   const ast = astFromValue(value, type);
   invariant(ast != null);
 
@@ -550,17 +547,17 @@ function stringifyValue(value: mixed, type: GraphQLInputType): string {
   return print(sortedAST);
 }
 
-function diff<T: { name: string, ... }>(
-  oldArray: $ReadOnlyArray<T>,
-  newArray: $ReadOnlyArray<T>,
-): {|
-  added: Array<T>,
-  removed: Array<T>,
-  persisted: Array<[T, T]>,
-|} {
+function diff<T extends {name: string}>(
+  oldArray: ReadonlyArray<T>,
+  newArray: ReadonlyArray<T>,
+): {
+  added: T[],
+  removed: T[],
+  persisted: [T, T][],
+} {
   const added = [];
   const removed = [];
-  const persisted = [];
+  const persisted: [T, T][] = [];
 
   const oldMap = keyMap(oldArray, ({ name }) => name);
   const newMap = keyMap(newArray, ({ name }) => name);

@@ -1,5 +1,3 @@
-// @flow strict
-
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 
@@ -33,7 +31,7 @@ import {
   assertUnionType,
   assertEnumType,
   assertInputObjectType,
-} from '../definition';
+} from '../definition.ts';
 
 const SomeSchema = buildSchema(`
   scalar SomeScalar

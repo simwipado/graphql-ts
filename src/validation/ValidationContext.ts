@@ -1,38 +1,37 @@
-// @flow strict
+import { ObjMap } from '../jsutils/ObjMap.ts';
 
-import { type ObjMap } from '../jsutils/ObjMap';
+import { GraphQLError } from '../error/GraphQLError.ts';
 
-import { type GraphQLError } from '../error/GraphQLError';
-
-import { Kind } from '../language/kinds';
-import { type ASTVisitor, visit } from '../language/visitor';
+import { Kind } from '../language/kinds.ts';
+import { ASTVisitor, visit } from '../language/visitor.ts';
 import {
-  type DocumentNode,
-  type OperationDefinitionNode,
-  type VariableNode,
-  type SelectionSetNode,
-  type FragmentSpreadNode,
-  type FragmentDefinitionNode,
-} from '../language/ast';
+DocumentNode,
+OperationDefinitionNode,
+VariableNode,
+SelectionSetNode,
+FragmentSpreadNode,
+FragmentDefinitionNode,
+} from '../language/ast.ts';
 
-import { type GraphQLSchema } from '../type/schema';
-import { type GraphQLDirective } from '../type/directives';
+import { GraphQLSchema } from '../type/schema.ts';
+import { GraphQLDirective } from '../type/directives.ts';
 import {
-  type GraphQLInputType,
-  type GraphQLOutputType,
-  type GraphQLCompositeType,
-  type GraphQLField,
-  type GraphQLArgument,
-} from '../type/definition';
+GraphQLInputType,
+GraphQLOutputType,
+GraphQLCompositeType,
+GraphQLField,
+GraphQLArgument,
+} from '../type/definition.ts';
 
-import { TypeInfo, visitWithTypeInfo } from '../utilities/TypeInfo';
+import { TypeInfo, visitWithTypeInfo } from '../utilities/TypeInfo.ts';
+import Maybe from '../tsutils/Maybe.ts';
 
 type NodeWithSelectionSet = OperationDefinitionNode | FragmentDefinitionNode;
-type VariableUsage = {|
-  +node: VariableNode,
-  +type: ?GraphQLInputType,
-  +defaultValue: ?mixed,
-|};
+type VariableUsage = {
+  readonly node: VariableNode;
+  readonly type: Maybe<GraphQLInputType>;
+  readonly defaultValue: Maybe<any>;
+};
 
 /**
  * An instance of this class is passed as the "this" context to all validators,
@@ -42,14 +41,14 @@ type VariableUsage = {|
 export class ASTValidationContext {
   _ast: DocumentNode;
   _onError: (err: GraphQLError) => void;
-  _fragments: ?ObjMap<FragmentDefinitionNode>;
-  _fragmentSpreads: Map<SelectionSetNode, $ReadOnlyArray<FragmentSpreadNode>>;
+  _fragments: Maybe<ObjMap<FragmentDefinitionNode>>;
+  _fragmentSpreads: Map<SelectionSetNode, FragmentSpreadNode[]>;
   _recursivelyReferencedFragments: Map<
     OperationDefinitionNode,
-    $ReadOnlyArray<FragmentDefinitionNode>,
+    FragmentDefinitionNode[]
   >;
 
-  constructor(ast: DocumentNode, onError: (err: GraphQLError) => void): void {
+  constructor(ast: DocumentNode, onError: (err: GraphQLError) => void) {
     this._ast = ast;
     this._fragments = undefined;
     this._fragmentSpreads = new Map();
@@ -65,7 +64,7 @@ export class ASTValidationContext {
     return this._ast;
   }
 
-  getFragment(name: string): ?FragmentDefinitionNode {
+  getFragment(name: string): Maybe<FragmentDefinitionNode> {
     let fragments = this._fragments;
     if (!fragments) {
       this._fragments = fragments = this.getDocument().definitions.reduce(
@@ -76,20 +75,20 @@ export class ASTValidationContext {
           return frags;
         },
         Object.create(null),
-      );
+      ) as ObjMap<FragmentDefinitionNode>;
     }
     return fragments[name];
   }
 
   getFragmentSpreads(
     node: SelectionSetNode,
-  ): $ReadOnlyArray<FragmentSpreadNode> {
+  ): ReadonlyArray<FragmentSpreadNode> {
     let spreads = this._fragmentSpreads.get(node);
     if (!spreads) {
       spreads = [];
       const setsToVisit: Array<SelectionSetNode> = [node];
       while (setsToVisit.length !== 0) {
-        const set = setsToVisit.pop();
+        const set = setsToVisit.pop() as SelectionSetNode;
         for (const selection of set.selections) {
           if (selection.kind === Kind.FRAGMENT_SPREAD) {
             spreads.push(selection);
@@ -105,14 +104,14 @@ export class ASTValidationContext {
 
   getRecursivelyReferencedFragments(
     operation: OperationDefinitionNode,
-  ): $ReadOnlyArray<FragmentDefinitionNode> {
+  ): ReadonlyArray<FragmentDefinitionNode> {
     let fragments = this._recursivelyReferencedFragments.get(operation);
     if (!fragments) {
       fragments = [];
       const collectedNames = Object.create(null);
       const nodesToVisit: Array<SelectionSetNode> = [operation.selectionSet];
       while (nodesToVisit.length !== 0) {
-        const node = nodesToVisit.pop();
+        const node = nodesToVisit.pop() as SelectionSetNode;
         for (const spread of this.getFragmentSpreads(node)) {
           const fragName = spread.name.value;
           if (collectedNames[fragName] !== true) {
@@ -127,46 +126,45 @@ export class ASTValidationContext {
       }
       this._recursivelyReferencedFragments.set(operation, fragments);
     }
+
     return fragments;
   }
 }
 
-export type ASTValidationRule = (ASTValidationContext) => ASTVisitor;
-
 export class SDLValidationContext extends ASTValidationContext {
-  _schema: ?GraphQLSchema;
+  _schema: Maybe<GraphQLSchema>;
 
   constructor(
     ast: DocumentNode,
-    schema: ?GraphQLSchema,
+    schema: Maybe<GraphQLSchema>,
     onError: (err: GraphQLError) => void,
-  ): void {
+  ) {
     super(ast, onError);
     this._schema = schema;
   }
 
-  getSchema(): ?GraphQLSchema {
+  getSchema(): Maybe<GraphQLSchema> {
     return this._schema;
   }
 }
 
-export type SDLValidationRule = (SDLValidationContext) => ASTVisitor;
+export type SDLValidationRule = (context: SDLValidationContext) => ASTVisitor;
 
 export class ValidationContext extends ASTValidationContext {
   _schema: GraphQLSchema;
-  _typeInfo: TypeInfo;
-  _variableUsages: Map<NodeWithSelectionSet, $ReadOnlyArray<VariableUsage>>;
+  _typeInfo: Maybe<TypeInfo>;
+  _variableUsages: Map<NodeWithSelectionSet, ReadonlyArray<VariableUsage>>;
   _recursiveVariableUsages: Map<
     OperationDefinitionNode,
-    $ReadOnlyArray<VariableUsage>,
+    ReadonlyArray<VariableUsage>
   >;
 
   constructor(
     schema: GraphQLSchema,
     ast: DocumentNode,
-    typeInfo: TypeInfo,
+    typeInfo: Maybe<TypeInfo>,
     onError: (err: GraphQLError) => void,
-  ): void {
+  ) {
     super(ast, onError);
     this._schema = schema;
     this._typeInfo = typeInfo;
@@ -178,10 +176,10 @@ export class ValidationContext extends ASTValidationContext {
     return this._schema;
   }
 
-  getVariableUsages(node: NodeWithSelectionSet): $ReadOnlyArray<VariableUsage> {
+  getVariableUsages(node: NodeWithSelectionSet): ReadonlyArray<VariableUsage> {
     let usages = this._variableUsages.get(node);
     if (!usages) {
-      const newUsages = [];
+      const newUsages: {node: VariableNode, type: Maybe<GraphQLInputType>, defaultValue: any}[] = [];
       const typeInfo = new TypeInfo(this._schema);
       visit(
         node,
@@ -204,7 +202,7 @@ export class ValidationContext extends ASTValidationContext {
 
   getRecursiveVariableUsages(
     operation: OperationDefinitionNode,
-  ): $ReadOnlyArray<VariableUsage> {
+  ): ReadonlyArray<VariableUsage> {
     let usages = this._recursiveVariableUsages.get(operation);
     if (!usages) {
       usages = this.getVariableUsages(operation);
@@ -216,33 +214,33 @@ export class ValidationContext extends ASTValidationContext {
     return usages;
   }
 
-  getType(): ?GraphQLOutputType {
-    return this._typeInfo.getType();
+  getType(): Maybe<GraphQLOutputType> {
+    return this._typeInfo?.getType();
   }
 
-  getParentType(): ?GraphQLCompositeType {
-    return this._typeInfo.getParentType();
+  getParentType(): Maybe<GraphQLCompositeType> {
+    return this._typeInfo?.getParentType();
   }
 
-  getInputType(): ?GraphQLInputType {
-    return this._typeInfo.getInputType();
+  getInputType(): Maybe<GraphQLInputType> {
+    return this._typeInfo?.getInputType();
   }
 
-  getParentInputType(): ?GraphQLInputType {
-    return this._typeInfo.getParentInputType();
+  getParentInputType(): Maybe<GraphQLInputType> {
+    return this._typeInfo?.getParentInputType();
   }
 
-  getFieldDef(): ?GraphQLField<mixed, mixed> {
-    return this._typeInfo.getFieldDef();
+  getFieldDef(): Maybe<GraphQLField<any, any>> {
+    return this._typeInfo?.getFieldDef();
   }
 
-  getDirective(): ?GraphQLDirective {
-    return this._typeInfo.getDirective();
+  getDirective(): Maybe<GraphQLDirective> {
+    return this._typeInfo?.getDirective();
   }
 
-  getArgument(): ?GraphQLArgument {
-    return this._typeInfo.getArgument();
+  getArgument(): Maybe<GraphQLArgument> {
+    return this._typeInfo?.getArgument();
   }
 }
 
-export type ValidationRule = (ValidationContext) => ASTVisitor;
+export type ValidationRule = (context: ValidationContext) => ASTVisitor;

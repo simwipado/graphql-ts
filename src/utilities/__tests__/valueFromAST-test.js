@@ -1,5 +1,3 @@
-// @flow strict
-
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 
@@ -13,14 +11,14 @@ import {
   GraphQLString,
   GraphQLBoolean,
   GraphQLID,
-} from '../../type/scalars';
+} from '../../type/scalars.ts';
 import {
   GraphQLScalarType,
   GraphQLEnumType,
   GraphQLInputObjectType,
   GraphQLList,
   GraphQLNonNull,
-} from '../../type/definition';
+} from '../../type/definition.ts';
 
 import { valueFromAST } from '../valueFromAST';
 

@@ -1,4 +1,2 @@
-// @flow strict
-
-export { subscribe, createSourceEventStream } from './subscribe';
-export type { SubscriptionArgs } from './subscribe';
+export { subscribe, createSourceEventStream } from './subscribe.ts';
+export type { SubscriptionArgs } from './subscribe.ts';

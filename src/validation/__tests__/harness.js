@@ -1,5 +1,3 @@
-// @flow strict
-
 import { expect } from 'chai';
 
 import { parse } from '../../language/parser';
@@ -12,7 +10,7 @@ import { validate, validateSDL } from '../validate';
 import {
   type ValidationRule,
   type SDLValidationRule,
-} from '../ValidationContext';
+} from '../ValidationContext.ts';
 
 export const testSchema = buildSchema(`
   interface Being {

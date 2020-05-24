@@ -1,5 +1,3 @@
-// @flow strict
-
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 
@@ -19,7 +17,7 @@ import {
   GraphQLInputObjectType,
   GraphQLList,
   GraphQLNonNull,
-} from '../definition';
+} from '../definition.ts';
 
 const ScalarType = new GraphQLScalarType({ name: 'Scalar' });
 const ObjectType = new GraphQLObjectType({ name: 'Object', fields: {} });

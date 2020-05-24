@@ -1,5 +1,3 @@
-// @flow strict
-
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 
@@ -12,7 +10,7 @@ import {
   GraphQLScalarType,
   GraphQLEnumType,
   GraphQLInputObjectType,
-} from '../../type/definition';
+} from '../../type/definition.ts';
 
 import { coerceInputValue } from '../coerceInputValue';
 

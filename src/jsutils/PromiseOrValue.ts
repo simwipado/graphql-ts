@@ -1,3 +1,1 @@
-// @flow strict
-
-export type PromiseOrValue<+T> = Promise<T> | T;
+export type PromiseOrValue<T> = Promise<T> | T;

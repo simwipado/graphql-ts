@@ -1,57 +1,52 @@
-// @flow strict
+import find from '../polyfills/find.ts';
+import arrayFrom from '../polyfills/arrayFrom.ts';
+import { SYMBOL_TO_STRING_TAG } from '../polyfills/symbols.ts';
 
-import find from '../polyfills/find';
-import arrayFrom from '../polyfills/arrayFrom';
-import objectValues from '../polyfills/objectValues';
-import { SYMBOL_TO_STRING_TAG } from '../polyfills/symbols';
-
-import inspect from '../jsutils/inspect';
-import toObjMap from '../jsutils/toObjMap';
-import devAssert from '../jsutils/devAssert';
-import instanceOf from '../jsutils/instanceOf';
-import isObjectLike from '../jsutils/isObjectLike';
+import inspect from '../jsutils/inspect.ts';
+import toObjMap from '../jsutils/toObjMap.ts';
+import devAssert from '../jsutils/devAssert.ts';
+import instanceOf from '../jsutils/instanceOf.ts';
+import isObjectLike from '../jsutils/isObjectLike.ts';
 import {
-  type ObjMap,
-  type ReadOnlyObjMap,
-  type ReadOnlyObjMapLike,
-} from '../jsutils/ObjMap';
+ObjMap,
+ReadOnlyObjMap,
+ReadOnlyObjMapLike,
+} from '../jsutils/ObjMap.ts';
 
-import { type GraphQLError } from '../error/GraphQLError';
+import { GraphQLError } from '../error/GraphQLError.ts';
 import {
-  type SchemaDefinitionNode,
-  type SchemaExtensionNode,
-} from '../language/ast';
+SchemaDefinitionNode,
+SchemaExtensionNode,
+} from '../language/ast.ts';
 
-import { __Schema } from './introspection';
+import { __Schema } from './introspection.ts';
 import {
   GraphQLDirective,
   isDirective,
   specifiedDirectives,
-} from './directives';
+} from './directives.ts';
 import {
-  type GraphQLType,
-  type GraphQLNamedType,
-  type GraphQLAbstractType,
-  type GraphQLObjectType,
-  type GraphQLInterfaceType,
+GraphQLType,
+GraphQLNamedType,
+GraphQLAbstractType,
+GraphQLObjectType,
+GraphQLInterfaceType,
   isObjectType,
   isInterfaceType,
   isUnionType,
   isInputObjectType,
   getNamedType,
-} from './definition';
+} from './definition.ts';
+import Maybe from '../tsutils/Maybe.ts';
 
 /**
  * Test if the given value is a GraphQL schema.
  */
-declare function isSchema(schema: mixed): boolean %checks(schema instanceof
-  GraphQLSchema);
-// eslint-disable-next-line no-redeclare
-export function isSchema(schema) {
+export function isSchema(schema: any): schema is GraphQLSchema {
   return instanceOf(schema, GraphQLSchema);
 }
 
-export function assertSchema(schema: mixed): GraphQLSchema {
+export function assertSchema(schema: any): GraphQLSchema {
   if (!isSchema(schema)) {
     throw new Error(`Expected ${inspect(schema)} to be a GraphQL schema.`);
   }
@@ -122,26 +117,26 @@ export function assertSchema(schema: mixed): GraphQLSchema {
  *
  */
 export class GraphQLSchema {
-  description: ?string;
-  extensions: ?ReadOnlyObjMap<mixed>;
-  astNode: ?SchemaDefinitionNode;
-  extensionASTNodes: ?$ReadOnlyArray<SchemaExtensionNode>;
+  description: Maybe<string>;
+  extensions: Maybe<Readonly<Record<string, any>>>;
+  astNode: Maybe<SchemaDefinitionNode>;
+  extensionASTNodes: Maybe<ReadonlyArray<SchemaExtensionNode>>;
 
-  _queryType: ?GraphQLObjectType;
-  _mutationType: ?GraphQLObjectType;
-  _subscriptionType: ?GraphQLObjectType;
-  _directives: $ReadOnlyArray<GraphQLDirective>;
+  _queryType: Maybe<GraphQLObjectType>;
+  _mutationType: Maybe<GraphQLObjectType>;
+  _subscriptionType: Maybe<GraphQLObjectType>;
+  _directives: ReadonlyArray<GraphQLDirective>;
   _typeMap: TypeMap;
   _subTypeMap: ObjMap<ObjMap<boolean>>;
-  _implementationsMap: ObjMap<{|
+  _implementationsMap: ObjMap<{
     objects: Array<GraphQLObjectType>,
     interfaces: Array<GraphQLInterfaceType>,
-  |}>;
+  }>;
 
   // Used as a cache for validateSchema().
-  __validationErrors: ?$ReadOnlyArray<GraphQLError>;
+  __validationErrors: Maybe<ReadonlyArray<GraphQLError>>;
 
-  constructor(config: $ReadOnly<GraphQLSchemaConfig>): void {
+  constructor(config: Readonly<GraphQLSchemaConfig>): void {
     // If this schema was built from a source known to be valid, then it may be
     // marked with assumeValid to avoid an additional type system validation.
     this.__validationErrors = config.assumeValid === true ? [] : undefined;
@@ -258,15 +253,15 @@ export class GraphQLSchema {
     }
   }
 
-  getQueryType(): ?GraphQLObjectType {
+  getQueryType(): Maybe<GraphQLObjectType>; {
     return this._queryType;
   }
 
-  getMutationType(): ?GraphQLObjectType {
+  getMutationType(): Maybe<GraphQLObjectType>; {
     return this._mutationType;
   }
 
-  getSubscriptionType(): ?GraphQLObjectType {
+  getSubscriptionType(): Maybe<GraphQLObjectType>; {
     return this._subscriptionType;
   }
 
@@ -274,24 +269,24 @@ export class GraphQLSchema {
     return this._typeMap;
   }
 
-  getType(name: string): ?GraphQLNamedType {
+  getType(name: string): Maybe<GraphQLNamedType>; {
     return this.getTypeMap()[name];
   }
 
   getPossibleTypes(
     abstractType: GraphQLAbstractType,
-  ): $ReadOnlyArray<GraphQLObjectType> {
+  ): ReadonlyArray<GraphQLObjectType> {
     return isUnionType(abstractType)
       ? abstractType.getTypes()
-      : this.getImplementations(abstractType).objects;
+      : this.getImplementations(abstractType).objects';
   }
 
   getImplementations(
     interfaceType: GraphQLInterfaceType,
-  ): {|
-    objects: /* $ReadOnly */ Array<GraphQLObjectType>,
-    interfaces: /* $ReadOnly */ Array<GraphQLInterfaceType>,
-  |} {
+  ): {
+    objects: /* Readonly */ Array<GraphQLObjectType>,
+    interfaces: /* Readonly */ Array<GraphQLInterfaceType>,
+  } {
     const implementations = this._implementationsMap[interfaceType.name];
     return implementations ?? { objects: [], interfaces: [] };
   }
@@ -331,11 +326,11 @@ export class GraphQLSchema {
     return map[maybeSubType.name] !== undefined;
   }
 
-  getDirectives(): $ReadOnlyArray<GraphQLDirective> {
+  getDirectives(): ReadonlyArray<GraphQLDirective> {
     return this._directives;
   }
 
-  getDirective(name: string): ?GraphQLDirective {
+  getDirective(name: string): Maybe<GraphQLDirective>; {
     return find(this.getDirectives(), (directive) => directive.name === name);
   }
 
@@ -345,7 +340,7 @@ export class GraphQLSchema {
       query: this.getQueryType(),
       mutation: this.getMutationType(),
       subscription: this.getSubscriptionType(),
-      types: objectValues(this.getTypeMap()),
+      types: Object.values(this.getTypeMap()),
       directives: this.getDirectives().slice(),
       extensions: this.extensions,
       astNode: this.astNode,
@@ -362,7 +357,7 @@ export class GraphQLSchema {
 
 type TypeMap = ObjMap<GraphQLNamedType>;
 
-export type GraphQLSchemaValidationOptions = {|
+export type GraphQLSchemaValidationOptions = {
   /**
    * When building a schema from a GraphQL service's introspection result, it
    * might be safe to assume the schema is valid. Set to true to assume the
@@ -371,33 +366,31 @@ export type GraphQLSchemaValidationOptions = {|
    * Default: false
    */
   assumeValid?: boolean,
-|};
+};
 
-export type GraphQLSchemaConfig = {|
-  description?: ?string,
-  query?: ?GraphQLObjectType,
-  mutation?: ?GraphQLObjectType,
-  subscription?: ?GraphQLObjectType,
-  types?: ?Array<GraphQLNamedType>,
-  directives?: ?Array<GraphQLDirective>,
-  extensions?: ?ReadOnlyObjMapLike<mixed>,
-  astNode?: ?SchemaDefinitionNode,
-  extensionASTNodes?: ?$ReadOnlyArray<SchemaExtensionNode>,
-  ...GraphQLSchemaValidationOptions,
-|};
+export interface GraphQLSchemaConfig extends GraphQLSchemaValidationOptions {
+  description?: string,
+  query?: GraphQLObjectType,
+  mutation?: GraphQLObjectType,
+  subscription?: GraphQLObjectType,
+  types?: Array<GraphQLNamedType>,
+  directives?: Array<GraphQLDirective>,
+  extensions?: ReadOnlyObjMapLike<any>,
+  astNode?: SchemaDefinitionNode,
+  extensionASTNodes?: ReadonlyArray<SchemaExtensionNode>,
+};
 
 /**
  * @internal
  */
-export type GraphQLSchemaNormalizedConfig = {|
-  ...GraphQLSchemaConfig,
-  description: ?string,
+export interface GraphQLSchemaNormalizedConfig extends GraphQLSchemaConfig {
+  description: string,
   types: Array<GraphQLNamedType>,
   directives: Array<GraphQLDirective>,
-  extensions: ?ReadOnlyObjMap<mixed>,
-  extensionASTNodes: $ReadOnlyArray<SchemaExtensionNode>,
+  extensions: ReadOnlyObjMap<any>,
+  extensionASTNodes: ReadonlyArray<SchemaExtensionNode>,
   assumeValid: boolean,
-|};
+};
 
 function collectReferencedTypes(
   type: GraphQLType,
@@ -416,14 +409,14 @@ function collectReferencedTypes(
         collectReferencedTypes(interfaceType, typeSet);
       }
 
-      for (const field of objectValues(namedType.getFields())) {
+      for (const field of Object.values(namedType.getFields())) {
         collectReferencedTypes(field.type, typeSet);
         for (const arg of field.args) {
           collectReferencedTypes(arg.type, typeSet);
         }
       }
     } else if (isInputObjectType(namedType)) {
-      for (const field of objectValues(namedType.getFields())) {
+      for (const field of Object.values(namedType.getFields())) {
         collectReferencedTypes(field.type, typeSet);
       }
     }

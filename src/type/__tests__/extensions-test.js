@@ -1,5 +1,3 @@
-// @flow strict
-
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 
@@ -14,7 +12,7 @@ import {
   GraphQLUnionType,
   GraphQLEnumType,
   GraphQLInputObjectType,
-} from '../definition';
+} from '../definition.ts';
 
 const dummyType = new GraphQLScalarType({ name: 'DummyScalar' });
 

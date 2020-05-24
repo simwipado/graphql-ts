@@ -1,5 +1,3 @@
-// @flow strict
-
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 
@@ -7,7 +5,7 @@ import {
   dedentBlockStringValue,
   getBlockStringIndentation,
   printBlockString,
-} from '../blockString';
+} from '../blockString.ts';
 
 function joinLines(...args) {
   return args.join('\n');

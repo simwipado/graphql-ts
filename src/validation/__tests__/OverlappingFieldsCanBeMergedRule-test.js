@@ -1,5 +1,3 @@
-// @flow strict
-
 import { describe, it } from 'mocha';
 
 import { buildSchema } from '../../utilities/buildASTSchema';
@@ -9,7 +7,7 @@ import { OverlappingFieldsCanBeMergedRule } from '../rules/OverlappingFieldsCanB
 import {
   expectValidationErrors,
   expectValidationErrorsWithSchema,
-} from './harness';
+} from './harness.ts';
 
 function expectErrors(queryStr) {
   return expectValidationErrors(OverlappingFieldsCanBeMergedRule, queryStr);

@@ -1,5 +1,3 @@
-// @flow strict
-
 import { describe, it } from 'mocha';
 
 import { buildSchema } from '../../utilities/buildASTSchema';
@@ -7,7 +5,7 @@ import { buildSchema } from '../../utilities/buildASTSchema';
 import {
   ProvidedRequiredArgumentsRule,
   ProvidedRequiredArgumentsOnDirectivesRule,
-} from '../rules/ProvidedRequiredArgumentsRule';
+} from '../rules/ProvidedRequiredArgumentsRule.ts';
 
 import { expectValidationErrors, expectSDLValidationErrors } from './harness';
 

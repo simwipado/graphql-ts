@@ -1,6 +1,4 @@
-// @flow strict
-
-import nodejsCustomInspectSymbol from './nodejsCustomInspectSymbol';
+import nodejsCustomInspectSymbol from './nodejsCustomInspectSymbol.ts';
 
 const MAX_ARRAY_LENGTH = 10;
 const MAX_RECURSIVE_DEPTH = 2;
@@ -8,7 +6,7 @@ const MAX_RECURSIVE_DEPTH = 2;
 /**
  * Used to print values in error messages.
  */
-export default function inspect(value: mixed): string {
+export default function inspect(value: any): string {
   return formatValue(value, []);
 }
 

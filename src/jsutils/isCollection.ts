@@ -1,6 +1,4 @@
-// @flow strict
-
-import { SYMBOL_ITERATOR } from '../polyfills/symbols';
+import { SYMBOL_ITERATOR } from '../polyfills/symbols.ts';
 
 /**
  * Returns true if the provided object is an Object (i.e. not a string literal)
@@ -23,7 +21,7 @@ import { SYMBOL_ITERATOR } from '../polyfills/symbols';
  *   An Object value which might implement the Iterable or Array-like protocols.
  * @return {boolean} true if Iterable or Array-like Object.
  */
-export default function isCollection(obj: mixed): boolean {
+export default function isCollection(obj: any): boolean {
   if (obj == null || typeof obj !== 'object') {
     return false;
   }

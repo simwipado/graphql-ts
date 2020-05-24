@@ -1,30 +1,26 @@
-// @flow strict
+import devAssert from '../jsutils/devAssert.ts';
 
-import devAssert from '../jsutils/devAssert';
+import { Kind } from '../language/kinds.ts';
+import { Source } from '../language/source.ts';
+import { DocumentNode } from '../language/ast.ts';
+import { ParseOptions, parse } from '../language/parser.ts';
 
-import { Kind } from '../language/kinds';
-import { type Source } from '../language/source';
-import { type DocumentNode } from '../language/ast';
-import { type ParseOptions, parse } from '../language/parser';
-
-import { assertValidSDL } from '../validation/validate';
+import { assertValidSDL } from '../validation/validate.ts';
 
 import {
-  type GraphQLSchemaValidationOptions,
+GraphQLSchemaValidationOptions,
   GraphQLSchema,
-} from '../type/schema';
+} from '../type/schema.ts';
 import {
   GraphQLSkipDirective,
   GraphQLIncludeDirective,
   GraphQLDeprecatedDirective,
   GraphQLSpecifiedByDirective,
-} from '../type/directives';
+} from '../type/directives.ts';
 
-import { extendSchemaImpl } from './extendSchema';
+import { extendSchemaImpl } from './extendSchema.ts';
 
-export type BuildSchemaOptions = {|
-  ...GraphQLSchemaValidationOptions,
-
+export interface BuildSchemaOptions extends GraphQLSchemaValidationOptions {
   /**
    * Descriptions are defined as preceding string literals, however an older
    * experimental version of the SDL supported preceding comments as
@@ -41,7 +37,7 @@ export type BuildSchemaOptions = {|
    * Default: false
    */
   assumeValidSDL?: boolean,
-|};
+};
 
 /**
  * This takes the ast of a schema document produced by the parse function in
@@ -81,13 +77,13 @@ export function buildASTSchema(
         // typed values below, that would throw immediately while type system
         // validation with validateSchema() will produce more actionable results.
         case 'Query':
-          config.query = (type: any);
+          config.query = type
           break;
         case 'Mutation':
-          config.mutation = (type: any);
+          config.mutation = type
           break;
         case 'Subscription':
-          config.subscription = (type: any);
+          config.subscription = type
           break;
       }
     }
@@ -122,7 +118,7 @@ const emptySchemaConfig = new GraphQLSchema({ directives: [] }).toConfig();
  */
 export function buildSchema(
   source: string | Source,
-  options?: {| ...BuildSchemaOptions, ...ParseOptions |},
+  options?: BuildSchemaOptions & ParseOptions,
 ): GraphQLSchema {
   const document = parse(source, {
     noLocation: options?.noLocation,

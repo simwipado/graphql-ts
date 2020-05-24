@@ -1,13 +1,11 @@
-// @flow strict
-
-import { SYMBOL_ITERATOR } from './symbols';
+import { SYMBOL_ITERATOR } from './symbols.ts';
 
 declare function arrayFrom<T>(arrayLike: Iterable<T>): Array<T>;
 // eslint-disable-next-line no-redeclare
-declare function arrayFrom<T: mixed>(
-  arrayLike: mixed,
-  mapFn?: (elem: mixed, index: number) => T,
-  thisArg?: mixed,
+declare function arrayFrom<T: any>(
+  arrayLike: any,
+  mapFn?: (elem: any, index: number) => T,
+  thisArg?: any,
 ): Array<T>;
 
 /* eslint-disable no-redeclare */

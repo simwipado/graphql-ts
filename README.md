@@ -47,7 +47,7 @@ import {
   GraphQLSchema,
   GraphQLObjectType,
   GraphQLString,
-} from 'graphql';
+} from 'graphql.ts';
 
 var schema = new GraphQLSchema({
   query: new GraphQLObjectType({

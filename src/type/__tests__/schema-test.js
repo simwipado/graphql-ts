@@ -1,5 +1,3 @@
-// @flow strict
-
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 
@@ -16,7 +14,7 @@ import {
   GraphQLObjectType,
   GraphQLInterfaceType,
   GraphQLInputObjectType,
-} from '../definition';
+} from '../definition.ts';
 
 describe('Type System: Schema', () => {
   it('Define sample schema', () => {

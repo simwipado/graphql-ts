@@ -1,26 +1,24 @@
-// @flow strict
+import isFinite from '../polyfills/isFinite.ts';
+import arrayFrom from '../polyfills/arrayFrom.ts';
 
-import isFinite from '../polyfills/isFinite';
-import arrayFrom from '../polyfills/arrayFrom';
-import objectValues from '../polyfills/objectValues';
+import inspect from '../jsutils/inspect.ts';
+import invariant from '../jsutils/invariant.ts';
+import isObjectLike from '../jsutils/isObjectLike.ts';
+import isCollection from '../jsutils/isCollection.ts';
 
-import inspect from '../jsutils/inspect';
-import invariant from '../jsutils/invariant';
-import isObjectLike from '../jsutils/isObjectLike';
-import isCollection from '../jsutils/isCollection';
+import { Kind } from '../language/kinds.ts';
+import { ValueNode } from '../language/ast.ts';
 
-import { Kind } from '../language/kinds';
-import { type ValueNode } from '../language/ast';
-
-import { GraphQLID } from '../type/scalars';
+import { GraphQLID } from '../type/scalars.ts';
 import {
-  type GraphQLInputType,
+GraphQLInputType,
   isLeafType,
   isEnumType,
   isInputObjectType,
   isListType,
   isNonNullType,
-} from '../type/definition';
+} from '../type/definition.ts';
+import Maybe from '../tsutils/Maybe.ts';
 
 /**
  * Produces a GraphQL Value AST given a JavaScript object.
@@ -43,7 +41,7 @@ import {
  * | null          | NullValue            |
  *
  */
-export function astFromValue(value: mixed, type: GraphQLInputType): ?ValueNode {
+export function astFromValue(value: any, type: GraphQLInputType): Maybe<ValueNode> {
   if (isNonNullType(type)) {
     const astValue = astFromValue(value, type.ofType);
     if (astValue?.kind === Kind.NULL) {
@@ -88,7 +86,7 @@ export function astFromValue(value: mixed, type: GraphQLInputType): ?ValueNode {
       return null;
     }
     const fieldNodes = [];
-    for (const field of objectValues(type.getFields())) {
+    for (const field of Object.values(type.getFields())) {
       const fieldValue = astFromValue(value[field.name], field.type);
       if (fieldValue) {
         fieldNodes.push({
@@ -143,7 +141,7 @@ export function astFromValue(value: mixed, type: GraphQLInputType): ?ValueNode {
   }
 
   // Not reachable. All possible input types have been considered.
-  invariant(false, 'Unexpected input type: ' + inspect((type: empty)));
+  invariant(false, 'Unexpected input type: ' + inspect(type));
 }
 
 /**

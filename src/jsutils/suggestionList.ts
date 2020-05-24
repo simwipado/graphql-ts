@@ -1,12 +1,10 @@
-// @flow strict
-
 /**
  * Given an invalid input string and a list of valid options, returns a filtered
  * list of valid options sorted based on their similarity with the input.
  */
 export default function suggestionList(
   input: string,
-  options: $ReadOnlyArray<string>,
+  options: ReadonlyArray<string>,
 ): Array<string> {
   const optionsByDistance = Object.create(null);
   const lexicalDistance = new LexicalDistance(input);

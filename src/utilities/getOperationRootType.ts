@@ -1,14 +1,12 @@
-// @flow strict
-
-import { GraphQLError } from '../error/GraphQLError';
+import { GraphQLError } from '../error/GraphQLError.ts';
 
 import {
-  type OperationDefinitionNode,
-  type OperationTypeDefinitionNode,
-} from '../language/ast';
+OperationDefinitionNode,
+OperationTypeDefinitionNode,
+} from '../language/ast.ts';
 
-import { type GraphQLSchema } from '../type/schema';
-import { type GraphQLObjectType } from '../type/definition';
+import { GraphQLSchema } from '../type/schema.ts';
+import { GraphQLObjectType } from '../type/definition.ts';
 
 /**
  * Extracts the root type of the operation from the schema.

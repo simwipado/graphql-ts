@@ -1,8 +1,6 @@
-// @flow strict
+export { pathToArray as responsePathAsArray } from '../jsutils/Path.ts';
 
-export { pathToArray as responsePathAsArray } from '../jsutils/Path';
+export { execute, defaultFieldResolver, defaultTypeResolver } from './execute.ts';
+export type { ExecutionArgs, ExecutionResult } from './execute.ts';
 
-export { execute, defaultFieldResolver, defaultTypeResolver } from './execute';
-export type { ExecutionArgs, ExecutionResult } from './execute';
-
-export { getDirectiveValues } from './values';
+export { getDirectiveValues } from './values.ts';

@@ -1,13 +1,11 @@
-// @flow strict
+import { ObjMap } from '../jsutils/ObjMap.ts';
 
-import { type ObjMap } from '../jsutils/ObjMap';
-
-import { Kind } from '../language/kinds';
-import { visit } from '../language/visitor';
+import { Kind } from '../language/kinds.ts';
+import { visit } from '../language/visitor.ts';
 import {
-  type DocumentNode,
-  type OperationDefinitionNode,
-} from '../language/ast';
+DocumentNode,
+OperationDefinitionNode,
+} from '../language/ast.ts';
 
 /**
  * separateOperations accepts a single AST document which may contain many
@@ -18,9 +16,9 @@ import {
 export function separateOperations(
   documentAST: DocumentNode,
 ): ObjMap<DocumentNode> {
-  const operations = [];
+  const operations: OperationDefinitionNode[] = [];
   const depGraph: DepGraph = Object.create(null);
-  let fromName;
+  let fromName: string;
 
   // Populate metadata and build a dependency graph.
   visit(documentAST, {

@@ -1,5 +1,3 @@
-// @flow strict
-
 import { describe, it } from 'mocha';
 
 import dedent from '../../__testUtils__/dedent';
@@ -57,8 +55,8 @@ describe('printBlockString', () => {
         testValue === printedMultilineString,
         dedent`
           Expected lexValue(printBlockString(${inspectStr(
-            testValue,
-          )}, ' ', true))
+          testValue,
+        )}, ' ', true))
             to equal ${inspectStr(testValue)}
             but got  ${inspectStr(printedMultilineString)}
         `,

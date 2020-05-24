@@ -1,15 +1,14 @@
-// @flow strict
-
 // FIXME:
 // flowlint uninitialized-instance-property:off
 
-import isObjectLike from '../jsutils/isObjectLike';
-import { SYMBOL_TO_STRING_TAG } from '../polyfills/symbols';
+import isObjectLike from '../jsutils/isObjectLike.ts';
+import { SYMBOL_TO_STRING_TAG } from '../polyfills/symbols.ts';
 
-import { type ASTNode } from '../language/ast';
-import { type Source } from '../language/source';
-import { type SourceLocation, getLocation } from '../language/location';
-import { printLocation, printSourceLocation } from '../language/printLocation';
+import { ASTNode } from '../language/ast.ts';
+import { Source } from '../language/source.ts';
+import { SourceLocation, getLocation } from '../language/location.ts';
+import { printLocation, printSourceLocation } from '../language/printLocation.ts';
+import Maybe from '../tsutils/Maybe.ts';
 
 /**
  * A GraphQLError describes an Error found during the parse, validate, or
@@ -37,7 +36,7 @@ export class GraphQLError extends Error {
    *
    * Enumerable, and appears in the result of JSON.stringify().
    */
-  +locations: $ReadOnlyArray<SourceLocation> | void;
+  readonly locations: ReadonlyArray<SourceLocation> | undefined;
 
   /**
    * An array describing the JSON-path into the execution response which
@@ -45,45 +44,45 @@ export class GraphQLError extends Error {
    *
    * Enumerable, and appears in the result of JSON.stringify().
    */
-  +path: $ReadOnlyArray<string | number> | void;
+  readonly path: ReadonlyArray<string | number> | undefined;
 
   /**
    * An array of GraphQL AST Nodes corresponding to this error.
    */
-  +nodes: $ReadOnlyArray<ASTNode> | void;
+  readonly nodes: ReadonlyArray<ASTNode> | undefined;
 
   /**
-   * The source GraphQL document for the first location of this error.
+   * The source GraphQL document corresponding to this error.
    *
    * Note that if this Error represents more than one node, the source may not
    * represent nodes after the first node.
    */
-  +source: Source | void;
+  readonly source: Source | undefined;
 
   /**
    * An array of character offsets within the source GraphQL document
    * which correspond to this error.
    */
-  +positions: $ReadOnlyArray<number> | void;
+  readonly positions: ReadonlyArray<number> | undefined;
 
   /**
    * The original error thrown from a field resolver during execution.
    */
-  +originalError: ?Error;
+  readonly originalError: Maybe<Error>;
 
   /**
    * Extension fields to add to the formatted error.
    */
-  +extensions: { [key: string]: mixed, ... } | void;
+  readonly extensions: { [key: string]: any } | undefined;
 
   constructor(
     message: string,
-    nodes?: $ReadOnlyArray<ASTNode> | ASTNode | void | null,
-    source?: ?Source,
-    positions?: ?$ReadOnlyArray<number>,
-    path?: ?$ReadOnlyArray<string | number>,
-    originalError?: ?(Error & { +extensions?: mixed, ... }),
-    extensions?: ?{ [key: string]: mixed, ... },
+    nodes?: ReadonlyArray<ASTNode> | ASTNode | undefined,
+    source?: Maybe<Source>,
+    positions?: Maybe<ReadonlyArray<number>>,
+    path?: Maybe<ReadonlyArray<string | number>>,
+    originalError?: Maybe<Error>,
+    extensions?: Maybe<{ [key: string]: any }>,
   ): void {
     super(message);
 

@@ -1,5 +1,3 @@
-// @flow strict
-
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 
@@ -33,8 +31,8 @@ describe('Version', () => {
 
     expect(
       `${major}.${minor}.${patch}` +
-        // istanbul ignore next (Can't be verified on all versions)
-        (preReleaseTag !== null ? '-' + preReleaseTag : ''),
+      // istanbul ignore next (Can't be verified on all versions)
+      (preReleaseTag !== null ? '-' + preReleaseTag : ''),
     ).to.equal(version);
   });
 });

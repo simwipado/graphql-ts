@@ -1,5 +1,3 @@
-// @flow strict
-
 export type { Path as ResponsePath } from '../jsutils/Path';
 
 export {
@@ -9,7 +7,7 @@ export {
   assertSchema,
   // GraphQL Schema definition
   GraphQLSchema,
-} from './schema';
+} from './schema.ts';
 export type { GraphQLSchemaConfig } from './schema';
 
 export {
@@ -64,7 +62,7 @@ export {
   // Type Wrappers
   GraphQLList,
   GraphQLNonNull,
-} from './definition';
+} from './definition.ts';
 
 export {
   // Predicate
@@ -82,7 +80,7 @@ export {
   GraphQLSpecifiedByDirective,
   // Constant Deprecation Reason
   DEFAULT_DEPRECATION_REASON,
-} from './directives';
+} from './directives.ts';
 
 export type { GraphQLDirectiveConfig } from './directives';
 
@@ -97,7 +95,7 @@ export {
   GraphQLString,
   GraphQLBoolean,
   GraphQLID,
-} from './scalars';
+} from './scalars.ts';
 
 export {
   // Predicate
@@ -118,7 +116,7 @@ export {
   SchemaMetaFieldDef,
   TypeMetaFieldDef,
   TypeNameMetaFieldDef,
-} from './introspection';
+} from './introspection.ts';
 
 export type {
   GraphQLType,
@@ -158,7 +156,7 @@ export type {
   GraphQLScalarSerializer,
   GraphQLScalarValueParser,
   GraphQLScalarLiteralParser,
-} from './definition';
+} from './definition.ts';
 
 // Validate GraphQL schema.
 export { validateSchema, assertValidSchema } from './validate';

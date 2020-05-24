@@ -1,6 +1,4 @@
-// @flow strict
-
-declare function isInteger(value: mixed): boolean %checks(typeof value ===
+declare function isInteger(value: any): boolean %checks(typeof value ===
   'number');
 
 /* eslint-disable no-redeclare */

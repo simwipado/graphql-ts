@@ -1,9 +1,7 @@
-// @flow strict
-
 /**
  * The set of allowed kind values for AST nodes.
  */
-export const Kind = Object.freeze({
+export const Kind = {
   // Name
   NAME: 'Name',
 
@@ -68,9 +66,9 @@ export const Kind = Object.freeze({
   UNION_TYPE_EXTENSION: 'UnionTypeExtension',
   ENUM_TYPE_EXTENSION: 'EnumTypeExtension',
   INPUT_OBJECT_TYPE_EXTENSION: 'InputObjectTypeExtension',
-});
+} as const;
 
 /**
  * The enum type representing the possible kind values of AST nodes.
  */
-export type KindEnum = $Values<typeof Kind>;
+export type KindEnum = typeof Kind[keyof typeof Kind];

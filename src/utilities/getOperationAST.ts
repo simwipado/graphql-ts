@@ -1,10 +1,9 @@
-// @flow strict
-
-import { Kind } from '../language/kinds';
+import { Kind } from '../language/kinds.ts';
 import {
-  type DocumentNode,
-  type OperationDefinitionNode,
-} from '../language/ast';
+DocumentNode,
+OperationDefinitionNode,
+} from '../language/ast.ts';
+import Maybe from '../tsutils/Maybe.ts';
 
 /**
  * Returns an operation AST given a document AST and optionally an operation
@@ -13,8 +12,8 @@ import {
  */
 export function getOperationAST(
   documentAST: DocumentNode,
-  operationName: ?string,
-): ?OperationDefinitionNode {
+  operationName: Maybe<string>,
+): Maybe<OperationDefinitionNode> {
   let operation = null;
   for (const definition of documentAST.definitions) {
     if (definition.kind === Kind.OPERATION_DEFINITION) {

@@ -1,97 +1,95 @@
-// @flow strict
-
 // Spec Section: "Executable Definitions"
-import { ExecutableDefinitionsRule } from './rules/ExecutableDefinitionsRule';
+import { ExecutableDefinitionsRule } from './rules/ExecutableDefinitionsRule.ts';
 
 // Spec Section: "Operation Name Uniqueness"
-import { UniqueOperationNamesRule } from './rules/UniqueOperationNamesRule';
+import { UniqueOperationNamesRule } from './rules/UniqueOperationNamesRule.ts';
 
 // Spec Section: "Lone Anonymous Operation"
-import { LoneAnonymousOperationRule } from './rules/LoneAnonymousOperationRule';
+import { LoneAnonymousOperationRule } from './rules/LoneAnonymousOperationRule.ts';
 
 // Spec Section: "Subscriptions with Single Root Field"
-import { SingleFieldSubscriptionsRule } from './rules/SingleFieldSubscriptionsRule';
+import { SingleFieldSubscriptionsRule } from './rules/SingleFieldSubscriptionsRule.ts';
 
 // Spec Section: "Fragment Spread Type Existence"
-import { KnownTypeNamesRule } from './rules/KnownTypeNamesRule';
+import { KnownTypeNamesRule } from './rules/KnownTypeNamesRule.ts';
 
 // Spec Section: "Fragments on Composite Types"
-import { FragmentsOnCompositeTypesRule } from './rules/FragmentsOnCompositeTypesRule';
+import { FragmentsOnCompositeTypesRule } from './rules/FragmentsOnCompositeTypesRule.ts';
 
 // Spec Section: "Variables are Input Types"
-import { VariablesAreInputTypesRule } from './rules/VariablesAreInputTypesRule';
+import { VariablesAreInputTypesRule } from './rules/VariablesAreInputTypesRule.ts';
 
 // Spec Section: "Leaf Field Selections"
-import { ScalarLeafsRule } from './rules/ScalarLeafsRule';
+import { ScalarLeafsRule } from './rules/ScalarLeafsRule.ts';
 
 // Spec Section: "Field Selections on Objects, Interfaces, and Unions Types"
-import { FieldsOnCorrectTypeRule } from './rules/FieldsOnCorrectTypeRule';
+import { FieldsOnCorrectTypeRule } from './rules/FieldsOnCorrectTypeRule.ts';
 
 // Spec Section: "Fragment Name Uniqueness"
-import { UniqueFragmentNamesRule } from './rules/UniqueFragmentNamesRule';
+import { UniqueFragmentNamesRule } from './rules/UniqueFragmentNamesRule.ts';
 
 // Spec Section: "Fragment spread target defined"
-import { KnownFragmentNamesRule } from './rules/KnownFragmentNamesRule';
+import { KnownFragmentNamesRule } from './rules/KnownFragmentNamesRule.ts';
 
 // Spec Section: "Fragments must be used"
-import { NoUnusedFragmentsRule } from './rules/NoUnusedFragmentsRule';
+import { NoUnusedFragmentsRule } from './rules/NoUnusedFragmentsRule.ts';
 
 // Spec Section: "Fragment spread is possible"
-import { PossibleFragmentSpreadsRule } from './rules/PossibleFragmentSpreadsRule';
+import { PossibleFragmentSpreadsRule } from './rules/PossibleFragmentSpreadsRule.ts';
 
 // Spec Section: "Fragments must not form cycles"
-import { NoFragmentCyclesRule } from './rules/NoFragmentCyclesRule';
+import { NoFragmentCyclesRule } from './rules/NoFragmentCyclesRule.ts';
 
 // Spec Section: "Variable Uniqueness"
-import { UniqueVariableNamesRule } from './rules/UniqueVariableNamesRule';
+import { UniqueVariableNamesRule } from './rules/UniqueVariableNamesRule.ts';
 
 // Spec Section: "All Variable Used Defined"
-import { NoUndefinedVariablesRule } from './rules/NoUndefinedVariablesRule';
+import { NoUndefinedVariablesRule } from './rules/NoUndefinedVariablesRule.ts';
 
 // Spec Section: "All Variables Used"
-import { NoUnusedVariablesRule } from './rules/NoUnusedVariablesRule';
+import { NoUnusedVariablesRule } from './rules/NoUnusedVariablesRule.ts';
 
 // Spec Section: "Directives Are Defined"
-import { KnownDirectivesRule } from './rules/KnownDirectivesRule';
+import { KnownDirectivesRule } from './rules/KnownDirectivesRule.ts';
 
 // Spec Section: "Directives Are Unique Per Location"
-import { UniqueDirectivesPerLocationRule } from './rules/UniqueDirectivesPerLocationRule';
+import { UniqueDirectivesPerLocationRule } from './rules/UniqueDirectivesPerLocationRule.ts';
 
 // Spec Section: "Argument Names"
 import {
   KnownArgumentNamesRule,
   KnownArgumentNamesOnDirectivesRule,
-} from './rules/KnownArgumentNamesRule';
+} from './rules/KnownArgumentNamesRule.ts';
 
 // Spec Section: "Argument Uniqueness"
-import { UniqueArgumentNamesRule } from './rules/UniqueArgumentNamesRule';
+import { UniqueArgumentNamesRule } from './rules/UniqueArgumentNamesRule.ts';
 
 // Spec Section: "Value Type Correctness"
-import { ValuesOfCorrectTypeRule } from './rules/ValuesOfCorrectTypeRule';
+import { ValuesOfCorrectTypeRule } from './rules/ValuesOfCorrectTypeRule.ts';
 
 // Spec Section: "Argument Optionality"
 import {
   ProvidedRequiredArgumentsRule,
   ProvidedRequiredArgumentsOnDirectivesRule,
-} from './rules/ProvidedRequiredArgumentsRule';
+} from './rules/ProvidedRequiredArgumentsRule.ts';
 
 // Spec Section: "All Variable Usages Are Allowed"
-import { VariablesInAllowedPositionRule } from './rules/VariablesInAllowedPositionRule';
+import { VariablesInAllowedPositionRule } from './rules/VariablesInAllowedPositionRule.ts';
 
 // Spec Section: "Field Selection Merging"
-import { OverlappingFieldsCanBeMergedRule } from './rules/OverlappingFieldsCanBeMergedRule';
+import { OverlappingFieldsCanBeMergedRule } from './rules/OverlappingFieldsCanBeMergedRule.ts';
 
 // Spec Section: "Input Object Field Uniqueness"
-import { UniqueInputFieldNamesRule } from './rules/UniqueInputFieldNamesRule';
+import { UniqueInputFieldNamesRule } from './rules/UniqueInputFieldNamesRule.ts';
 
 // SDL-specific validation rules
-import { LoneSchemaDefinitionRule } from './rules/LoneSchemaDefinitionRule';
-import { UniqueOperationTypesRule } from './rules/UniqueOperationTypesRule';
-import { UniqueTypeNamesRule } from './rules/UniqueTypeNamesRule';
-import { UniqueEnumValueNamesRule } from './rules/UniqueEnumValueNamesRule';
-import { UniqueFieldDefinitionNamesRule } from './rules/UniqueFieldDefinitionNamesRule';
-import { UniqueDirectiveNamesRule } from './rules/UniqueDirectiveNamesRule';
-import { PossibleTypeExtensionsRule } from './rules/PossibleTypeExtensionsRule';
+import { LoneSchemaDefinitionRule } from './rules/LoneSchemaDefinitionRule.ts';
+import { UniqueOperationTypesRule } from './rules/UniqueOperationTypesRule.ts';
+import { UniqueTypeNamesRule } from './rules/UniqueTypeNamesRule.ts';
+import { UniqueEnumValueNamesRule } from './rules/UniqueEnumValueNamesRule.ts';
+import { UniqueFieldDefinitionNamesRule } from './rules/UniqueFieldDefinitionNamesRule.ts';
+import { UniqueDirectiveNamesRule } from './rules/UniqueDirectiveNamesRule.ts';
+import { PossibleTypeExtensionsRule } from './rules/PossibleTypeExtensionsRule.ts';
 
 /**
  * This set includes all validation rules defined by the GraphQL spec.
@@ -99,7 +97,7 @@ import { PossibleTypeExtensionsRule } from './rules/PossibleTypeExtensionsRule';
  * The order of the rules in this list has been adjusted to lead to the
  * most clear output when encountering multiple validation errors.
  */
-export const specifiedRules = Object.freeze([
+export const specifiedRules = [
   ExecutableDefinitionsRule,
   UniqueOperationNamesRule,
   LoneAnonymousOperationRule,
@@ -126,12 +124,12 @@ export const specifiedRules = Object.freeze([
   VariablesInAllowedPositionRule,
   OverlappingFieldsCanBeMergedRule,
   UniqueInputFieldNamesRule,
-]);
+] as const;
 
 /**
  * @internal
  */
-export const specifiedSDLRules = Object.freeze([
+export const specifiedSDLRules = [
   LoneSchemaDefinitionRule,
   UniqueOperationTypesRule,
   UniqueTypeNamesRule,
@@ -146,4 +144,4 @@ export const specifiedSDLRules = Object.freeze([
   UniqueArgumentNamesRule,
   UniqueInputFieldNamesRule,
   ProvidedRequiredArgumentsOnDirectivesRule,
-]);
+] as const;

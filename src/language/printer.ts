@@ -1,8 +1,6 @@
-// @flow strict
-
-import { visit } from './visitor';
-import { type ASTNode } from './ast';
-import { printBlockString } from './blockString';
+import { visit } from './visitor.ts';
+import { ASTNode } from './ast.ts';
+import { printBlockString } from './blockString.ts';
 
 /**
  * Converts an AST into a string, using one set of reasonable
@@ -37,7 +35,7 @@ const printDocASTReducer: any = {
   VariableDefinition: ({ variable, type, defaultValue, directives }) =>
     variable +
     ': ' +
-    type +
+  +
     wrap(' = ', defaultValue) +
     wrap(' ', join(directives, ' ')),
   SelectionSet: ({ selections }) => block(selections),
@@ -137,7 +135,7 @@ const printDocASTReducer: any = {
         ? wrap('(\n', indent(join(args, '\n')), '\n)')
         : wrap('(', join(args, ', '), ')')) +
       ': ' +
-      type +
+    +
       wrap(' ', join(directives, ' ')),
   ),
 

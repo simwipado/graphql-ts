@@ -1,40 +1,36 @@
-// @flow strict
+import inspect from '../jsutils/inspect.ts';
+import invariant from '../jsutils/invariant.ts';
 
-import objectValues from '../polyfills/objectValues';
+import { print } from '../language/printer.ts';
+import { printBlockString } from '../language/blockString.ts';
 
-import inspect from '../jsutils/inspect';
-import invariant from '../jsutils/invariant';
-
-import { print } from '../language/printer';
-import { printBlockString } from '../language/blockString';
-
-import { type GraphQLSchema } from '../type/schema';
-import { isIntrospectionType } from '../type/introspection';
-import { GraphQLString, isSpecifiedScalarType } from '../type/scalars';
+import { GraphQLSchema } from '../type/schema.ts';
+import { isIntrospectionType } from '../type/introspection.ts';
+import { GraphQLString, isSpecifiedScalarType } from '../type/scalars.ts';
 import {
   GraphQLDirective,
   DEFAULT_DEPRECATION_REASON,
   isSpecifiedDirective,
-} from '../type/directives';
+} from '../type/directives.ts';
 import {
-  type GraphQLNamedType,
-  type GraphQLScalarType,
-  type GraphQLEnumType,
-  type GraphQLObjectType,
-  type GraphQLInterfaceType,
-  type GraphQLUnionType,
-  type GraphQLInputObjectType,
+GraphQLNamedType,
+GraphQLScalarType,
+GraphQLEnumType,
+GraphQLObjectType,
+GraphQLInterfaceType,
+GraphQLUnionType,
+GraphQLInputObjectType,
   isScalarType,
   isObjectType,
   isInterfaceType,
   isUnionType,
   isEnumType,
   isInputObjectType,
-} from '../type/definition';
+} from '../type/definition.ts';
 
-import { astFromValue } from './astFromValue';
+import { astFromValue } from './astFromValue.ts';
 
-type Options = {|
+export interface Options {
   /**
    * Descriptions are defined as preceding string literals, however an older
    * experimental version of the SDL supported preceding comments as
@@ -43,8 +39,8 @@ type Options = {|
    *
    * Default: false
    */
-  commentDescriptions?: boolean,
-|};
+  commentDescriptions?: boolean;
+}
 
 /**
  * Accepts options as a second argument:
@@ -82,10 +78,10 @@ function printFilteredSchema(
   schema: GraphQLSchema,
   directiveFilter: (type: GraphQLDirective) => boolean,
   typeFilter: (type: GraphQLNamedType) => boolean,
-  options,
+  options?: Options,
 ): string {
   const directives = schema.getDirectives().filter(directiveFilter);
-  const types = objectValues(schema.getTypeMap()).filter(typeFilter);
+  const types = Object.values(schema.getTypeMap()).filter(typeFilter);
 
   return (
     [printSchemaDefinition(schema)]
@@ -98,7 +94,7 @@ function printFilteredSchema(
   );
 }
 
-function printSchemaDefinition(schema: GraphQLSchema): ?string {
+function printSchemaDefinition(schema: GraphQLSchema): string | undefined {
   if (schema.description == null && isSchemaOfCommonNames(schema)) {
     return;
   }
@@ -177,10 +173,10 @@ export function printType(type: GraphQLNamedType, options?: Options): string {
   }
 
   // Not reachable. All possible types have been considered.
-  invariant(false, 'Unexpected type: ' + inspect((type: empty)));
+  invariant(false, 'Unexpected type: ' + inspect(type));
 }
 
-function printScalar(type: GraphQLScalarType, options): string {
+function printScalar(type: GraphQLScalarType, options?: Options): string {
   return (
     printDescription(options, type) +
     `scalar ${type.name}` +
@@ -197,7 +193,7 @@ function printImplementedInterfaces(
     : '';
 }
 
-function printObject(type: GraphQLObjectType, options): string {
+function printObject(type: GraphQLObjectType, options?: Options): string {
   return (
     printDescription(options, type) +
     `type ${type.name}` +
@@ -206,7 +202,7 @@ function printObject(type: GraphQLObjectType, options): string {
   );
 }
 
-function printInterface(type: GraphQLInterfaceType, options): string {
+function printInterface(type: GraphQLInterfaceType, options?: Options): string {
   return (
     printDescription(options, type) +
     `interface ${type.name}` +
@@ -215,13 +211,13 @@ function printInterface(type: GraphQLInterfaceType, options): string {
   );
 }
 
-function printUnion(type: GraphQLUnionType, options): string {
+function printUnion(type: GraphQLUnionType, options?: Options): string {
   const types = type.getTypes();
   const possibleTypes = types.length ? ' = ' + types.join(' | ') : '';
   return printDescription(options, type) + 'union ' + type.name + possibleTypes;
 }
 
-function printEnum(type: GraphQLEnumType, options): string {
+function printEnum(type: GraphQLEnumType, options?: Options): string {
   const values = type
     .getValues()
     .map(
@@ -237,8 +233,8 @@ function printEnum(type: GraphQLEnumType, options): string {
   );
 }
 
-function printInputObject(type: GraphQLInputObjectType, options): string {
-  const fields = objectValues(type.getFields()).map(
+function printInputObject(type: GraphQLInputObjectType, options?: Options): string {
+  const fields = Object.values(type.getFields()).map(
     (f, i) =>
       printDescription(options, f, '  ', !i) + '  ' + printInputValue(f),
   );
@@ -247,8 +243,8 @@ function printInputObject(type: GraphQLInputObjectType, options): string {
   );
 }
 
-function printFields(options, type) {
-  const fields = objectValues(type.getFields()).map(
+function printFields(options: Options, type) {
+  const fields = Object.values(type.getFields()).map(
     (f, i) =>
       printDescription(options, f, '  ', !i) +
       '  ' +

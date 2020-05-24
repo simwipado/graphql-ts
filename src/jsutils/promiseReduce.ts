@@ -1,7 +1,5 @@
-// @flow strict
-
-import isPromise from './isPromise';
-import { type PromiseOrValue } from './PromiseOrValue';
+import isPromise from './isPromise.ts';
+import { PromiseOrValue } from './PromiseOrValue.ts';
 
 /**
  * Similar to Array.prototype.reduce(), however the reducing callback may return
@@ -11,8 +9,8 @@ import { type PromiseOrValue } from './PromiseOrValue';
  * return a Promise.
  */
 export default function promiseReduce<T, U>(
-  values: $ReadOnlyArray<T>,
-  callback: (U, T) => PromiseOrValue<U>,
+  values: ReadonlyArray<T>,
+  callback: (arg1: U, arg2: T) => PromiseOrValue<U>,
   initialValue: PromiseOrValue<U>,
 ): PromiseOrValue<U> {
   return values.reduce(

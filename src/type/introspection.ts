@@ -1,27 +1,24 @@
-// @flow strict
-
 // FIXME
 /* eslint-disable import/no-cycle */
 
-import objectValues from '../polyfills/objectValues';
 
-import inspect from '../jsutils/inspect';
-import invariant from '../jsutils/invariant';
+import inspect from '../jsutils/inspect.ts';
+import invariant from '../jsutils/invariant.ts';
 
-import { print } from '../language/printer';
-import { DirectiveLocation } from '../language/directiveLocation';
-import { astFromValue } from '../utilities/astFromValue';
+import { print } from '../language/printer.ts';
+import { DirectiveLocation } from '../language/directiveLocation.ts';
+import { astFromValue } from '../utilities/astFromValue.ts';
 
-import { type GraphQLSchema } from './schema';
-import { type GraphQLDirective } from './directives';
-import { GraphQLString, GraphQLBoolean } from './scalars';
+import { GraphQLSchema } from './schema.ts';
+import { GraphQLDirective } from './directives.ts';
+import { GraphQLString, GraphQLBoolean } from './scalars.ts';
 import {
-  type GraphQLType,
-  type GraphQLNamedType,
-  type GraphQLInputField,
-  type GraphQLEnumValue,
-  type GraphQLField,
-  type GraphQLFieldConfigMap,
+GraphQLType,
+GraphQLNamedType,
+GraphQLInputField,
+GraphQLEnumValue,
+GraphQLField,
+GraphQLFieldConfigMap,
   GraphQLObjectType,
   GraphQLEnumType,
   GraphQLList,
@@ -35,7 +32,7 @@ import {
   isListType,
   isNonNullType,
   isAbstractType,
-} from './definition';
+} from './definition.ts';
 
 export const __Schema = new GraphQLObjectType({
   name: '__Schema',
@@ -51,7 +48,7 @@ export const __Schema = new GraphQLObjectType({
         description: 'A list of all types supported by this server.',
         type: GraphQLNonNull(GraphQLList(GraphQLNonNull(__Type))),
         resolve(schema) {
-          return objectValues(schema.getTypeMap());
+          return Object.values(schema.getTypeMap());
         },
       },
       queryType: {
@@ -76,7 +73,7 @@ export const __Schema = new GraphQLObjectType({
         type: GraphQLNonNull(GraphQLList(GraphQLNonNull(__Directive))),
         resolve: (schema) => schema.getDirectives(),
       },
-    }: GraphQLFieldConfigMap<GraphQLSchema, mixed>),
+    }: GraphQLFieldConfigMap<GraphQLSchema, any>),
 });
 
 export const __Directive = new GraphQLObjectType({
@@ -105,7 +102,7 @@ export const __Directive = new GraphQLObjectType({
         type: GraphQLNonNull(GraphQLList(GraphQLNonNull(__InputValue))),
         resolve: (directive) => directive.args,
       },
-    }: GraphQLFieldConfigMap<GraphQLDirective, mixed>),
+    }: GraphQLFieldConfigMap<GraphQLDirective, any>),
 });
 
 export const __DirectiveLocation = new GraphQLEnumType({
@@ -251,7 +248,7 @@ export const __Type = new GraphQLObjectType({
         },
         resolve(type, { includeDeprecated }) {
           if (isObjectType(type) || isInterfaceType(type)) {
-            let fields = objectValues(type.getFields());
+            let fields = Object.values(type.getFields());
             if (!includeDeprecated) {
               fields = fields.filter((field) => !field.isDeprecated);
             }
@@ -295,7 +292,7 @@ export const __Type = new GraphQLObjectType({
         type: GraphQLList(GraphQLNonNull(__InputValue)),
         resolve(type) {
           if (isInputObjectType(type)) {
-            return objectValues(type.getFields());
+            return Object.values(type.getFields());
           }
         },
       },
@@ -304,7 +301,7 @@ export const __Type = new GraphQLObjectType({
         resolve: (type) =>
           type.ofType !== undefined ? type.ofType : undefined,
       },
-    }: GraphQLFieldConfigMap<GraphQLType, mixed>),
+    }: GraphQLFieldConfigMap<GraphQLType, any>),
 });
 
 export const __Field = new GraphQLObjectType({
@@ -337,7 +334,7 @@ export const __Field = new GraphQLObjectType({
         type: GraphQLString,
         resolve: (field) => field.deprecationReason,
       },
-    }: GraphQLFieldConfigMap<GraphQLField<mixed, mixed>, mixed>),
+    }: GraphQLFieldConfigMap<GraphQLField<any, any>, any>),
 });
 
 export const __InputValue = new GraphQLObjectType({
@@ -368,7 +365,7 @@ export const __InputValue = new GraphQLObjectType({
           return valueAST ? print(valueAST) : null;
         },
       },
-    }: GraphQLFieldConfigMap<GraphQLInputField, mixed>),
+    }: GraphQLFieldConfigMap<GraphQLInputField, any>),
 });
 
 export const __EnumValue = new GraphQLObjectType({
@@ -393,7 +390,7 @@ export const __EnumValue = new GraphQLObjectType({
         type: GraphQLString,
         resolve: (enumValue) => enumValue.deprecationReason,
       },
-    }: GraphQLFieldConfigMap<GraphQLEnumValue, mixed>),
+    }: GraphQLFieldConfigMap<GraphQLEnumValue, any>),
 });
 
 export const TypeKind = Object.freeze({
@@ -457,7 +454,7 @@ export const __TypeKind = new GraphQLEnumType({
  * so the format for args is different.
  */
 
-export const SchemaMetaFieldDef: GraphQLField<mixed, mixed> = {
+export const SchemaMetaFieldDef: GraphQLField<any, any> = {
   name: '__schema',
   type: GraphQLNonNull(__Schema),
   description: 'Access the current type schema of this server.',
@@ -469,7 +466,7 @@ export const SchemaMetaFieldDef: GraphQLField<mixed, mixed> = {
   astNode: undefined,
 };
 
-export const TypeMetaFieldDef: GraphQLField<mixed, mixed> = {
+export const TypeMetaFieldDef: GraphQLField<any, any> = {
   name: '__type',
   type: __Type,
   description: 'Request the type information of a single type.',
@@ -490,7 +487,7 @@ export const TypeMetaFieldDef: GraphQLField<mixed, mixed> = {
   astNode: undefined,
 };
 
-export const TypeNameMetaFieldDef: GraphQLField<mixed, mixed> = {
+export const TypeNameMetaFieldDef: GraphQLField<any, any> = {
   name: '__typename',
   type: GraphQLNonNull(GraphQLString),
   description: 'The name of the current Object type at runtime.',

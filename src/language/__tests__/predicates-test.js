@@ -1,10 +1,8 @@
-// @flow strict
-
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 
 import { Kind } from '../kinds';
-import { type ASTNode } from '../ast';
+import { ASTNode } from '../ast';
 import {
   isDefinitionNode,
   isExecutableDefinitionNode,
@@ -15,7 +13,7 @@ import {
   isTypeDefinitionNode,
   isTypeSystemExtensionNode,
   isTypeExtensionNode,
-} from '../predicates';
+} from '../predicates.ts';
 
 const allASTNodes: Array<ASTNode> = Object.values(Kind).map(
   (kind) => ({ kind }: any),

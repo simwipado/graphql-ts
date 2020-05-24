@@ -1,5 +1,3 @@
-// @flow strict
-
 import invariant from '../jsutils/invariant';
 
 import { GraphQLSchema } from '../type/schema';
@@ -10,7 +8,7 @@ import {
   GraphQLEnumType,
   GraphQLInterfaceType,
   GraphQLObjectType,
-} from '../type/definition';
+} from '../type/definition.ts';
 
 import { getFriends, getHero, getHuman, getDroid } from './starWarsData';
 

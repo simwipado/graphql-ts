@@ -1,45 +1,40 @@
-// @flow strict
+import objectEntries from '../polyfills/objectEntries.ts';
+import { SYMBOL_TO_STRING_TAG } from '../polyfills/symbols.ts';
 
-import objectEntries from '../polyfills/objectEntries';
-import { SYMBOL_TO_STRING_TAG } from '../polyfills/symbols';
-
-import inspect from '../jsutils/inspect';
-import toObjMap from '../jsutils/toObjMap';
-import devAssert from '../jsutils/devAssert';
-import instanceOf from '../jsutils/instanceOf';
-import isObjectLike from '../jsutils/isObjectLike';
-import defineInspect from '../jsutils/defineInspect';
+import inspect from '../jsutils/inspect.ts';
+import toObjMap from '../jsutils/toObjMap.ts';
+import devAssert from '../jsutils/devAssert.ts';
+import instanceOf from '../jsutils/instanceOf.ts';
+import isObjectLike from '../jsutils/isObjectLike.ts';
+import defineInspect from '../jsutils/defineInspect.ts';
 import {
-  type ReadOnlyObjMap,
-  type ReadOnlyObjMapLike,
-} from '../jsutils/ObjMap';
+ReadOnlyObjMap,
+ReadOnlyObjMapLike,
+} from '../jsutils/ObjMap.ts';
 
-import { type DirectiveDefinitionNode } from '../language/ast';
+import { DirectiveDefinitionNode } from '../language/ast.ts';
 import {
   DirectiveLocation,
-  type DirectiveLocationEnum,
-} from '../language/directiveLocation';
+DirectiveLocationEnum,
+} from '../language/directiveLocation.ts';
 
-import { GraphQLString, GraphQLBoolean } from './scalars';
+import { GraphQLString, GraphQLBoolean } from './scalars.ts';
 import {
-  type GraphQLFieldConfigArgumentMap,
-  type GraphQLArgument,
+GraphQLFieldConfigArgumentMap,
+GraphQLArgument,
   argsToArgsConfig,
   GraphQLNonNull,
-} from './definition';
+} from './definition.ts';
+import Maybe from '../tsutils/Maybe.ts';
 
 /**
  * Test if the given value is a GraphQL directive.
  */
-declare function isDirective(
-  directive: mixed,
-): boolean %checks(directive instanceof GraphQLDirective);
-// eslint-disable-next-line no-redeclare
-export function isDirective(directive) {
+export function isDirective(directive: any): directive is GraphQLDirective {
   return instanceOf(directive, GraphQLDirective);
 }
 
-export function assertDirective(directive: mixed): GraphQLDirective {
+export function assertDirective(directive: any): GraphQLDirective {
   if (!isDirective(directive)) {
     throw new Error(
       `Expected ${inspect(directive)} to be a GraphQL directive.`,
@@ -54,14 +49,14 @@ export function assertDirective(directive: mixed): GraphQLDirective {
  */
 export class GraphQLDirective {
   name: string;
-  description: ?string;
+  description: Maybe<string>;
   locations: Array<DirectiveLocationEnum>;
-  args: Array<GraphQLArgument>;
   isRepeatable: boolean;
-  extensions: ?ReadOnlyObjMap<mixed>;
-  astNode: ?DirectiveDefinitionNode;
+  args: Array<GraphQLArgument>;
+  extensions: Maybe<Readonly<Record<string, any>>>;
+  astNode: Maybe<DirectiveDefinitionNode>;
 
-  constructor(config: $ReadOnly<GraphQLDirectiveConfig>): void {
+  constructor(config: Readonly<GraphQLDirectiveConfig>) {
     this.name = config.name;
     this.description = config.description;
     this.locations = config.locations;
@@ -81,7 +76,7 @@ export class GraphQLDirective {
       `@${config.name} args must be an object with argument names as keys.`,
     );
 
-    this.args = objectEntries(args).map(([argName, argConfig]) => ({
+    this.args = objectEntries(args).map(([argName, argConfig]: [string, any]) => ({
       name: argName,
       description: argConfig.description,
       type: argConfig.type,
@@ -91,12 +86,11 @@ export class GraphQLDirective {
     }));
   }
 
-  toConfig(): {|
-    ...GraphQLDirectiveConfig,
-    args: GraphQLFieldConfigArgumentMap,
-    isRepeatable: boolean,
-    extensions: ?ReadOnlyObjMap<mixed>,
-  |} {
+  toConfig(): GraphQLDirectiveConfig & {
+    args: GraphQLFieldConfigArgumentMap;
+    isRepeatable: boolean;
+    extensions: Maybe<Readonly<Record<string, any>>>;
+  } {
     return {
       name: this.name,
       description: this.description,
@@ -125,15 +119,15 @@ export class GraphQLDirective {
 // Print a simplified form when appearing in `inspect` and `util.inspect`.
 defineInspect(GraphQLDirective);
 
-export type GraphQLDirectiveConfig = {|
-  name: string,
-  description?: ?string,
-  locations: Array<DirectiveLocationEnum>,
-  args?: ?GraphQLFieldConfigArgumentMap,
-  isRepeatable?: ?boolean,
-  extensions?: ?ReadOnlyObjMapLike<mixed>,
-  astNode?: ?DirectiveDefinitionNode,
-|};
+export interface GraphQLDirectiveConfig {
+  name: string;
+  description?: Maybe<string>;
+  locations: Array<DirectiveLocationEnum>;
+  args?: Maybe<GraphQLFieldConfigArgumentMap>;
+  isRepeatable?: Maybe<boolean>;
+  extensions?: Maybe<Readonly<Record<string, any>>>;
+  astNode?: Maybe<DirectiveDefinitionNode>;
+}
 
 /**
  * Used to conditionally include fields or fragments.
@@ -224,6 +218,6 @@ export const specifiedDirectives = Object.freeze([
 
 export function isSpecifiedDirective(
   directive: GraphQLDirective,
-): boolean %checks {
+): boolean {
   return specifiedDirectives.some(({ name }) => name === directive.name);
 }

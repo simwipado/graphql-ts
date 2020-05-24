@@ -1,5 +1,3 @@
-// @flow strict
-
 import { describe, it } from 'mocha';
 
 import { buildSchema } from '../../utilities/buildASTSchema';
@@ -10,7 +8,7 @@ import {
   expectValidationErrors,
   expectValidationErrorsWithSchema,
   expectSDLValidationErrors,
-} from './harness';
+} from './harness.ts';
 
 function expectErrors(queryStr) {
   return expectValidationErrors(KnownTypeNamesRule, queryStr);

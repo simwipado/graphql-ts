@@ -3,7 +3,7 @@ import {
   GraphQLField,
   GraphQLEnumType,
   GraphQLNamedType,
-} from './definition';
+} from './definition.ts';
 
 export const __Schema: GraphQLObjectType;
 export const __Directive: GraphQLObjectType;

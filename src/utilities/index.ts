@@ -1,8 +1,6 @@
-// @flow strict
-
 // Produce the GraphQL query recommended for a full schema introspection.
 // Accepts optional IntrospectionOptions.
-export { getIntrospectionQuery } from './getIntrospectionQuery';
+export { getIntrospectionQuery } from './getIntrospectionQuery.ts';
 
 export type {
   IntrospectionOptions,
@@ -27,23 +25,23 @@ export type {
   IntrospectionInputValue,
   IntrospectionEnumValue,
   IntrospectionDirective,
-} from './getIntrospectionQuery';
+} from './getIntrospectionQuery.ts';
 
 // Gets the target Operation from a Document.
-export { getOperationAST } from './getOperationAST';
+export { getOperationAST } from './getOperationAST.ts';
 
 // Gets the Type for the target Operation AST.
-export { getOperationRootType } from './getOperationRootType';
+export { getOperationRootType } from './getOperationRootType.ts';
 
 // Convert a GraphQLSchema to an IntrospectionQuery.
-export { introspectionFromSchema } from './introspectionFromSchema';
+export { introspectionFromSchema } from './introspectionFromSchema.ts';
 
 // Build a GraphQLSchema from an introspection result.
-export { buildClientSchema } from './buildClientSchema';
+export { buildClientSchema } from './buildClientSchema.ts';
 
 // Build a GraphQLSchema from GraphQL Schema language.
-export { buildASTSchema, buildSchema } from './buildASTSchema';
-export type { BuildSchemaOptions } from './buildASTSchema';
+export { buildASTSchema, buildSchema } from './buildASTSchema.ts';
+export type { BuildSchemaOptions } from './buildASTSchema.ts';
 
 // Extends an existing GraphQLSchema from a parsed GraphQL Schema language AST.
 export {
@@ -51,56 +49,56 @@ export {
   // @deprecated: Get the description from a schema AST node and supports legacy
   // syntax for specifying descriptions - will be removed in v16.
   getDescription,
-} from './extendSchema';
+} from './extendSchema.ts';
 
 // Sort a GraphQLSchema.
-export { lexicographicSortSchema } from './lexicographicSortSchema';
+export { lexicographicSortSchema } from './lexicographicSortSchema.ts';
 
 // Print a GraphQLSchema to GraphQL Schema language.
 export {
   printSchema,
   printType,
   printIntrospectionSchema,
-} from './printSchema';
+} from './printSchema.ts';
 
 // Create a GraphQLType from a GraphQL language AST.
-export { typeFromAST } from './typeFromAST';
+export { typeFromAST } from './typeFromAST.ts';
 
 // Create a JavaScript value from a GraphQL language AST with a type.
-export { valueFromAST } from './valueFromAST';
+export { valueFromAST } from './valueFromAST.ts';
 
 // Create a JavaScript value from a GraphQL language AST without a type.
-export { valueFromASTUntyped } from './valueFromASTUntyped';
+export { valueFromASTUntyped } from './valueFromASTUntyped.ts';
 
 // Create a GraphQL language AST from a JavaScript value.
-export { astFromValue } from './astFromValue';
+export { astFromValue } from './astFromValue.ts';
 
 // A helper to use within recursive-descent visitors which need to be aware of
 // the GraphQL type system.
-export { TypeInfo, visitWithTypeInfo } from './TypeInfo';
+export { TypeInfo, visitWithTypeInfo } from './TypeInfo.ts';
 
 // Coerces a JavaScript value to a GraphQL type, or produces errors.
-export { coerceInputValue } from './coerceInputValue';
+export { coerceInputValue } from './coerceInputValue.ts';
 
 // Concatenates multiple AST together.
-export { concatAST } from './concatAST';
+export { concatAST } from './concatAST.ts';
 
 // Separates an AST into an AST per Operation.
-export { separateOperations } from './separateOperations';
+export { separateOperations } from './separateOperations.ts';
 
 // Strips characters that are not significant to the validity or execution
 // of a GraphQL document.
-export { stripIgnoredCharacters } from './stripIgnoredCharacters';
+export { stripIgnoredCharacters } from './stripIgnoredCharacters.ts';
 
 // Comparators for types
 export {
   isEqualType,
   isTypeSubTypeOf,
   doTypesOverlap,
-} from './typeComparators';
+} from './typeComparators.ts';
 
 // Asserts that a string is a valid GraphQL name
-export { assertValidName, isValidNameError } from './assertValidName';
+export { assertValidName, isValidNameError } from './assertValidName.ts';
 
 // Compares two GraphQLSchemas and detects breaking changes.
 export {
@@ -108,8 +106,8 @@ export {
   DangerousChangeType,
   findBreakingChanges,
   findDangerousChanges,
-} from './findBreakingChanges';
-export type { BreakingChange, DangerousChange } from './findBreakingChanges';
+} from './findBreakingChanges.ts';
+export type { BreakingChange, DangerousChange } from './findBreakingChanges.ts';
 
 // Report all deprecated usage within a GraphQL document.
-export { findDeprecatedUsages } from './findDeprecatedUsages';
+export { findDeprecatedUsages } from './findDeprecatedUsages.ts';

@@ -1,15 +1,13 @@
-// @flow strict
-
-import { type GraphQLSchema } from '../type/schema';
+import { GraphQLSchema } from '../type/schema.ts';
 import {
-  type GraphQLType,
-  type GraphQLCompositeType,
+GraphQLType,
+GraphQLCompositeType,
   isInterfaceType,
   isObjectType,
   isListType,
   isNonNullType,
   isAbstractType,
-} from '../type/definition';
+} from '../type/definition.ts';
 
 /**
  * Provided two types, return true if the types are equal (invariant).

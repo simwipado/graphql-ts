@@ -1,5 +1,3 @@
-// @flow strict
-
 import { describe, it } from 'mocha';
 
 import inspect from '../../jsutils/inspect';
@@ -13,7 +11,7 @@ import { ValuesOfCorrectTypeRule } from '../rules/ValuesOfCorrectTypeRule';
 import {
   expectValidationErrors,
   expectValidationErrorsWithSchema,
-} from './harness';
+} from './harness.ts';
 
 function expectErrors(queryStr) {
   return expectValidationErrors(ValuesOfCorrectTypeRule, queryStr);

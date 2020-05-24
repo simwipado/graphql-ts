@@ -1,5 +1,3 @@
-// @flow strict
-
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 
@@ -19,14 +17,14 @@ import {
   GraphQLIncludeDirective,
   GraphQLDeprecatedDirective,
   GraphQLSpecifiedByDirective,
-} from '../../type/directives';
+} from '../../type/directives.ts';
 import {
   GraphQLID,
   GraphQLInt,
   GraphQLFloat,
   GraphQLString,
   GraphQLBoolean,
-} from '../../type/scalars';
+} from '../../type/scalars.ts';
 import {
   assertObjectType,
   assertInputObjectType,
@@ -34,7 +32,7 @@ import {
   assertUnionType,
   assertInterfaceType,
   assertScalarType,
-} from '../../type/definition';
+} from '../../type/definition.ts';
 
 import { graphqlSync } from '../../graphql';
 

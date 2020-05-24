@@ -1,13 +1,11 @@
-// @flow strict
+import { SYMBOL_TO_STRING_TAG } from '../polyfills/symbols.ts';
 
-import { SYMBOL_TO_STRING_TAG } from '../polyfills/symbols';
+import devAssert from '../jsutils/devAssert.ts';
 
-import devAssert from '../jsutils/devAssert';
-
-type Location = {|
-  line: number,
-  column: number,
-|};
+interface Location {
+  line: number;
+  column: number;
+}
 
 /**
  * A representation of source input to GraphQL.
@@ -26,7 +24,7 @@ export class Source {
     body: string,
     name: string = 'GraphQL request',
     locationOffset: Location = { line: 1, column: 1 },
-  ): void {
+  ) {
     this.body = body;
     this.name = name;
     this.locationOffset = locationOffset;

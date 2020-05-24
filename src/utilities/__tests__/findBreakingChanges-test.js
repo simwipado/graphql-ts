@@ -1,5 +1,3 @@
-// @flow strict
-
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 
@@ -9,7 +7,7 @@ import {
   GraphQLIncludeDirective,
   GraphQLSpecifiedByDirective,
   GraphQLDeprecatedDirective,
-} from '../../type/directives';
+} from '../../type/directives.ts';
 
 import { buildSchema } from '../buildASTSchema';
 import {
@@ -17,7 +15,7 @@ import {
   DangerousChangeType,
   findBreakingChanges,
   findDangerousChanges,
-} from '../findBreakingChanges';
+} from '../findBreakingChanges.ts';
 
 describe('findBreakingChanges', () => {
   it('should detect if a type was removed or not', () => {

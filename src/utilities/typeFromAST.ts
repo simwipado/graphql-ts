@@ -1,21 +1,19 @@
-// @flow strict
+import inspect from '../jsutils/inspect.ts';
+import invariant from '../jsutils/invariant.ts';
 
-import inspect from '../jsutils/inspect';
-import invariant from '../jsutils/invariant';
-
-import { Kind } from '../language/kinds';
+import { Kind } from '../language/kinds.ts';
 import {
-  type NamedTypeNode,
-  type ListTypeNode,
-  type NonNullTypeNode,
-} from '../language/ast';
+NamedTypeNode,
+ListTypeNode,
+TypeNode,
+} from '../language/ast.ts';
 
-import { type GraphQLSchema } from '../type/schema';
+import { GraphQLSchema } from '../type/schema.ts';
 import {
-  type GraphQLNamedType,
+GraphQLNamedType,
   GraphQLList,
   GraphQLNonNull,
-} from '../type/definition';
+} from '../type/definition.ts';
 
 /**
  * Given a Schema and an AST node describing a type, return a GraphQLType
@@ -25,19 +23,23 @@ import {
  * found in the schema, then undefined will be returned.
  */
 /* eslint-disable no-redeclare */
-declare function typeFromAST(
+export function typeFromAST(
   schema: GraphQLSchema,
   typeNode: NamedTypeNode,
-): GraphQLNamedType | void;
-declare function typeFromAST(
+): GraphQLNamedType | undefined;
+
+export function typeFromAST(
   schema: GraphQLSchema,
   typeNode: ListTypeNode,
-): GraphQLList<any> | void;
-declare function typeFromAST(
+): GraphQLList<any> | undefined;
+
+export function typeFromAST(
   schema: GraphQLSchema,
-  typeNode: NonNullTypeNode,
-): GraphQLNonNull<any> | void;
-export function typeFromAST(schema, typeNode) {
+  typeNode: TypeNode,
+): GraphQLNonNull<any> | undefined;
+export function typeFromAST(
+  schema: GraphQLSchema, 
+  typeNode: NamedTypeNode | ListTypeNode | TypeNode) {
   /* eslint-enable no-redeclare */
   let innerType;
   if (typeNode.kind === Kind.LIST_TYPE) {
@@ -53,5 +55,5 @@ export function typeFromAST(schema, typeNode) {
   }
 
   // Not reachable. All possible type nodes have been considered.
-  invariant(false, 'Unexpected type node: ' + inspect((typeNode: empty)));
+  invariant(false, 'Unexpected type node: ' + inspect(typeNode));
 }

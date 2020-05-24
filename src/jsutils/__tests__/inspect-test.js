@@ -1,5 +1,3 @@
-// @flow strict
-
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 
@@ -184,12 +182,12 @@ describe('inspect', () => {
     expect(inspect([[new Foo()]])).to.equal('[[[Foo]]]');
 
     (Foo.prototype: any)[Symbol.toStringTag] = 'Bar';
-    expect(inspect([[new Foo()]])).to.equal('[[[Bar]]]');
+  expect(inspect([[new Foo()]])).to.equal('[[[Bar]]]');
 
-    const objectWithoutClassName = new (function () {
-      // eslint-disable-next-line no-invalid-this
-      this.foo = 1;
-    })();
-    expect(inspect([[objectWithoutClassName]])).to.equal('[[[Object]]]');
-  });
+  const objectWithoutClassName = new (function () {
+    // eslint-disable-next-line no-invalid-this
+    this.foo = 1;
+  })();
+  expect(inspect([[objectWithoutClassName]])).to.equal('[[[Object]]]');
+});
 });

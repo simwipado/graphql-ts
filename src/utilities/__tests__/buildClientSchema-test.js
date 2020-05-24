@@ -1,5 +1,3 @@
-// @flow strict
-
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 
@@ -12,14 +10,14 @@ import {
   assertEnumType,
   GraphQLObjectType,
   GraphQLEnumType,
-} from '../../type/definition';
+} from '../../type/definition.ts';
 import {
   GraphQLInt,
   GraphQLFloat,
   GraphQLString,
   GraphQLBoolean,
   GraphQLID,
-} from '../../type/scalars';
+} from '../../type/scalars.ts';
 
 import { printSchema } from '../printSchema';
 import { buildSchema } from '../buildASTSchema';

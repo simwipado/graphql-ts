@@ -1,5 +1,3 @@
-// @flow strict
-
 import { describe, it } from 'mocha';
 
 import { parse } from '../../language/parser';
@@ -11,7 +9,7 @@ import {
   testSchema,
   expectValidationErrorsWithSchema,
   expectSDLValidationErrors,
-} from './harness';
+} from './harness.ts';
 
 const extensionSDL = `
   directive @directive on FIELD | FRAGMENT_DEFINITION

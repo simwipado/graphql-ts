@@ -1,8 +1,6 @@
-// @flow strict
-
-import { type Location } from './ast';
-import { type Source } from './source';
-import { type SourceLocation, getLocation } from './location';
+import { Location } from './ast.ts';
+import { Source } from './source.ts';
+import { SourceLocation, getLocation } from './location.ts';
 
 /**
  * Render a helpful description of the location in the GraphQL Source document.
@@ -39,7 +37,7 @@ export function printSourceLocation(
   if (locationLine.length > 120) {
     const subLineIndex = Math.floor(columnNum / 80);
     const subLineColumnNum = columnNum % 80;
-    const subLines = [];
+    const subLines: string[] = [];
     for (let i = 0; i < locationLine.length; i += 80) {
       subLines.push(locationLine.slice(i, i + 80));
     }
@@ -67,7 +65,7 @@ export function printSourceLocation(
   );
 }
 
-function printPrefixedLines(lines: $ReadOnlyArray<[string, string]>): string {
+function printPrefixedLines(lines: ReadonlyArray<[string, string]>): string {
   const existingLines = lines.filter(([_, line]) => line !== undefined);
 
   const padLen = Math.max(...existingLines.map(([prefix]) => prefix.length));

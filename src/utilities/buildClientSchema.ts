@@ -1,24 +1,21 @@
-// @flow strict
 
-import objectValues from '../polyfills/objectValues';
+import inspect from '../jsutils/inspect.ts';
+import devAssert from '../jsutils/devAssert.ts';
+import keyValMap from '../jsutils/keyValMap.ts';
+import isObjectLike from '../jsutils/isObjectLike.ts';
 
-import inspect from '../jsutils/inspect';
-import devAssert from '../jsutils/devAssert';
-import keyValMap from '../jsutils/keyValMap';
-import isObjectLike from '../jsutils/isObjectLike';
+import { parseValue } from '../language/parser.ts';
 
-import { parseValue } from '../language/parser';
-
-import { GraphQLDirective } from '../type/directives';
-import { specifiedScalarTypes } from '../type/scalars';
-import { introspectionTypes, TypeKind } from '../type/introspection';
+import { GraphQLDirective } from '../type/directives.ts';
+import { specifiedScalarTypes } from '../type/scalars.ts';
+import { introspectionTypes, TypeKind } from '../type/introspection.ts';
 import {
-  type GraphQLSchemaValidationOptions,
+GraphQLSchemaValidationOptions,
   GraphQLSchema,
-} from '../type/schema';
+} from '../type/schema.ts';
 import {
-  type GraphQLType,
-  type GraphQLNamedType,
+GraphQLType,
+GraphQLNamedType,
   isInputType,
   isOutputType,
   GraphQLScalarType,
@@ -32,21 +29,21 @@ import {
   assertNullableType,
   assertObjectType,
   assertInterfaceType,
-} from '../type/definition';
+} from '../type/definition.ts';
 
-import { valueFromAST } from './valueFromAST';
+import { valueFromAST } from './valueFromAST.ts';
 import {
-  type IntrospectionQuery,
-  type IntrospectionType,
-  type IntrospectionScalarType,
-  type IntrospectionObjectType,
-  type IntrospectionInterfaceType,
-  type IntrospectionUnionType,
-  type IntrospectionEnumType,
-  type IntrospectionInputObjectType,
-  type IntrospectionTypeRef,
-  type IntrospectionNamedTypeRef,
-} from './getIntrospectionQuery';
+IntrospectionQuery,
+IntrospectionType,
+IntrospectionScalarType,
+IntrospectionObjectType,
+IntrospectionInterfaceType,
+IntrospectionUnionType,
+IntrospectionEnumType,
+IntrospectionInputObjectType,
+IntrospectionTypeRef,
+IntrospectionNamedTypeRef,
+} from './getIntrospectionQuery.ts';
 
 /**
  * Build a GraphQLSchema for use by client tools.
@@ -113,7 +110,7 @@ export function buildClientSchema(
     query: queryType,
     mutation: mutationType,
     subscription: subscriptionType,
-    types: objectValues(typeMap),
+    types: Object.values(typeMap),
     directives,
     assumeValid: options?.assumeValid,
   });

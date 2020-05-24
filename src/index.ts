@@ -1,5 +1,3 @@
-// @flow strict
-
 /**
  * GraphQL.js provides a reference implementation for the GraphQL specification
  * but is also a useful utility for operating on GraphQL files and building
@@ -25,11 +23,11 @@
  */
 
 // The GraphQL.js version info.
-export { version, versionInfo } from './version';
+export { version, versionInfo } from './version.ts';
 
 // The primary entry point into fulfilling a GraphQL request.
-export type { GraphQLArgs } from './graphql';
-export { graphql, graphqlSync } from './graphql';
+export type { GraphQLArgs } from './graphql.ts';
+export { graphql, graphqlSync } from './graphql.ts';
 
 // Create and operate on GraphQL type definitions and schema.
 export {
@@ -126,7 +124,7 @@ export {
   // Validate GraphQL schema.
   validateSchema,
   assertValidSchema,
-} from './type/index';
+} from './type/index.ts';
 
 export type {
   GraphQLType,
@@ -169,7 +167,7 @@ export type {
   GraphQLScalarSerializer,
   GraphQLScalarValueParser,
   GraphQLScalarLiteralParser,
-} from './type/index';
+} from './type/index.ts';
 
 // Parse and operate on GraphQL language source files.
 export {
@@ -204,7 +202,7 @@ export {
   isTypeDefinitionNode,
   isTypeSystemExtensionNode,
   isTypeExtensionNode,
-} from './language/index';
+} from './language/index.ts';
 
 export type {
   ParseOptions,
@@ -276,7 +274,7 @@ export type {
   UnionTypeExtensionNode,
   EnumTypeExtensionNode,
   InputObjectTypeExtensionNode,
-} from './language/index';
+} from './language/index.ts';
 
 // Execute GraphQL queries.
 export {
@@ -285,12 +283,12 @@ export {
   defaultTypeResolver,
   responsePathAsArray,
   getDirectiveValues,
-} from './execution/index';
+} from './execution/index.ts';
 
-export type { ExecutionArgs, ExecutionResult } from './execution/index';
+export type { ExecutionArgs, ExecutionResult } from './execution/index.ts';
 
-export { subscribe, createSourceEventStream } from './subscription/index';
-export type { SubscriptionArgs } from './subscription/index';
+export { subscribe, createSourceEventStream } from './subscription/index.ts';
+export type { SubscriptionArgs } from './subscription/index.ts';
 
 // Validate GraphQL documents.
 export {
@@ -333,9 +331,9 @@ export {
   UniqueFieldDefinitionNamesRule,
   UniqueDirectiveNamesRule,
   PossibleTypeExtensionsRule,
-} from './validation/index';
+} from './validation/index.ts';
 
-export type { ValidationRule } from './validation/index';
+export type { ValidationRule } from './validation/index.ts';
 
 // Create, format, and print GraphQL errors.
 export {
@@ -344,9 +342,9 @@ export {
   locatedError,
   printError,
   formatError,
-} from './error/index';
+} from './error/index.ts';
 
-export type { GraphQLFormattedError } from './error/index';
+export type { GraphQLFormattedError } from './error/index.ts';
 
 // Utilities for operating on GraphQL type schema and parsed sources.
 export {
@@ -416,7 +414,7 @@ export {
   findDangerousChanges,
   // Report all deprecated usage within a GraphQL document.
   findDeprecatedUsages,
-} from './utilities/index';
+} from './utilities/index.ts';
 
 export type {
   IntrospectionOptions,
@@ -444,4 +442,4 @@ export type {
   BuildSchemaOptions,
   BreakingChange,
   DangerousChange,
-} from './utilities/index';
+} from './utilities/index.ts';

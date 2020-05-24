@@ -1,15 +1,15 @@
-// @flow strict
+import Maybe from "../tsutils/Maybe.ts";
 
-export type Path = {|
-  +prev: Path | void,
-  +key: string | number,
-|};
+export type Path = {
+  prev: Maybe<Path>,
+  key: string | number,
+};
 
 /**
  * Given a Path and a key, return a new Path containing the new key.
  */
 export function addPath(
-  prev: $ReadOnly<Path> | void,
+  prev: Maybe<Readonly<Path>>,
   key: string | number,
 ): Path {
   return { prev, key };
@@ -18,7 +18,7 @@ export function addPath(
 /**
  * Given a Path, return an Array of the path keys.
  */
-export function pathToArray(path: ?$ReadOnly<Path>): Array<string | number> {
+export function pathToArray(path: Maybe<Readonly<Path>>): Array<string | number> {
   const flattened = [];
   let curr = path;
   while (curr) {

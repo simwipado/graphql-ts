@@ -1,24 +1,22 @@
-// @flow strict
+import devAssert from '../jsutils/devAssert.ts';
 
-import devAssert from '../jsutils/devAssert';
+import { GraphQLError } from '../error/GraphQLError.ts';
 
-import { GraphQLError } from '../error/GraphQLError';
+import { DocumentNode } from '../language/ast.ts';
+import { visit, visitInParallel } from '../language/visitor.ts';
 
-import { type DocumentNode } from '../language/ast';
-import { visit, visitInParallel } from '../language/visitor';
+import { GraphQLSchema } from '../type/schema.ts';
+import { assertValidSchema } from '../type/validate.ts';
 
-import { type GraphQLSchema } from '../type/schema';
-import { assertValidSchema } from '../type/validate';
+import { TypeInfo, visitWithTypeInfo } from '../utilities/TypeInfo.ts';
 
-import { TypeInfo, visitWithTypeInfo } from '../utilities/TypeInfo';
-
-import { specifiedRules, specifiedSDLRules } from './specifiedRules';
 import {
-  type SDLValidationRule,
-  type ValidationRule,
+SDLValidationRule,
+ValidationRule,
   SDLValidationContext,
   ValidationContext,
-} from './ValidationContext';
+} from './ValidationContext.ts';
+import Maybe from '../tsutils/Maybe.ts';
 
 /**
  * Implements the "Validation" section of the spec.
@@ -39,22 +37,22 @@ import {
 export function validate(
   schema: GraphQLSchema,
   documentAST: DocumentNode,
-  rules?: $ReadOnlyArray<ValidationRule> = specifiedRules,
-  typeInfo?: TypeInfo = new TypeInfo(schema),
-  options?: {| maxErrors?: number |} = { maxErrors: undefined },
-): $ReadOnlyArray<GraphQLError> {
+  rules?: ReadonlyArray<ValidationRule>,
+  typeInfo?: TypeInfo,
+  options?: { maxErrors?: number },
+): ReadonlyArray<GraphQLError> {
   devAssert(documentAST, 'Must provide document.');
   // If the schema used for validation is invalid, throw an error.
   assertValidSchema(schema);
 
   const abortObj = Object.freeze({});
-  const errors = [];
+  const errors: GraphQLError[] = [];
   const context = new ValidationContext(
     schema,
     documentAST,
     typeInfo,
     (error) => {
-      if (options.maxErrors != null && errors.length >= options.maxErrors) {
+      if (options?.maxErrors != null && errors.length >= options.maxErrors) {
         errors.push(
           new GraphQLError(
             'Too many validation errors, error limit reached. Validation aborted.',
@@ -86,10 +84,10 @@ export function validate(
  */
 export function validateSDL(
   documentAST: DocumentNode,
-  schemaToExtend?: ?GraphQLSchema,
-  rules?: $ReadOnlyArray<SDLValidationRule> = specifiedSDLRules,
-): $ReadOnlyArray<GraphQLError> {
-  const errors = [];
+  schemaToExtend?: Maybe<GraphQLSchema>,
+  rules?: ReadonlyArray<SDLValidationRule>,
+): ReadonlyArray<GraphQLError> {
+  const errors: GraphQLError[] = [];
   const context = new SDLValidationContext(
     documentAST,
     schemaToExtend,

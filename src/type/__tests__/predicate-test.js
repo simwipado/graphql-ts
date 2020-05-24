@@ -1,5 +1,3 @@
-// @flow strict
-
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 
@@ -11,7 +9,7 @@ import {
   assertDirective,
   isDirective,
   isSpecifiedDirective,
-} from '../directives';
+} from '../directives.ts';
 import {
   GraphQLID,
   GraphQLInt,
@@ -19,7 +17,7 @@ import {
   GraphQLString,
   GraphQLBoolean,
   isSpecifiedScalarType,
-} from '../scalars';
+} from '../scalars.ts';
 import {
   GraphQLScalarType,
   GraphQLEnumType,
@@ -67,7 +65,7 @@ import {
   assertNamedType,
   getNullableType,
   getNamedType,
-} from '../definition';
+} from '../definition.ts';
 
 const ObjectType = new GraphQLObjectType({ name: 'Object', fields: {} });
 const InterfaceType = new GraphQLInterfaceType({

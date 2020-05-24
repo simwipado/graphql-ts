@@ -1,5 +1,3 @@
-// @flow strict
-
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 
@@ -44,8 +42,8 @@ const QueryType = new GraphQLObjectType({
         return fromInt !== undefined
           ? fromInt
           : fromString !== undefined
-          ? fromString
-          : fromEnum;
+            ? fromString
+            : fromEnum;
       },
     },
     colorInt: {

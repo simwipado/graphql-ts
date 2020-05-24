@@ -1,8 +1,6 @@
-// @flow strict
+import devAssert from '../jsutils/devAssert.ts';
 
-import devAssert from '../jsutils/devAssert';
-
-import { GraphQLError } from '../error/GraphQLError';
+import { GraphQLError } from '../error/GraphQLError.ts';
 
 const NAME_RX = /^[_a-zA-Z][_a-zA-Z0-9]*$/;
 

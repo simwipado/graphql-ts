@@ -1,5 +1,3 @@
-// @flow strict
-
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 
@@ -15,7 +13,7 @@ import {
   GraphQLObjectType,
   GraphQLInputObjectType,
   GraphQLEnumType,
-} from '../definition';
+} from '../definition.ts';
 
 describe('Introspection', () => {
   it('executes an introspection query', () => {

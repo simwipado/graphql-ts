@@ -1,13 +1,11 @@
-// @flow strict
-
 /**
  * Memoizes the provided three-argument function.
  */
 export default function memoize3<
-  A1: { ... } | $ReadOnlyArray<mixed>,
-  A2: { ... } | $ReadOnlyArray<mixed>,
-  A3: { ... } | $ReadOnlyArray<mixed>,
-  R: mixed,
+  A1: { ... } | ReadonlyArray<any>,
+  A2: { ... } | ReadonlyArray<any>,
+  A3: { ... } | ReadonlyArray<any>,
+  R: any,
 >(fn: (A1, A2, A3) => R): (A1, A2, A3) => R {
   let cache0;
 

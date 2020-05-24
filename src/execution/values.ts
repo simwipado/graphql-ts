@@ -1,37 +1,36 @@
-// @flow strict
+import find from '../polyfills/find.ts';
 
-import find from '../polyfills/find';
+import keyMap from '../jsutils/keyMap.ts';
+import inspect from '../jsutils/inspect.ts';
+import { ObjMap } from '../jsutils/ObjMap.ts';
+import printPathArray from '../jsutils/printPathArray.ts';
 
-import keyMap from '../jsutils/keyMap';
-import inspect from '../jsutils/inspect';
-import { type ObjMap } from '../jsutils/ObjMap';
-import printPathArray from '../jsutils/printPathArray';
+import { GraphQLError } from '../error/GraphQLError.ts';
 
-import { GraphQLError } from '../error/GraphQLError';
-
-import { Kind } from '../language/kinds';
-import { print } from '../language/printer';
+import { Kind } from '../language/kinds.ts';
+import { print } from '../language/printer.ts';
 import {
-  type FieldNode,
-  type DirectiveNode,
-  type VariableDefinitionNode,
-} from '../language/ast';
+  FieldNode,
+  DirectiveNode,
+  VariableDefinitionNode,
+} from '../language/ast.ts';
 
-import { type GraphQLSchema } from '../type/schema';
-import { type GraphQLDirective } from '../type/directives';
+import { GraphQLSchema } from '../type/schema.ts';
+import { GraphQLDirective } from '../type/directives.ts';
 import {
-  type GraphQLField,
+  GraphQLField,
   isInputType,
   isNonNullType,
-} from '../type/definition';
+} from '../type/definition.ts';
 
-import { typeFromAST } from '../utilities/typeFromAST';
-import { valueFromAST } from '../utilities/valueFromAST';
-import { coerceInputValue } from '../utilities/coerceInputValue';
+import { typeFromAST } from '../utilities/typeFromAST.ts';
+import { valueFromAST } from '../utilities/valueFromAST.ts';
+import { coerceInputValue } from '../utilities/coerceInputValue.ts';
+import Maybe from '../tsutils/Maybe.ts';
 
 type CoercedVariableValues =
-  | {| errors: $ReadOnlyArray<GraphQLError> |}
-  | {| coerced: { [variable: string]: mixed, ... } |};
+  | { errors: ReadonlyArray<GraphQLError>; coerced?: never }
+  | { errors?: never; coerced: { [key: string]: any } };
 
 /**
  * Prepares an object map of variableValues of the correct type based on the
@@ -46,9 +45,9 @@ type CoercedVariableValues =
  */
 export function getVariableValues(
   schema: GraphQLSchema,
-  varDefNodes: $ReadOnlyArray<VariableDefinitionNode>,
-  inputs: { +[variable: string]: mixed, ... },
-  options?: {| maxErrors?: number |},
+  varDefNodes: ReadonlyArray<VariableDefinitionNode>,
+  inputs: { [key: string]: any },
+  options?: { maxErrors?: number },
 ): CoercedVariableValues {
   const errors = [];
   const maxErrors = options?.maxErrors;
@@ -79,10 +78,10 @@ export function getVariableValues(
 
 function coerceVariableValues(
   schema: GraphQLSchema,
-  varDefNodes: $ReadOnlyArray<VariableDefinitionNode>,
-  inputs: { +[variable: string]: mixed, ... },
-  onError: (GraphQLError) => void,
-): { [variable: string]: mixed, ... } {
+  varDefNodes: ReadonlyArray<VariableDefinitionNode>,
+  inputs: Maybe<{[key: string]: any}>,
+  onError: (error: GraphQLError) => void,
+): Maybe<{[key: string]: any}> {
   const coercedValues = {};
   for (const varDefNode of varDefNodes) {
     const varName = varDefNode.variable.name.value;
@@ -164,10 +163,10 @@ function coerceVariableValues(
  * @internal
  */
 export function getArgumentValues(
-  def: GraphQLField<mixed, mixed> | GraphQLDirective,
+  def: GraphQLField<any, any> | GraphQLDirective,
   node: FieldNode | DirectiveNode,
-  variableValues?: ?ObjMap<mixed>,
-): { [argument: string]: mixed, ... } {
+  variableValues?: ?ObjMap<any>,
+): { [argument: string]: any } {
   const coercedValues = {};
 
   // istanbul ignore next (See https://github.com/graphql/graphql-js/issues/2203)
@@ -251,9 +250,11 @@ export function getArgumentValues(
  */
 export function getDirectiveValues(
   directiveDef: GraphQLDirective,
-  node: { +directives?: $ReadOnlyArray<DirectiveNode>, ... },
-  variableValues?: ?ObjMap<mixed>,
-): void | { [argument: string]: mixed, ... } {
+  node: {
+    readonly directives?: ReadonlyArray<DirectiveNode>;
+  },
+  variableValues?: Maybe<{ [key: string]: any }>,
+): undefined | { [key: string]: any } {
   const directiveNode =
     node.directives &&
     find(
@@ -266,6 +267,6 @@ export function getDirectiveValues(
   }
 }
 
-function hasOwnProperty(obj: mixed, prop: string): boolean {
+function hasOwnProperty(obj: any, prop: string): boolean {
   return Object.prototype.hasOwnProperty.call(obj, prop);
 }

@@ -1,6 +1,4 @@
-// @flow strict
-
-import { type ObjMap } from './ObjMap';
+import { ObjMap } from './ObjMap.ts';
 
 /**
  * Creates a keyed JS object from an array, given a function to produce the keys
@@ -20,7 +18,7 @@ import { type ObjMap } from './ObjMap';
  *
  */
 export default function keyValMap<T, V>(
-  list: $ReadOnlyArray<T>,
+  list: ReadonlyArray<T>,
   keyFn: (item: T) => string,
   valFn: (item: T) => V,
 ): ObjMap<V> {

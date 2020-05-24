@@ -1,22 +1,20 @@
-// @flow strict
 
-import objectValues from '../polyfills/objectValues';
+import keyMap from '../jsutils/keyMap.ts';
+import inspect from '../jsutils/inspect.ts';
+import invariant from '../jsutils/invariant.ts';
+import { ObjMap } from '../jsutils/ObjMap.ts';
 
-import keyMap from '../jsutils/keyMap';
-import inspect from '../jsutils/inspect';
-import invariant from '../jsutils/invariant';
-import { type ObjMap } from '../jsutils/ObjMap';
-
-import { Kind } from '../language/kinds';
-import { type ValueNode } from '../language/ast';
+import { Kind } from '../language/kinds.ts';
+import { ValueNode } from '../language/ast.ts';
 
 import {
-  type GraphQLInputType,
+GraphQLInputType,
   isLeafType,
   isInputObjectType,
   isListType,
   isNonNullType,
-} from '../type/definition';
+} from '../type/definition.ts';
+import Maybe from '../tsutils/Maybe.ts';
 
 /**
  * Produces a JavaScript value given a GraphQL Value AST.
@@ -39,10 +37,10 @@ import {
  *
  */
 export function valueFromAST(
-  valueNode: ?ValueNode,
+  valueNode: Maybe<ValueNode>,
   type: GraphQLInputType,
-  variables?: ?ObjMap<mixed>,
-): mixed | void {
+  variables?: Maybe<{ [key: string]: any }>,
+): any | void {
   if (!valueNode) {
     // When there is no node, then there is also no value.
     // Importantly, this is different from returning the value null.
@@ -112,7 +110,7 @@ export function valueFromAST(
     }
     const coercedObj = Object.create(null);
     const fieldNodes = keyMap(valueNode.fields, (field) => field.name.value);
-    for (const field of objectValues(type.getFields())) {
+    for (const field of Object.values(type.getFields())) {
       const fieldNode = fieldNodes[field.name];
       if (!fieldNode || isMissingVariable(fieldNode.value, variables)) {
         if (field.defaultValue !== undefined) {
@@ -148,7 +146,7 @@ export function valueFromAST(
   }
 
   // Not reachable. All possible input types have been considered.
-  invariant(false, 'Unexpected input type: ' + inspect((type: empty)));
+  invariant(false, 'Unexpected input type: ' + inspect(type));
 }
 
 // Returns true if the provided valueNode is a variable which is not defined

@@ -1,17 +1,14 @@
-// @flow strict
 
-import objectValues from '../polyfills/objectValues';
+import inspect from '../jsutils/inspect.ts';
+import invariant from '../jsutils/invariant.ts';
+import keyValMap from '../jsutils/keyValMap.ts';
+import { ObjMap } from '../jsutils/ObjMap.ts';
 
-import inspect from '../jsutils/inspect';
-import invariant from '../jsutils/invariant';
-import keyValMap from '../jsutils/keyValMap';
-import { type ObjMap } from '../jsutils/ObjMap';
-
-import { GraphQLSchema } from '../type/schema';
-import { GraphQLDirective } from '../type/directives';
-import { isIntrospectionType } from '../type/introspection';
+import { GraphQLSchema } from '../type/schema.ts';
+import { GraphQLDirective } from '../type/directives.ts';
+import { isIntrospectionType } from '../type/introspection.ts';
 import {
-  type GraphQLNamedType,
+GraphQLNamedType,
   GraphQLObjectType,
   GraphQLInterfaceType,
   GraphQLUnionType,
@@ -27,7 +24,8 @@ import {
   isUnionType,
   isEnumType,
   isInputObjectType,
-} from '../type/definition';
+  GraphQLInputType,
+} from '../type/definition.ts';
 
 /**
  * Sort GraphQLSchema.
@@ -44,14 +42,14 @@ export function lexicographicSortSchema(schema: GraphQLSchema): GraphQLSchema {
 
   return new GraphQLSchema({
     ...schemaConfig,
-    types: objectValues(typeMap),
+    types: Object.values(typeMap),
     directives: sortByName(schemaConfig.directives).map(sortDirective),
     query: replaceMaybeType(schemaConfig.query),
     mutation: replaceMaybeType(schemaConfig.mutation),
     subscription: replaceMaybeType(schemaConfig.subscription),
   });
 
-  function replaceType(type) {
+  function replaceType(type: GraphQLInputType) {
     if (isListType(type)) {
       return new GraphQLList(replaceType(type.ofType));
     } else if (isNonNullType(type)) {
@@ -60,11 +58,11 @@ export function lexicographicSortSchema(schema: GraphQLSchema): GraphQLSchema {
     return replaceNamedType(type);
   }
 
-  function replaceNamedType<T: GraphQLNamedType>(type: T): T {
-    return ((typeMap[type.name]: any): T);
+  function replaceNamedType<T extends GraphQLNamedType>(type: T): T {
+    return typeMap[type.name]
   }
 
-  function replaceMaybeType(maybeType) {
+  function replaceMaybeType(maybeType: GraphQLObjectType | undefined) {
     return maybeType && replaceNamedType(maybeType);
   }
 
@@ -99,11 +97,11 @@ export function lexicographicSortSchema(schema: GraphQLSchema): GraphQLSchema {
     }));
   }
 
-  function sortTypes<T: GraphQLNamedType>(arr: $ReadOnlyArray<T>): Array<T> {
+  function sortTypes<T extends GraphQLNamedType>(arr: ReadonlyArray<T>): Array<T> {
     return sortByName(arr).map(replaceNamedType);
   }
 
-  function sortNamedType(type) {
+  function sortNamedType(type: GraphQLNamedType) {
     if (isScalarType(type) || isIntrospectionType(type)) {
       return type;
     }
@@ -160,15 +158,15 @@ function sortObjMap<T, R>(map: ObjMap<T>, sortValueFn?: (T) => R): ObjMap<R> {
   return sortedMap;
 }
 
-function sortByName<T: { +name: string, ... }>(
-  array: $ReadOnlyArray<T>,
+function sortByName<T extends { name: string }>(
+  array: ReadonlyArray<T>,
 ): Array<T> {
   return sortBy(array, (obj) => obj.name);
 }
 
 function sortBy<T>(
-  array: $ReadOnlyArray<T>,
-  mapToKey: (T) => string,
+  array: ReadonlyArray<T>,
+  mapToKey: (arg: T) => string,
 ): Array<T> {
   return array.slice().sort((obj1, obj2) => {
     const key1 = mapToKey(obj1);

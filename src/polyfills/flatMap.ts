@@ -1,8 +1,6 @@
-// @flow strict
-
 declare function flatMap<T, U>(
-  list: $ReadOnlyArray<T>,
-  fn: (item: T, index: number) => $ReadOnlyArray<U> | U,
+  list: ReadonlyArray<T>,
+  fn: (item: T, index: number) => ReadonlyArray<U> | U,
 ): Array<U>;
 
 const flatMapMethod = Array.prototype.flatMap;

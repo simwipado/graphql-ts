@@ -1,5 +1,3 @@
-// @flow strict
-
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 
@@ -22,7 +20,7 @@ import {
   GraphQLFloat,
   GraphQLString,
   GraphQLBoolean,
-} from '../../type/scalars';
+} from '../../type/scalars.ts';
 import {
   assertObjectType,
   assertInputObjectType,
@@ -30,7 +28,7 @@ import {
   assertUnionType,
   assertInterfaceType,
   assertScalarType,
-} from '../../type/definition';
+} from '../../type/definition.ts';
 
 import { concatAST } from '../concatAST';
 import { printSchema } from '../printSchema';
