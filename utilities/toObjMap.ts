@@ -6,11 +6,9 @@ ReadOnlyObjMap,
 ReadOnlyObjMapLike,
 } from './ObjMap.ts';
 
-/* eslint-disable no-redeclare */
 export function toObjMap<T>(obj: ObjMapLike<T>): ObjMap<T>;
 export function toObjMap<T>(obj: ReadOnlyObjMapLike<T>): ReadOnlyObjMap<T>;
 export default function toObjMap<T>(obj: ObjMapLike<T> | ReadOnlyObjMapLike<T>) {
-  /* eslint-enable no-redeclare */
   if (Object.getPrototypeOf(obj) === null) {
     return obj;
   }

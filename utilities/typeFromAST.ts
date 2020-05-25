@@ -22,7 +22,6 @@ GraphQLNamedType,
  * the type called "User" found in the schema. If a type called "User" is not
  * found in the schema, then undefined will be returned.
  */
-/* eslint-disable no-redeclare */
 export function typeFromAST(
   schema: GraphQLSchema,
   typeNode: NamedTypeNode,
