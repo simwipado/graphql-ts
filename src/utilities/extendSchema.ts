@@ -300,7 +300,7 @@ export function extendSchemaImpl(
           type: replaceType(field.type),
         })),
         ...buildInputFieldMap(extensions),
-      }),
+      }) as any,
       extensionASTNodes: config.extensionASTNodes.concat(extensions),
     });
   }
@@ -346,9 +346,9 @@ export function extendSchemaImpl(
         ...buildInterfaces(extensions),
       ],
       fields: () => ({
-        ...mapValue(config.fields, extendField),
+        ...mapValue(config.fields as any, extendField),
         ...buildFieldMap(extensions),
-      }),
+      }) as any,
       extensionASTNodes: config.extensionASTNodes.concat(extensions),
     });
   }
@@ -366,9 +366,9 @@ export function extendSchemaImpl(
         ...buildInterfaces(extensions),
       ],
       fields: () => ({
-        ...mapValue(config.fields, extendField),
+        ...mapValue(config.fields as any, extendField),
         ...buildFieldMap(extensions),
-      }),
+      }) as any,
       extensionASTNodes: config.extensionASTNodes.concat(extensions),
     });
   }
@@ -580,7 +580,7 @@ export function extendSchemaImpl(
         // values below, that would throw immediately while type system
         // validation with validateSchema() will produce more actionable
         // results.
-        interfaces.push(getNamedType(type));
+        interfaces.push(getNamedType(type) as any);
       }
     }
     return interfaces;
@@ -599,7 +599,7 @@ export function extendSchemaImpl(
         // values below, that would throw immediately while type system
         // validation with validateSchema() will produce more actionable
         // results.
-        types.push(getNamedType(type));
+        types.push(getNamedType(type) as any);
       }
     }
     return types;

@@ -107,7 +107,7 @@ export function buildClientSchema(
 
   // Then produce and return a Schema with these types.
   return new GraphQLSchema({
-    description: schemaIntrospection.description,
+    description: (schemaIntrospection as any).description,
     query: queryType,
     mutation: mutationType,
     subscription: subscriptionType,
@@ -303,7 +303,7 @@ export function buildClientSchema(
     });
   }
 
-  function buildFieldDefMap(typeIntrospection) {
+  function buildFieldDefMap(typeIntrospection: any) {
     if (!typeIntrospection.fields) {
       throw new Error(
         `Introspection result missing fields: ${inspect(typeIntrospection)}.`,
@@ -317,7 +317,7 @@ export function buildClientSchema(
     );
   }
 
-  function buildField(fieldIntrospection) {
+  function buildField(fieldIntrospection: any) {
     const type = getType(fieldIntrospection.type);
     if (!isOutputType(type)) {
       const typeStr = inspect(type);
@@ -341,7 +341,7 @@ export function buildClientSchema(
     };
   }
 
-  function buildInputValueDefMap(inputValueIntrospections) {
+  function buildInputValueDefMap(inputValueIntrospections: any) {
     return keyValMap(
       inputValueIntrospections,
       (inputValue) => inputValue.name,
@@ -349,7 +349,7 @@ export function buildClientSchema(
     );
   }
 
-  function buildInputValue(inputValueIntrospection) {
+  function buildInputValue(inputValueIntrospection: any) {
     const type = getType(inputValueIntrospection.type);
     if (!isInputType(type)) {
       const typeStr = inspect(type);
@@ -369,7 +369,7 @@ export function buildClientSchema(
     };
   }
 
-  function buildDirective(directiveIntrospection) {
+  function buildDirective(directiveIntrospection: any) {
     if (!directiveIntrospection.args) {
       const directiveIntrospectionStr = inspect(directiveIntrospection);
       throw new Error(

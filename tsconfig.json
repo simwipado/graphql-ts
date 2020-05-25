@@ -1,0 +1,9 @@
+{
+    "compilerOptions": {
+        "module": "es6",
+        "target": "ESNext",
+        "sourceMap": true,
+        "declaration": false,
+        "allowSyntheticDefaultImports": true
+    }
+}

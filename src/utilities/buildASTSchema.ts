@@ -58,7 +58,7 @@ export interface BuildSchemaOptions extends GraphQLSchemaValidationOptions {
  */
 export function buildASTSchema(
   documentAST: DocumentNode,
-  options: Maybe<BuildSchemaOptions>
+  options: BuildSchemaOptions
 ): GraphQLSchema {
   devAssert(
     documentAST != null && documentAST.kind === Kind.DOCUMENT,

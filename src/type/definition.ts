@@ -1327,7 +1327,7 @@ export class GraphQLEnumType /* <T> */ {
     return this._nameLookup[name];
   }
 
-  serialize(outputValue: any /* T */): Maybe<string> {
+  serialize(outputValue: any /* T */): string {
     const enumValue = this._valueLookup.get(outputValue);
     if (enumValue === undefined) {
       throw new GraphQLError(

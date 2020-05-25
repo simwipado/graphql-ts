@@ -141,7 +141,7 @@ export const QueryDocumentKeys: VisitorKeyMap<ASTKindToNode> = {
   UnionTypeExtension: ['name', 'directives', 'types'],
   EnumTypeExtension: ['name', 'directives', 'values'],
   InputObjectTypeExtension: ['name', 'directives', 'fields'],
-} as const;
+};
 
 export const BREAK: any = {};
 

@@ -18,7 +18,7 @@ GraphQLInputType,
 import Maybe from '../tsutils/Maybe.ts';
 
 type OnErrorCB = (
-  path: ReadonlyArray<string | number>,
+  path: (string | number)[],
   invalidValue: any,
   error: GraphQLError,
 ) => void;
@@ -29,13 +29,13 @@ type OnErrorCB = (
 export function coerceInputValue(
   inputValue: any,
   type: GraphQLInputType,
-  onError: Maybe<OnErrorCB> = defaultOnError,
+  onError: OnErrorCB = defaultOnError,
 ): any {
   return coerceInputValueImpl(inputValue, type, onError);
 }
 
 function defaultOnError(
-  path: ReadonlyArray<string | number>,
+  path: (string | number)[],
   invalidValue: any,
   error: GraphQLError,
 ) {
@@ -51,7 +51,7 @@ function coerceInputValueImpl(
   inputValue: any,
   type: GraphQLInputType,
   onError: OnErrorCB,
-  path: Maybe<Path>,
+  path?: Maybe<Path>,
 ): any {
   if (isNonNullType(type)) {
     if (inputValue != null) {
