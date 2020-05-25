@@ -450,7 +450,7 @@ export class GraphQLNonNull<T extends GraphQLNullableType> {
   ofType: T;
 
   constructor(ofType: T) {
-    this.ofType = assertNonNullType(ofType);
+    this.ofType = assertNullableType(ofType);
   }
 }
 
@@ -505,7 +505,7 @@ export function isNullableType(type: any): type is GraphQLWrappingType {
   return isType(type) && !isNonNullType(type);
 }
 
-export function assertNullableType(type: any): GraphQLNullableType {
+export function assertNullableType<T extends GraphQLNullableType>(type: T): T {
   if (!isNullableType(type)) {
     throw new Error(`Expected ${inspect(type)} to be a GraphQL nullable type.`);
   }
