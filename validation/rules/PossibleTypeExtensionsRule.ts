@@ -1,7 +1,7 @@
-import inspect from '../../jsutils/inspect.ts';
-import invariant from '../../jsutils/invariant.ts';
-import didYouMean from '../../jsutils/didYouMean.ts';
-import suggestionList from '../../jsutils/suggestionList.ts';
+import inspect from '../../utilities/inspect.ts';
+import invariant from '../../utilities/invariant.ts';
+import didYouMean from '../../utilities/didYouMean.ts';
+import suggestionList from '../../utilities/suggestionList.ts';
 
 import { GraphQLError } from '../../error/GraphQLError.ts';
 

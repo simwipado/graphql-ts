@@ -1,4 +1,4 @@
-import inspect from '../jsutils/inspect.ts';
+import inspect from '../utilities/inspect.ts';
 
 import { GraphQLError } from '../error/GraphQLError.ts';
 import { locatedError } from '../error/locatedError.ts';
@@ -33,7 +33,7 @@ GraphQLInputObjectType,
   isRequiredArgument,
   GraphQLInputField,
 } from './definition.ts';
-import Maybe from '../tsutils/Maybe.ts';
+import Maybe from '../utilities/Maybe.ts';
 
 /**
  * Implements the "Type Validation" sub-sections of the specification's

@@ -1,8 +1,8 @@
-import keyMap from '../jsutils/keyMap.ts';
-import inspect from '../jsutils/inspect.ts';
-import mapValue from '../jsutils/mapValue.ts';
-import invariant from '../jsutils/invariant.ts';
-import devAssert from '../jsutils/devAssert.ts';
+import keyMap from '../utilities/keyMap.ts';
+import inspect from '../utilities/inspect.ts';
+import mapValue from '../utilities/mapValue.ts';
+import invariant from '../utilities/invariant.ts';
+import devAssert from '../utilities/devAssert.ts';
 
 import { Kind } from '../language/kinds.ts';
 import { TokenKind } from '../language/tokenKind.ts';
@@ -82,7 +82,7 @@ GraphQLFieldConfigArgumentMap,
 } from '../type/definition.ts';
 
 import { valueFromAST } from './valueFromAST.ts';
-import Maybe from '../tsutils/Maybe.ts';
+import Maybe from '../utilities/Maybe.ts';
 
 interface Options extends GraphQLSchemaValidationOptions {
   /**

@@ -1,5 +1,5 @@
-import inspect from '../../jsutils/inspect.ts';
-import keyMap from '../../jsutils/keyMap.ts';
+import inspect from '../../utilities/inspect.ts';
+import keyMap from '../../utilities/keyMap.ts';
 
 import { GraphQLError } from '../../error/GraphQLError.ts';
 

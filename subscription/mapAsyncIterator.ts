@@ -1,4 +1,4 @@
-import { PromiseOrValue } from '../jsutils/PromiseOrValue.ts';
+import { PromiseOrValue } from '../utilities/PromiseOrValue.ts';
 
 /**
  * Given an AsyncIterable and a callback function, return an AsyncIterator

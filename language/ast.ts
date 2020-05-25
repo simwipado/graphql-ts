@@ -1,4 +1,4 @@
-import defineInspect from '../jsutils/defineInspect.ts';
+import defineInspect from '../utilities/defineInspect.ts';
 
 import { Source } from './source.ts';
 import { TokenKindEnum } from './tokenKind.ts';

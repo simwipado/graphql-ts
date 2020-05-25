@@ -1,8 +1,8 @@
 
-import keyMap from '../../jsutils/keyMap.ts';
-import inspect from '../../jsutils/inspect.ts';
-import didYouMean from '../../jsutils/didYouMean.ts';
-import suggestionList from '../../jsutils/suggestionList.ts';
+import keyMap from '../../utilities/keyMap.ts';
+import inspect from '../../utilities/inspect.ts';
+import didYouMean from '../../utilities/didYouMean.ts';
+import suggestionList from '../../utilities/suggestionList.ts';
 
 import { GraphQLError } from '../../error/GraphQLError.ts';
 

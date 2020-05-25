@@ -1,5 +1,5 @@
 import { DirectiveLocationEnum } from '../language/directiveLocation.ts';
-import Maybe from '../tsutils/Maybe.ts';
+import Maybe from '../utilities/Maybe.ts';
 
 export interface IntrospectionOptions {
   // Whether to include descriptions in the introspection result.

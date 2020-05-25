@@ -1,31 +1,33 @@
-import { describe, it } from 'mocha';
+import { describe, it } from "mocha";
 
-import dedent from '../../__testUtils__/dedent';
-import inspectStr from '../../__testUtils__/inspectStr';
-import genFuzzStrings from '../../__testUtils__/genFuzzStrings';
+import dedent from "../../__testUtils__/dedent";
+import inspectStr from "../../__testUtils__/inspectStr";
+import genFuzzStrings from "../../__testUtils__/genFuzzStrings";
 
-import invariant from '../../jsutils/invariant';
+import invariant from "../../utilities/invariant";
 
-import { Lexer } from '../lexer';
-import { Source } from '../source';
-import { printBlockString } from '../blockString';
+import { Lexer } from "../lexer";
+import { Source } from "../source";
+import { printBlockString } from "../blockString";
 
 function lexValue(str) {
   const lexer = new Lexer(new Source(str));
   const value = lexer.advance().value;
 
-  invariant(lexer.advance().kind === '<EOF>', 'Expected EOF');
+  invariant(lexer.advance().kind === "<EOF>", "Expected EOF");
   return value;
 }
 
-describe('printBlockString', () => {
-  it('correctly print random strings', () => {
+describe("printBlockString", () => {
+  it("correctly print random strings", () => {
     // Testing with length >7 is taking exponentially more time. However it is
     // highly recommended to test with increased limit if you make any change.
-    for (const fuzzStr of genFuzzStrings({
-      allowedChars: ['\n', '\t', ' ', '"', 'a', '\\'],
-      maxLength: 7,
-    })) {
+    for (
+      const fuzzStr of genFuzzStrings({
+        allowedChars: ["\n", "\t", " ", '"', "a", "\\"],
+        maxLength: 7,
+      })
+    ) {
       const testStr = '"""' + fuzzStr + '"""';
 
       let testValue;
@@ -34,7 +36,7 @@ describe('printBlockString', () => {
       } catch (e) {
         continue; // skip invalid values
       }
-      invariant(typeof testValue === 'string');
+      invariant(typeof testValue === "string");
 
       const printedValue = lexValue(printBlockString(testValue));
 
@@ -48,15 +50,17 @@ describe('printBlockString', () => {
       );
 
       const printedMultilineString = lexValue(
-        printBlockString(testValue, ' ', true),
+        printBlockString(testValue, " ", true),
       );
 
       invariant(
         testValue === printedMultilineString,
         dedent`
-          Expected lexValue(printBlockString(${inspectStr(
-          testValue,
-        )}, ' ', true))
+          Expected lexValue(printBlockString(${
+          inspectStr(
+            testValue,
+          )
+        }, ' ', true))
             to equal ${inspectStr(testValue)}
             but got  ${inspectStr(printedMultilineString)}
         `,

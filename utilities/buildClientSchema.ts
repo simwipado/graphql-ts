@@ -1,8 +1,8 @@
 
-import inspect from '../jsutils/inspect.ts';
-import devAssert from '../jsutils/devAssert.ts';
-import keyValMap from '../jsutils/keyValMap.ts';
-import isObjectLike from '../jsutils/isObjectLike.ts';
+import inspect from '../utilities/inspect.ts';
+import devAssert from '../utilities/devAssert.ts';
+import keyValMap from '../utilities/keyValMap.ts';
+import isObjectLike from '../utilities/isObjectLike.ts';
 
 import { parseValue } from '../language/parser.ts';
 
@@ -44,7 +44,7 @@ IntrospectionInputObjectType,
 IntrospectionTypeRef,
 IntrospectionNamedTypeRef,
 } from './getIntrospectionQuery.ts';
-import Maybe from '../tsutils/Maybe.ts';
+import Maybe from '../utilities/Maybe.ts';
 
 /**
  * Build a GraphQLSchema for use by client tools.

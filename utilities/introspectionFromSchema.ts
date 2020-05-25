@@ -1,5 +1,5 @@
-import invariant from '../jsutils/invariant.ts';
-import isPromise from '../jsutils/isPromise.ts';
+import invariant from '../utilities/invariant.ts';
+import isPromise from '../utilities/isPromise.ts';
 
 import { parse } from '../language/parser.ts';
 import { execute } from '../execution/execute.ts';

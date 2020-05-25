@@ -1,4 +1,4 @@
-import inspect from '../../jsutils/inspect.ts';
+import inspect from '../../utilities/inspect.ts';
 
 import { GraphQLError } from '../../error/GraphQLError.ts';
 

@@ -1,5 +1,5 @@
-import inspect from '../../jsutils/inspect.ts';
-import invariant from '../../jsutils/invariant.ts';
+import inspect from '../../utilities/inspect.ts';
+import invariant from '../../utilities/invariant.ts';
 
 import { GraphQLError } from '../../error/GraphQLError.ts';
 

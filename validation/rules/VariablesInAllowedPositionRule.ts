@@ -1,4 +1,4 @@
-import inspect from '../../jsutils/inspect.ts';
+import inspect from '../../utilities/inspect.ts';
 
 import { GraphQLError } from '../../error/GraphQLError.ts';
 
@@ -13,7 +13,7 @@ import { typeFromAST } from '../../utilities/typeFromAST.ts';
 import { isTypeSubTypeOf } from '../../utilities/typeComparators.ts';
 
 import { ValidationContext } from '../ValidationContext.ts';
-import Maybe from '../../tsutils/Maybe.ts';
+import Maybe from '../../utilities/Maybe.ts';
 
 /**
  * Variables passed to field arguments conform to type

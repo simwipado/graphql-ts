@@ -1,13 +1,13 @@
 // FIXME:
 // flowlint uninitialized-instance-property:off
 
-import isObjectLike from '../jsutils/isObjectLike.ts';
+import isObjectLike from '../utilities/isObjectLike.ts';
 
 import { ASTNode } from '../language/ast.ts';
 import { Source } from '../language/source.ts';
 import { SourceLocation, getLocation } from '../language/location.ts';
 import { printLocation, printSourceLocation } from '../language/printLocation.ts';
-import Maybe from '../tsutils/Maybe.ts';
+import Maybe from '../utilities/Maybe.ts';
 
 /**
  * A GraphQLError describes an Error found during the parse, validate, or

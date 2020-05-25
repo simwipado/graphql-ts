@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { describe, it } from 'mocha';
 
-import invariant from '../../jsutils/invariant';
+import invariant from '../../utilities/invariant';
 
 import { parse } from '../../language/parser';
 

@@ -1,8 +1,8 @@
 
-import inspect from '../jsutils/inspect.ts';
-import invariant from '../jsutils/invariant.ts';
-import keyValMap from '../jsutils/keyValMap.ts';
-import { ObjMap } from '../jsutils/ObjMap.ts';
+import inspect from '../utilities/inspect.ts';
+import invariant from '../utilities/invariant.ts';
+import keyValMap from '../utilities/keyValMap.ts';
+import { ObjMap } from '../utilities/ObjMap.ts';
 
 import { GraphQLSchema } from '../type/schema.ts';
 import { GraphQLDirective } from '../type/directives.ts';
@@ -26,7 +26,7 @@ GraphQLNamedType,
   isInputObjectType,
   GraphQLType,
 } from '../type/definition.ts';
-import Maybe from '../tsutils/Maybe.ts';
+import Maybe from '../utilities/Maybe.ts';
 
 /**
  * Sort GraphQLSchema.

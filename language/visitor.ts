@@ -1,11 +1,11 @@
-import inspect from '../jsutils/inspect.ts';
+import inspect from '../utilities/inspect.ts';
 
 import { 
   ASTNode, 
   ASTKindToNode,
   isNode,
 } from './ast.ts';
-import Maybe from '../tsutils/Maybe.ts';
+import Maybe from '../utilities/Maybe.ts';
 
 /**
  * A visitor is provided to visit, it contains the collection of

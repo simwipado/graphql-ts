@@ -1,13 +1,13 @@
-import inspect from '../jsutils/inspect.ts';
-import toObjMap from '../jsutils/toObjMap.ts';
-import devAssert from '../jsutils/devAssert.ts';
-import instanceOf from '../jsutils/instanceOf.ts';
-import isObjectLike from '../jsutils/isObjectLike.ts';
+import inspect from '../utilities/inspect.ts';
+import toObjMap from '../utilities/toObjMap.ts';
+import devAssert from '../utilities/devAssert.ts';
+import instanceOf from '../utilities/instanceOf.ts';
+import isObjectLike from '../utilities/isObjectLike.ts';
 import {
 ObjMap,
 ReadOnlyObjMap,
 ReadOnlyObjMapLike,
-} from '../jsutils/ObjMap.ts';
+} from '../utilities/ObjMap.ts';
 
 import { GraphQLError } from '../error/GraphQLError.ts';
 import {
@@ -33,7 +33,7 @@ GraphQLInterfaceType,
   isInputObjectType,
   getNamedType,
 } from './definition.ts';
-import Maybe from '../tsutils/Maybe.ts';
+import Maybe from '../utilities/Maybe.ts';
 
 /**
  * Test if the given value is a GraphQL schema.

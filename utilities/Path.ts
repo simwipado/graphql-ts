@@ -1,4 +1,4 @@
-import Maybe from '../tsutils/Maybe.ts';
+import Maybe from '../utilities/Maybe.ts';
 
 export type Path = {
   prev: Maybe<Path>,

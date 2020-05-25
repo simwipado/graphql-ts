@@ -1,7 +1,7 @@
-import inspect from '../jsutils/inspect.ts';
-import invariant from '../jsutils/invariant.ts';
-import isObjectLike from '../jsutils/isObjectLike.ts';
-import isCollection from '../jsutils/isCollection.ts';
+import inspect from '../utilities/inspect.ts';
+import invariant from '../utilities/invariant.ts';
+import isObjectLike from '../utilities/isObjectLike.ts';
+import isCollection from '../utilities/isCollection.ts';
 
 import { Kind } from '../language/kinds.ts';
 import { ValueNode } from '../language/ast.ts';
@@ -15,7 +15,7 @@ GraphQLInputType,
   isListType,
   isNonNullType,
 } from '../type/definition.ts';
-import Maybe from '../tsutils/Maybe.ts';
+import Maybe from '../utilities/Maybe.ts';
 
 /**
  * Produces a GraphQL Value AST given a JavaScript object.

@@ -1,23 +1,23 @@
-import Maybe from '../tsutils/Maybe.ts';
+import Maybe from '../utilities/Maybe.ts';
 
-import inspect from '../jsutils/inspect.ts';
-import keyMap from '../jsutils/keyMap.ts';
-import mapValue from '../jsutils/mapValue.ts';
-import toObjMap from '../jsutils/toObjMap.ts';
-import { Path } from '../jsutils/Path.ts';
-import devAssert from '../jsutils/devAssert.ts';
-import keyValMap from '../jsutils/keyValMap.ts';
-import instanceOf from '../jsutils/instanceOf.ts';
-import didYouMean from '../jsutils/didYouMean.ts';
-import isObjectLike from '../jsutils/isObjectLike.ts';
-import identityFunc from '../jsutils/identityFunc.ts';
-import defineInspect from '../jsutils/defineInspect.ts';
-import suggestionList from '../jsutils/suggestionList.ts';
-import { PromiseOrValue } from '../jsutils/PromiseOrValue.ts';
+import inspect from '../utilities/inspect.ts';
+import keyMap from '../utilities/keyMap.ts';
+import mapValue from '../utilities/mapValue.ts';
+import toObjMap from '../utilities/toObjMap.ts';
+import { Path } from '../utilities/Path.ts';
+import devAssert from '../utilities/devAssert.ts';
+import keyValMap from '../utilities/keyValMap.ts';
+import instanceOf from '../utilities/instanceOf.ts';
+import didYouMean from '../utilities/didYouMean.ts';
+import isObjectLike from '../utilities/isObjectLike.ts';
+import identityFunc from '../utilities/identityFunc.ts';
+import defineInspect from '../utilities/defineInspect.ts';
+import suggestionList from '../utilities/suggestionList.ts';
+import { PromiseOrValue } from '../utilities/PromiseOrValue.ts';
 import {
 ObjMap,
 ReadOnlyObjMap,
-} from '../jsutils/ObjMap.ts';
+} from '../utilities/ObjMap.ts';
 
 import { Kind } from '../language/kinds.ts';
 import { print } from '../language/printer.ts';

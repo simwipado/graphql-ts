@@ -1,5 +1,5 @@
-import inspect from '../jsutils/inspect.ts';
-import devAssert from '../jsutils/devAssert.ts';
+import inspect from '../utilities/inspect.ts';
+import devAssert from '../utilities/devAssert.ts';
 
 import { syntaxError } from '../error/syntaxError.ts';
 import { GraphQLError } from '../error/GraphQLError.ts';

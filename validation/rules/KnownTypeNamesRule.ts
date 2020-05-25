@@ -1,5 +1,5 @@
-import didYouMean from '../../jsutils/didYouMean.ts';
-import suggestionList from '../../jsutils/suggestionList.ts';
+import didYouMean from '../../utilities/didYouMean.ts';
+import suggestionList from '../../utilities/suggestionList.ts';
 
 import { GraphQLError } from '../../error/GraphQLError.ts';
 

@@ -1,4 +1,4 @@
-import devAssert from '../jsutils/devAssert.ts';
+import devAssert from '../utilities/devAssert.ts';
 
 import { Kind } from '../language/kinds.ts';
 import { Source } from '../language/source.ts';
@@ -19,7 +19,7 @@ import {
 } from '../type/directives.ts';
 
 import { extendSchemaImpl } from './extendSchema.ts';
-import Maybe from '../tsutils/Maybe.ts';
+import Maybe from '../utilities/Maybe.ts';
 
 export interface BuildSchemaOptions extends GraphQLSchemaValidationOptions {
   /**

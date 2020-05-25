@@ -36,7 +36,7 @@ import {
 } from '../type/introspection.ts';
 
 import { typeFromAST } from './typeFromAST.ts';
-import Maybe from '../tsutils/Maybe.ts';
+import Maybe from '../utilities/Maybe.ts';
 
 /**
  * TypeInfo is a utility class which, given a GraphQL schema, can keep track

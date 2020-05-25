@@ -1,5 +1,5 @@
-import inspect from '../jsutils/inspect.ts';
-import isObjectLike from '../jsutils/isObjectLike.ts';
+import inspect from '../utilities/inspect.ts';
+import isObjectLike from '../utilities/isObjectLike.ts';
 
 import { Kind } from '../language/kinds.ts';
 import { print } from '../language/printer.ts';

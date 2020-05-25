@@ -1,5 +1,5 @@
-import isPromise from './jsutils/isPromise.ts';
-import { PromiseOrValue } from './jsutils/PromiseOrValue.ts';
+import isPromise from './utilities/isPromise.ts';
+import { PromiseOrValue } from './utilities/PromiseOrValue.ts';
 
 import { parse } from './language/parser.ts';
 import { Source } from './language/source.ts';
@@ -14,7 +14,7 @@ GraphQLTypeResolver,
 } from './type/definition.ts';
 
 import { ExecutionResult, execute } from './execution/execute.ts';
-import Maybe from './tsutils/Maybe.ts';
+import Maybe from './utilities/Maybe.ts';
 
 /**
  * This is the primary entry point function for fulfilling GraphQL operations

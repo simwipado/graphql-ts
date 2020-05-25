@@ -1,4 +1,4 @@
-import { ObjMap } from '../jsutils/ObjMap.ts';
+import { ObjMap } from '../utilities/ObjMap.ts';
 
 import { GraphQLError } from '../error/GraphQLError.ts';
 
@@ -24,7 +24,7 @@ GraphQLArgument,
 } from '../type/definition.ts';
 
 import { TypeInfo, visitWithTypeInfo } from '../utilities/TypeInfo.ts';
-import Maybe from '../tsutils/Maybe.ts';
+import Maybe from '../utilities/Maybe.ts';
 
 type NodeWithSelectionSet = OperationDefinitionNode | FragmentDefinitionNode;
 type VariableUsage = {

@@ -1,7 +1,7 @@
-import keyMap from '../jsutils/keyMap.ts';
-import inspect from '../jsutils/inspect.ts';
-import { ObjMap } from '../jsutils/ObjMap.ts';
-import printPathArray from '../jsutils/printPathArray.ts';
+import keyMap from '../utilities/keyMap.ts';
+import inspect from '../utilities/inspect.ts';
+import { ObjMap } from '../utilities/ObjMap.ts';
+import printPathArray from '../utilities/printPathArray.ts';
 
 import { GraphQLError } from '../error/GraphQLError.ts';
 
@@ -24,7 +24,7 @@ import {
 import { typeFromAST } from '../utilities/typeFromAST.ts';
 import { valueFromAST } from '../utilities/valueFromAST.ts';
 import { coerceInputValue } from '../utilities/coerceInputValue.ts';
-import Maybe from '../tsutils/Maybe.ts';
+import Maybe from '../utilities/Maybe.ts';
 
 type CoercedVariableValues =
   | { errors: GraphQLError[]; coerced?: never }

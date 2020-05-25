@@ -1,5 +1,5 @@
-import inspect from '../../jsutils/inspect.ts';
-import { ObjMap } from '../../jsutils/ObjMap.ts';
+import inspect from '../../utilities/inspect.ts';
+import { ObjMap } from '../../utilities/ObjMap.ts';
 
 import { GraphQLError } from '../../error/GraphQLError.ts';
 
@@ -29,7 +29,7 @@ import {
 import { typeFromAST } from '../../utilities/typeFromAST.ts';
 
 import { ValidationContext } from '../ValidationContext.ts';
-import Maybe from '../../tsutils/Maybe.ts';
+import Maybe from '../../utilities/Maybe.ts';
 
 function reasonMessage(reason: ConflictReasonMessage): string {
   if (Array.isArray(reason)) {

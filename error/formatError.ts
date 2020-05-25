@@ -1,4 +1,4 @@
-import devAssert from '../jsutils/devAssert.ts';
+import devAssert from '../utilities/devAssert.ts';
 
 import { SourceLocation } from '../language/location.ts';
 

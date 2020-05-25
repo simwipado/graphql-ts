@@ -1,9 +1,9 @@
-import inspect from '../jsutils/inspect.ts';
-import toObjMap from '../jsutils/toObjMap.ts';
-import devAssert from '../jsutils/devAssert.ts';
-import instanceOf from '../jsutils/instanceOf.ts';
-import isObjectLike from '../jsutils/isObjectLike.ts';
-import defineInspect from '../jsutils/defineInspect.ts';
+import inspect from '../utilities/inspect.ts';
+import toObjMap from '../utilities/toObjMap.ts';
+import devAssert from '../utilities/devAssert.ts';
+import instanceOf from '../utilities/instanceOf.ts';
+import isObjectLike from '../utilities/isObjectLike.ts';
+import defineInspect from '../utilities/defineInspect.ts';
 
 import { DirectiveDefinitionNode } from '../language/ast.ts';
 import {
@@ -18,7 +18,7 @@ GraphQLArgument,
   argsToArgsConfig,
   GraphQLNonNull,
 } from './definition.ts';
-import Maybe from '../tsutils/Maybe.ts';
+import Maybe from '../utilities/Maybe.ts';
 
 /**
  * Test if the given value is a GraphQL directive.

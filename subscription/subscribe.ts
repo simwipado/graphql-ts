@@ -1,5 +1,5 @@
-import inspect from '../jsutils/inspect.ts';
-import { addPath, pathToArray } from '../jsutils/Path.ts';
+import inspect from '../utilities/inspect.ts';
+import { addPath, pathToArray } from '../utilities/Path.ts';
 
 import { GraphQLError } from '../error/GraphQLError.ts';
 import { locatedError } from '../error/locatedError.ts';
@@ -23,7 +23,7 @@ import { GraphQLFieldResolver } from '../type/definition.ts';
 import { getOperationRootType } from '../utilities/getOperationRootType.ts';
 
 import mapAsyncIterator from './mapAsyncIterator.ts';
-import Maybe from '../tsutils/Maybe.ts';
+import Maybe from '../utilities/Maybe.ts';
 
 export interface SubscriptionArgs {
   schema: GraphQLSchema;

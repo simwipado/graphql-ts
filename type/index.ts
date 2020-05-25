@@ -1,4 +1,4 @@
-export type { Path as ResponsePath } from '../jsutils/Path.ts';
+export type { Path as ResponsePath } from '../utilities/Path.ts';
 
 export {
   // Predicate

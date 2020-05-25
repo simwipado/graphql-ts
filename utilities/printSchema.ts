@@ -1,5 +1,5 @@
-import inspect from '../jsutils/inspect.ts';
-import invariant from '../jsutils/invariant.ts';
+import inspect from '../utilities/inspect.ts';
+import invariant from '../utilities/invariant.ts';
 
 import { print } from '../language/printer.ts';
 import { printBlockString } from '../language/blockString.ts';
@@ -32,7 +32,7 @@ GraphQLInputObjectType,
 } from '../type/definition.ts';
 
 import { astFromValue } from './astFromValue.ts';
-import Maybe from '../tsutils/Maybe.ts';
+import Maybe from '../utilities/Maybe.ts';
 
 export interface Options {
   /**

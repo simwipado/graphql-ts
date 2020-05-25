@@ -1,4 +1,4 @@
-import inspect from '../jsutils/inspect.ts';
+import inspect from '../utilities/inspect.ts';
 
 import { Source } from '../language/source.ts';
 import { TokenKind } from '../language/tokenKind.ts';

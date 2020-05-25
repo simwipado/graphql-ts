@@ -1,15 +1,15 @@
-import inspect from '../jsutils/inspect.ts';
-import memoize3 from '../jsutils/memoize3.ts';
-import invariant from '../jsutils/invariant.ts';
-import devAssert from '../jsutils/devAssert.ts';
-import isPromise from '../jsutils/isPromise.ts';
-import { ObjMap } from '../jsutils/ObjMap.ts';
-import isObjectLike from '../jsutils/isObjectLike.ts';
-import isCollection from '../jsutils/isCollection.ts';
-import promiseReduce from '../jsutils/promiseReduce.ts';
-import promiseForObject from '../jsutils/promiseForObject.ts';
-import { PromiseOrValue } from '../jsutils/PromiseOrValue.ts';
-import { Path, addPath, pathToArray } from '../jsutils/Path.ts';
+import inspect from '../utilities/inspect.ts';
+import memoize3 from '../utilities/memoize3.ts';
+import invariant from '../utilities/invariant.ts';
+import devAssert from '../utilities/devAssert.ts';
+import isPromise from '../utilities/isPromise.ts';
+import { ObjMap } from '../utilities/ObjMap.ts';
+import isObjectLike from '../utilities/isObjectLike.ts';
+import isCollection from '../utilities/isCollection.ts';
+import promiseReduce from '../utilities/promiseReduce.ts';
+import promiseForObject from '../utilities/promiseForObject.ts';
+import { PromiseOrValue } from '../utilities/PromiseOrValue.ts';
+import { Path, addPath, pathToArray } from '../utilities/Path.ts';
 
 import { GraphQLError } from '../error/GraphQLError.ts';
 import { locatedError } from '../error/locatedError.ts';
@@ -61,7 +61,7 @@ import {
   getArgumentValues,
   getDirectiveValues,
 } from './values.ts';
-import Maybe from '../tsutils/Maybe.ts';
+import Maybe from '../utilities/Maybe.ts';
 
 /**
  * Terminology

@@ -1,4 +1,4 @@
-export { pathToArray as responsePathAsArray } from '../jsutils/Path.ts';
+export { pathToArray as responsePathAsArray } from '../utilities/Path.ts';
 
 export { execute, defaultFieldResolver, defaultTypeResolver } from './execute.ts';
 export type { ExecutionArgs, ExecutionResult } from './execute.ts';

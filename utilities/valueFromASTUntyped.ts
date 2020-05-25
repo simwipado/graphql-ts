@@ -1,11 +1,11 @@
-import inspect from '../jsutils/inspect.ts';
-import invariant from '../jsutils/invariant.ts';
-import keyValMap from '../jsutils/keyValMap.ts';
-import { ObjMap } from '../jsutils/ObjMap.ts';
+import inspect from '../utilities/inspect.ts';
+import invariant from '../utilities/invariant.ts';
+import keyValMap from '../utilities/keyValMap.ts';
+import { ObjMap } from '../utilities/ObjMap.ts';
 
 import { Kind } from '../language/kinds.ts';
 import { ValueNode } from '../language/ast.ts';
-import Maybe from '../tsutils/Maybe.ts';
+import Maybe from '../utilities/Maybe.ts';
 
 /**
  * Produces a JavaScript value given a GraphQL Value AST.

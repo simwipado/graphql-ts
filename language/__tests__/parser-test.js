@@ -1,51 +1,51 @@
-import { inspect as nodeInspect } from 'util';
+import { inspect as nodeInspect } from "util";
 
-import { expect } from 'chai';
-import { describe, it } from 'mocha';
+import { expect } from "chai";
+import { describe, it } from "mocha";
 
-import dedent from '../../__testUtils__/dedent';
+import dedent from "../../__testUtils__/dedent";
 
-import inspect from '../../jsutils/inspect';
+import inspect from "../../utilities/inspect";
 
-import { Kind } from '../kinds';
-import { Source } from '../source';
-import { TokenKind } from '../tokenKind';
-import { parse, parseValue, parseType } from '../parser';
+import { Kind } from "../kinds";
+import { Source } from "../source";
+import { TokenKind } from "../tokenKind";
+import { parse, parseValue, parseType } from "../parser";
 
-import { kitchenSinkQuery } from '../../__fixtures__/index';
+import { kitchenSinkQuery } from "../../__fixtures__/index";
 
-import toJSONDeep from './toJSONDeep';
+import toJSONDeep from "./toJSONDeep";
 
 function expectSyntaxError(text) {
   return expect(() => parse(text)).to.throw();
 }
 
-describe('Parser', () => {
-  it('asserts that a source to parse was provided', () => {
+describe("Parser", () => {
+  it("asserts that a source to parse was provided", () => {
     // $DisableFlowOnNegativeTest
-    expect(() => parse()).to.throw('Must provide Source. Received: undefined.');
+    expect(() => parse()).to.throw("Must provide Source. Received: undefined.");
   });
 
-  it('asserts that an invalid source to parse was provided', () => {
+  it("asserts that an invalid source to parse was provided", () => {
     // $DisableFlowOnNegativeTest
-    expect(() => parse({})).to.throw('Must provide Source. Received: {}.');
+    expect(() => parse({})).to.throw("Must provide Source. Received: {}.");
   });
 
-  it('parse provides useful errors', () => {
+  it("parse provides useful errors", () => {
     let caughtError;
     try {
-      parse('{');
+      parse("{");
     } catch (error) {
       caughtError = error;
     }
 
     expect(caughtError).to.deep.contain({
-      message: 'Syntax Error: Expected Name, found <EOF>.',
+      message: "Syntax Error: Expected Name, found <EOF>.",
       positions: [1],
       locations: [{ line: 1, column: 2 }],
     });
 
-    expect(String(caughtError) + '\n').to.equal(dedent`
+    expect(String(caughtError) + "\n").to.equal(dedent`
       Syntax Error: Expected Name, found <EOF>.
 
       GraphQL request:1:2
@@ -61,17 +61,17 @@ describe('Parser', () => {
       locations: [{ line: 3, column: 26 }],
     });
 
-    expectSyntaxError('{ field: {} }').to.deep.include({
+    expectSyntaxError("{ field: {} }").to.deep.include({
       message: 'Syntax Error: Expected Name, found "{".',
       locations: [{ line: 1, column: 10 }],
     });
 
-    expectSyntaxError('notAnOperation Foo { field }').to.deep.include({
+    expectSyntaxError("notAnOperation Foo { field }").to.deep.include({
       message: 'Syntax Error: Unexpected Name "notAnOperation".',
       locations: [{ line: 1, column: 1 }],
     });
 
-    expectSyntaxError('...').to.deep.include({
+    expectSyntaxError("...").to.deep.include({
       message: 'Syntax Error: Unexpected "...".',
       locations: [{ line: 1, column: 1 }],
     });
@@ -82,14 +82,14 @@ describe('Parser', () => {
     });
   });
 
-  it('parse provides useful error when using source', () => {
+  it("parse provides useful error when using source", () => {
     let caughtError;
     try {
-      parse(new Source('query', 'MyQuery.graphql'));
+      parse(new Source("query", "MyQuery.graphql"));
     } catch (error) {
       caughtError = error;
     }
-    expect(String(caughtError) + '\n').to.equal(dedent`
+    expect(String(caughtError) + "\n").to.equal(dedent`
       Syntax Error: Expected "{", found <EOF>.
 
       MyQuery.graphql:1:6
@@ -98,42 +98,40 @@ describe('Parser', () => {
     `);
   });
 
-  it('parses variable inline values', () => {
-    expect(() =>
-      parse('{ field(complex: { a: { b: [ $var ] } }) }'),
-    ).to.not.throw();
+  it("parses variable inline values", () => {
+    expect(() => parse("{ field(complex: { a: { b: [ $var ] } }) }")).to.not
+      .throw();
   });
 
-  it('parses constant default values', () => {
+  it("parses constant default values", () => {
     expectSyntaxError(
-      'query Foo($x: Complex = { a: { b: [ $var ] } }) { field }',
+      "query Foo($x: Complex = { a: { b: [ $var ] } }) { field }",
     ).to.deep.equal({
       message: 'Syntax Error: Unexpected "$".',
       locations: [{ line: 1, column: 37 }],
     });
   });
 
-  it('parses variable definition directives', () => {
-    expect(() =>
-      parse('query Foo($x: Boolean = false @bar) { field }'),
-    ).to.not.throw();
+  it("parses variable definition directives", () => {
+    expect(() => parse("query Foo($x: Boolean = false @bar) { field }")).to.not
+      .throw();
   });
 
   it('does not accept fragments named "on"', () => {
-    expectSyntaxError('fragment on on on { on }').to.deep.equal({
+    expectSyntaxError("fragment on on on { on }").to.deep.equal({
       message: 'Syntax Error: Unexpected Name "on".',
       locations: [{ line: 1, column: 10 }],
     });
   });
 
   it('does not accept fragments spread of "on"', () => {
-    expectSyntaxError('{ ...on }').to.deep.equal({
+    expectSyntaxError("{ ...on }").to.deep.equal({
       message: 'Syntax Error: Expected Name, found "}".',
       locations: [{ line: 1, column: 9 }],
     });
   });
 
-  it('parses multi-byte characters', () => {
+  it("parses multi-byte characters", () => {
     // Note: \u0A0A could be naively interpreted as two line-feed chars.
     const ast = parse(`
       # This comment has a \u0A0A multi-byte character.
@@ -141,28 +139,28 @@ describe('Parser', () => {
     `);
 
     expect(ast).to.have.nested.property(
-      'definitions[0].selectionSet.selections[0].arguments[0].value.value',
-      'Has a \u0A0A multi-byte character.',
+      "definitions[0].selectionSet.selections[0].arguments[0].value.value",
+      "Has a \u0A0A multi-byte character.",
     );
   });
 
-  it('parses kitchen sink', () => {
+  it("parses kitchen sink", () => {
     expect(() => parse(kitchenSinkQuery)).to.not.throw();
   });
 
-  it('allows non-keywords anywhere a Name is allowed', () => {
+  it("allows non-keywords anywhere a Name is allowed", () => {
     const nonKeywords = [
-      'on',
-      'fragment',
-      'query',
-      'mutation',
-      'subscription',
-      'true',
-      'false',
+      "on",
+      "fragment",
+      "query",
+      "mutation",
+      "subscription",
+      "true",
+      "false",
     ];
     for (const keyword of nonKeywords) {
       // You can't define or reference a fragment named `on`.
-      const fragmentName = keyword !== 'on' ? keyword : 'a';
+      const fragmentName = keyword !== "on" ? keyword : "a";
       const document = `
         query ${keyword} {
           ... ${fragmentName}
@@ -178,47 +176,47 @@ describe('Parser', () => {
     }
   });
 
-  it('parses anonymous mutation operations', () => {
+  it("parses anonymous mutation operations", () => {
     expect(() =>
       parse(`
       mutation {
         mutationField
       }
-    `),
+    `)
     ).to.not.throw();
   });
 
-  it('parses anonymous subscription operations', () => {
+  it("parses anonymous subscription operations", () => {
     expect(() =>
       parse(`
       subscription {
         subscriptionField
       }
-    `),
+    `)
     ).to.not.throw();
   });
 
-  it('parses named mutation operations', () => {
+  it("parses named mutation operations", () => {
     expect(() =>
       parse(`
       mutation Foo {
         mutationField
       }
-    `),
+    `)
     ).to.not.throw();
   });
 
-  it('parses named subscription operations', () => {
+  it("parses named subscription operations", () => {
     expect(() =>
       parse(`
       subscription Foo {
         subscriptionField
       }
-    `),
+    `)
     ).to.not.throw();
   });
 
-  it('creates ast', () => {
+  it("creates ast", () => {
     const result = parse(dedent`
       {
         node(id: 4) {
@@ -235,7 +233,7 @@ describe('Parser', () => {
         {
           kind: Kind.OPERATION_DEFINITION,
           loc: { start: 0, end: 40 },
-          operation: 'query',
+          operation: "query",
           name: undefined,
           variableDefinitions: [],
           directives: [],
@@ -250,7 +248,7 @@ describe('Parser', () => {
                 name: {
                   kind: Kind.NAME,
                   loc: { start: 4, end: 8 },
-                  value: 'node',
+                  value: "node",
                 },
                 arguments: [
                   {
@@ -258,12 +256,12 @@ describe('Parser', () => {
                     name: {
                       kind: Kind.NAME,
                       loc: { start: 9, end: 11 },
-                      value: 'id',
+                      value: "id",
                     },
                     value: {
                       kind: Kind.INT,
                       loc: { start: 13, end: 14 },
-                      value: '4',
+                      value: "4",
                     },
                     loc: { start: 9, end: 14 },
                   },
@@ -280,7 +278,7 @@ describe('Parser', () => {
                       name: {
                         kind: Kind.NAME,
                         loc: { start: 22, end: 24 },
-                        value: 'id',
+                        value: "id",
                       },
                       arguments: [],
                       directives: [],
@@ -293,7 +291,7 @@ describe('Parser', () => {
                       name: {
                         kind: Kind.NAME,
                         loc: { start: 30, end: 34 },
-                        value: 'name',
+                        value: "name",
                       },
                       arguments: [],
                       directives: [],
@@ -309,7 +307,7 @@ describe('Parser', () => {
     });
   });
 
-  it('creates ast from nameless query without variables', () => {
+  it("creates ast from nameless query without variables", () => {
     const result = parse(dedent`
       query {
         node {
@@ -325,7 +323,7 @@ describe('Parser', () => {
         {
           kind: Kind.OPERATION_DEFINITION,
           loc: { start: 0, end: 29 },
-          operation: 'query',
+          operation: "query",
           name: undefined,
           variableDefinitions: [],
           directives: [],
@@ -340,7 +338,7 @@ describe('Parser', () => {
                 name: {
                   kind: Kind.NAME,
                   loc: { start: 10, end: 14 },
-                  value: 'node',
+                  value: "node",
                 },
                 arguments: [],
                 directives: [],
@@ -355,7 +353,7 @@ describe('Parser', () => {
                       name: {
                         kind: Kind.NAME,
                         loc: { start: 21, end: 23 },
-                        value: 'id',
+                        value: "id",
                       },
                       arguments: [],
                       directives: [],
@@ -371,55 +369,54 @@ describe('Parser', () => {
     });
   });
 
-  it('allows parsing without source location information', () => {
-    const result = parse('{ id }', { noLocation: true });
+  it("allows parsing without source location information", () => {
+    const result = parse("{ id }", { noLocation: true });
     expect(result.loc).to.equal(undefined);
   });
 
-  it('Experimental: allows parsing fragment defined variables', () => {
-    const document = 'fragment a($v: Boolean = false) on t { f(v: $v) }';
+  it("Experimental: allows parsing fragment defined variables", () => {
+    const document = "fragment a($v: Boolean = false) on t { f(v: $v) }";
 
-    expect(() =>
-      parse(document, { experimentalFragmentVariables: true }),
-    ).to.not.throw();
-    expect(() => parse(document)).to.throw('Syntax Error');
+    expect(() => parse(document, { experimentalFragmentVariables: true })).to
+      .not.throw();
+    expect(() => parse(document)).to.throw("Syntax Error");
   });
 
-  it('contains location information that only stringifies start/end', () => {
-    const result = parse('{ id }');
+  it("contains location information that only stringifies start/end", () => {
+    const result = parse("{ id }");
 
     expect(JSON.stringify(result.loc)).to.equal('{"start":0,"end":6}');
-    expect(nodeInspect(result.loc)).to.equal('{ start: 0, end: 6 }');
-    expect(inspect(result.loc)).to.equal('{ start: 0, end: 6 }');
+    expect(nodeInspect(result.loc)).to.equal("{ start: 0, end: 6 }");
+    expect(inspect(result.loc)).to.equal("{ start: 0, end: 6 }");
   });
 
-  it('contains references to source', () => {
-    const source = new Source('{ id }');
+  it("contains references to source", () => {
+    const source = new Source("{ id }");
     const result = parse(source);
 
-    expect(result).to.have.nested.property('loc.source', source);
+    expect(result).to.have.nested.property("loc.source", source);
   });
 
-  it('contains references to start and end tokens', () => {
-    const result = parse('{ id }');
+  it("contains references to start and end tokens", () => {
+    const result = parse("{ id }");
 
     expect(result).to.have.nested.property(
-      'loc.startToken.kind',
+      "loc.startToken.kind",
       TokenKind.SOF,
     );
-    expect(result).to.have.nested.property('loc.endToken.kind', TokenKind.EOF);
+    expect(result).to.have.nested.property("loc.endToken.kind", TokenKind.EOF);
   });
 
-  describe('parseValue', () => {
-    it('parses null value', () => {
-      const result = parseValue('null');
+  describe("parseValue", () => {
+    it("parses null value", () => {
+      const result = parseValue("null");
       expect(toJSONDeep(result)).to.deep.equal({
         kind: Kind.NULL,
         loc: { start: 0, end: 4 },
       });
     });
 
-    it('parses list values', () => {
+    it("parses list values", () => {
       const result = parseValue('[123 "abc"]');
       expect(toJSONDeep(result)).to.deep.equal({
         kind: Kind.LIST,
@@ -428,19 +425,19 @@ describe('Parser', () => {
           {
             kind: Kind.INT,
             loc: { start: 1, end: 4 },
-            value: '123',
+            value: "123",
           },
           {
             kind: Kind.STRING,
             loc: { start: 5, end: 10 },
-            value: 'abc',
+            value: "abc",
             block: false,
           },
         ],
       });
     });
 
-    it('parses block strings', () => {
+    it("parses block strings", () => {
       const result = parseValue('["""long""" "short"]');
       expect(toJSONDeep(result)).to.deep.equal({
         kind: Kind.LIST,
@@ -449,13 +446,13 @@ describe('Parser', () => {
           {
             kind: Kind.STRING,
             loc: { start: 1, end: 11 },
-            value: 'long',
+            value: "long",
             block: true,
           },
           {
             kind: Kind.STRING,
             loc: { start: 12, end: 19 },
-            value: 'short',
+            value: "short",
             block: false,
           },
         ],
@@ -463,35 +460,35 @@ describe('Parser', () => {
     });
   });
 
-  describe('parseType', () => {
-    it('parses well known types', () => {
-      const result = parseType('String');
+  describe("parseType", () => {
+    it("parses well known types", () => {
+      const result = parseType("String");
       expect(toJSONDeep(result)).to.deep.equal({
         kind: Kind.NAMED_TYPE,
         loc: { start: 0, end: 6 },
         name: {
           kind: Kind.NAME,
           loc: { start: 0, end: 6 },
-          value: 'String',
+          value: "String",
         },
       });
     });
 
-    it('parses custom types', () => {
-      const result = parseType('MyType');
+    it("parses custom types", () => {
+      const result = parseType("MyType");
       expect(toJSONDeep(result)).to.deep.equal({
         kind: Kind.NAMED_TYPE,
         loc: { start: 0, end: 6 },
         name: {
           kind: Kind.NAME,
           loc: { start: 0, end: 6 },
-          value: 'MyType',
+          value: "MyType",
         },
       });
     });
 
-    it('parses list types', () => {
-      const result = parseType('[MyType]');
+    it("parses list types", () => {
+      const result = parseType("[MyType]");
       expect(toJSONDeep(result)).to.deep.equal({
         kind: Kind.LIST_TYPE,
         loc: { start: 0, end: 8 },
@@ -501,14 +498,14 @@ describe('Parser', () => {
           name: {
             kind: Kind.NAME,
             loc: { start: 1, end: 7 },
-            value: 'MyType',
+            value: "MyType",
           },
         },
       });
     });
 
-    it('parses non-null types', () => {
-      const result = parseType('MyType!');
+    it("parses non-null types", () => {
+      const result = parseType("MyType!");
       expect(toJSONDeep(result)).to.deep.equal({
         kind: Kind.NON_NULL_TYPE,
         loc: { start: 0, end: 7 },
@@ -518,14 +515,14 @@ describe('Parser', () => {
           name: {
             kind: Kind.NAME,
             loc: { start: 0, end: 6 },
-            value: 'MyType',
+            value: "MyType",
           },
         },
       });
     });
 
-    it('parses nested types', () => {
-      const result = parseType('[MyType!]');
+    it("parses nested types", () => {
+      const result = parseType("[MyType!]");
       expect(toJSONDeep(result)).to.deep.equal({
         kind: Kind.LIST_TYPE,
         loc: { start: 0, end: 9 },
@@ -538,7 +535,7 @@ describe('Parser', () => {
             name: {
               kind: Kind.NAME,
               loc: { start: 1, end: 7 },
-              value: 'MyType',
+              value: "MyType",
             },
           },
         },

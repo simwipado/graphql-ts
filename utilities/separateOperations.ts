@@ -1,4 +1,4 @@
-import { ObjMap } from '../jsutils/ObjMap.ts';
+import { ObjMap } from '../utilities/ObjMap.ts';
 
 import { Kind } from '../language/kinds.ts';
 import { visit } from '../language/visitor.ts';

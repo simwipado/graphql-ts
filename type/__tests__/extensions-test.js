@@ -1,10 +1,10 @@
-import { expect } from 'chai';
-import { describe, it } from 'mocha';
+import { expect } from "chai";
+import { describe, it } from "mocha";
 
-import invariant from '../../jsutils/invariant';
+import invariant from "../../utilities/invariant";
 
-import { GraphQLSchema } from '../schema';
-import { GraphQLDirective } from '../directives';
+import { GraphQLSchema } from "../schema";
+import { GraphQLDirective } from "../directives";
 import {
   GraphQLScalarType,
   GraphQLObjectType,
@@ -12,30 +12,30 @@ import {
   GraphQLUnionType,
   GraphQLEnumType,
   GraphQLInputObjectType,
-} from '../definition.ts';
+} from "../definition.ts";
 
-const dummyType = new GraphQLScalarType({ name: 'DummyScalar' });
+const dummyType = new GraphQLScalarType({ name: "DummyScalar" });
 
 function expectObjMap(value) {
-  invariant(value != null && typeof value === 'object');
+  invariant(value != null && typeof value === "object");
   expect(Object.getPrototypeOf(value)).to.equal(null);
   return expect(value);
 }
 
-describe('Type System: Extensions', () => {
-  describe('GraphQLScalarType', () => {
-    it('without extensions', () => {
-      const someScalar = new GraphQLScalarType({ name: 'SomeScalar' });
+describe("Type System: Extensions", () => {
+  describe("GraphQLScalarType", () => {
+    it("without extensions", () => {
+      const someScalar = new GraphQLScalarType({ name: "SomeScalar" });
       expect(someScalar.extensions).to.equal(undefined);
 
       const config = someScalar.toConfig();
       expect(config.extensions).to.equal(undefined);
     });
 
-    it('with extensions', () => {
-      const scalarExtensions = Object.freeze({ SomeScalarExt: 'scalar' });
+    it("with extensions", () => {
+      const scalarExtensions = Object.freeze({ SomeScalarExt: "scalar" });
       const someScalar = new GraphQLScalarType({
-        name: 'SomeScalar',
+        name: "SomeScalar",
         extensions: scalarExtensions,
       });
 
@@ -46,10 +46,10 @@ describe('Type System: Extensions', () => {
     });
   });
 
-  describe('GraphQLObjectType', () => {
-    it('without extensions', () => {
+  describe("GraphQLObjectType", () => {
+    it("without extensions", () => {
       const someObject = new GraphQLObjectType({
-        name: 'SomeObject',
+        name: "SomeObject",
         fields: {
           someField: {
             type: dummyType,
@@ -77,13 +77,13 @@ describe('Type System: Extensions', () => {
       expect(someArgConfig.extensions).to.equal(undefined);
     });
 
-    it('with extensions', () => {
-      const objectExtensions = Object.freeze({ SomeObjectExt: 'object' });
-      const fieldExtensions = Object.freeze({ SomeFieldExt: 'field' });
-      const argExtensions = Object.freeze({ SomeArgExt: 'arg' });
+    it("with extensions", () => {
+      const objectExtensions = Object.freeze({ SomeObjectExt: "object" });
+      const fieldExtensions = Object.freeze({ SomeFieldExt: "field" });
+      const argExtensions = Object.freeze({ SomeArgExt: "arg" });
 
       const someObject = new GraphQLObjectType({
-        name: 'SomeObject',
+        name: "SomeObject",
         fields: {
           someField: {
             type: dummyType,
@@ -115,10 +115,10 @@ describe('Type System: Extensions', () => {
     });
   });
 
-  describe('GraphQLInterfaceType', () => {
-    it('without extensions', () => {
+  describe("GraphQLInterfaceType", () => {
+    it("without extensions", () => {
       const someInterface = new GraphQLInterfaceType({
-        name: 'SomeInterface',
+        name: "SomeInterface",
         fields: {
           someField: {
             type: dummyType,
@@ -146,15 +146,15 @@ describe('Type System: Extensions', () => {
       expect(someArgConfig.extensions).to.equal(undefined);
     });
 
-    it('with extensions', () => {
+    it("with extensions", () => {
       const interfaceExtensions = Object.freeze({
-        SomeInterfaceExt: 'interface',
+        SomeInterfaceExt: "interface",
       });
-      const fieldExtensions = Object.freeze({ SomeFieldExt: 'field' });
-      const argExtensions = Object.freeze({ SomeArgExt: 'arg' });
+      const fieldExtensions = Object.freeze({ SomeFieldExt: "field" });
+      const argExtensions = Object.freeze({ SomeArgExt: "arg" });
 
       const someInterface = new GraphQLInterfaceType({
-        name: 'SomeInterface',
+        name: "SomeInterface",
         fields: {
           someField: {
             type: dummyType,
@@ -186,10 +186,10 @@ describe('Type System: Extensions', () => {
     });
   });
 
-  describe('GraphQLUnionType', () => {
-    it('without extensions', () => {
+  describe("GraphQLUnionType", () => {
+    it("without extensions", () => {
       const someUnion = new GraphQLUnionType({
-        name: 'SomeUnion',
+        name: "SomeUnion",
         types: [],
       });
 
@@ -199,11 +199,11 @@ describe('Type System: Extensions', () => {
       expect(config.extensions).to.equal(undefined);
     });
 
-    it('with extensions', () => {
-      const unionExtensions = Object.freeze({ SomeUnionExt: 'union' });
+    it("with extensions", () => {
+      const unionExtensions = Object.freeze({ SomeUnionExt: "union" });
 
       const someUnion = new GraphQLUnionType({
-        name: 'SomeUnion',
+        name: "SomeUnion",
         types: [],
         extensions: unionExtensions,
       });
@@ -215,10 +215,10 @@ describe('Type System: Extensions', () => {
     });
   });
 
-  describe('GraphQLEnumType', () => {
-    it('without extensions', () => {
+  describe("GraphQLEnumType", () => {
+    it("without extensions", () => {
       const someEnum = new GraphQLEnumType({
-        name: 'SomeEnum',
+        name: "SomeEnum",
         values: {
           SOME_VALUE: {},
         },
@@ -234,12 +234,12 @@ describe('Type System: Extensions', () => {
       expect(someValueConfig.extensions).to.equal(undefined);
     });
 
-    it('with extensions', () => {
-      const enumExtensions = Object.freeze({ SomeEnumExt: 'enum' });
-      const valueExtensions = Object.freeze({ SomeValueExt: 'value' });
+    it("with extensions", () => {
+      const enumExtensions = Object.freeze({ SomeEnumExt: "enum" });
+      const valueExtensions = Object.freeze({ SomeValueExt: "value" });
 
       const someEnum = new GraphQLEnumType({
-        name: 'SomeEnum',
+        name: "SomeEnum",
         values: {
           SOME_VALUE: {
             extensions: valueExtensions,
@@ -259,10 +259,10 @@ describe('Type System: Extensions', () => {
     });
   });
 
-  describe('GraphQLInputObjectType', () => {
-    it('without extensions', () => {
+  describe("GraphQLInputObjectType", () => {
+    it("without extensions", () => {
       const someInputObject = new GraphQLInputObjectType({
-        name: 'SomeInputObject',
+        name: "SomeInputObject",
         fields: {
           someInputField: {
             type: dummyType,
@@ -280,16 +280,16 @@ describe('Type System: Extensions', () => {
       expect(someInputFieldConfig.extensions).to.equal(undefined);
     });
 
-    it('with extensions', () => {
+    it("with extensions", () => {
       const inputObjectExtensions = Object.freeze({
-        SomeInputObjectExt: 'inputObject',
+        SomeInputObjectExt: "inputObject",
       });
       const inputFieldExtensions = Object.freeze({
-        SomeInputFieldExt: 'inputField',
+        SomeInputFieldExt: "inputField",
       });
 
       const someInputObject = new GraphQLInputObjectType({
-        name: 'SomeInputObject',
+        name: "SomeInputObject",
         fields: {
           someInputField: {
             type: dummyType,
@@ -316,10 +316,10 @@ describe('Type System: Extensions', () => {
     });
   });
 
-  describe('GraphQLDirective', () => {
-    it('without extensions', () => {
+  describe("GraphQLDirective", () => {
+    it("without extensions", () => {
       const someDirective = new GraphQLDirective({
-        name: 'SomeDirective',
+        name: "SomeDirective",
         args: {
           someArg: {
             type: dummyType,
@@ -338,14 +338,14 @@ describe('Type System: Extensions', () => {
       expect(someArgConfig.extensions).to.equal(undefined);
     });
 
-    it('with extensions', () => {
+    it("with extensions", () => {
       const directiveExtensions = Object.freeze({
-        SomeDirectiveExt: 'directive',
+        SomeDirectiveExt: "directive",
       });
-      const argExtensions = Object.freeze({ SomeArgExt: 'arg' });
+      const argExtensions = Object.freeze({ SomeArgExt: "arg" });
 
       const someDirective = new GraphQLDirective({
-        name: 'SomeDirective',
+        name: "SomeDirective",
         args: {
           someArg: {
             type: dummyType,
@@ -367,8 +367,8 @@ describe('Type System: Extensions', () => {
     });
   });
 
-  describe('GraphQLSchema', () => {
-    it('without extensions', () => {
+  describe("GraphQLSchema", () => {
+    it("without extensions", () => {
       const schema = new GraphQLSchema({});
 
       expect(schema.extensions).to.equal(undefined);
@@ -377,9 +377,9 @@ describe('Type System: Extensions', () => {
       expect(config.extensions).to.equal(undefined);
     });
 
-    it('with extensions', () => {
+    it("with extensions", () => {
       const schemaExtensions = Object.freeze({
-        schemaExtension: 'schema',
+        schemaExtension: "schema",
       });
 
       const schema = new GraphQLSchema({ extensions: schemaExtensions });

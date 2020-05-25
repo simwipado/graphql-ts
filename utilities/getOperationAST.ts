@@ -3,7 +3,7 @@ import {
 DocumentNode,
 OperationDefinitionNode,
 } from '../language/ast.ts';
-import Maybe from '../tsutils/Maybe.ts';
+import Maybe from '../utilities/Maybe.ts';
 
 /**
  * Returns an operation AST given a document AST and optionally an operation

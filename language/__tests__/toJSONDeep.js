@@ -1,4 +1,4 @@
-import isObjectLike from '../../jsutils/isObjectLike';
+import isObjectLike from "../../utilities/isObjectLike";
 
 /**
  * Deeply transforms an arbitrary value to a JSON-safe value by calling toJSON
@@ -9,7 +9,7 @@ export default function toJSONDeep(value: mixed): mixed {
     return value;
   }
 
-  if (typeof value.toJSON === 'function') {
+  if (typeof value.toJSON === "function") {
     // $FlowFixMe(>=0.90.0)
     return value.toJSON();
   }
