@@ -1,4 +1,4 @@
-export type { Path as ResponsePath } from '../jsutils/Path';
+export type { Path as ResponsePath } from '../jsutils/Path.ts';
 
 export {
   // Predicate
@@ -8,7 +8,7 @@ export {
   // GraphQL Schema definition
   GraphQLSchema,
 } from './schema.ts';
-export type { GraphQLSchemaConfig } from './schema';
+export type { GraphQLSchemaConfig } from './schema.ts';
 
 export {
   // Predicates
@@ -82,7 +82,7 @@ export {
   DEFAULT_DEPRECATION_REASON,
 } from './directives.ts';
 
-export type { GraphQLDirectiveConfig } from './directives';
+export type { GraphQLDirectiveConfig } from './directives.ts';
 
 // Common built-in scalar instances.
 export {
@@ -159,4 +159,4 @@ export type {
 } from './definition.ts';
 
 // Validate GraphQL schema.
-export { validateSchema, assertValidSchema } from './validate';
+export { validateSchema, assertValidSchema } from './validate.ts';

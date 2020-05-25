@@ -17,8 +17,8 @@ export type Visitor<KindToNode, Nodes = KindToNode[keyof KindToNode]> =
   | ShapeMapVisitor<KindToNode, Nodes>;
 
 interface EnterLeave<T> {
-  readonly enter?: T;
-  readonly leave?: T;
+  enter?: T;
+  leave?: T;
 }
 
 type EnterLeaveVisitor<KindToNode, Nodes> = EnterLeave<
@@ -41,20 +41,20 @@ export type VisitFn<TAnyNode, TVisitedNode = TAnyNode> = (
   /** The index or key to this node from the parent node or Array. */
   key: string | number | undefined,
   /** The parent immediately above this node, which may be an Array. */
-  parent: TAnyNode | ReadonlyArray<TAnyNode> | undefined,
+  parent: TAnyNode | TAnyNode[] | undefined,
   /** The key path to get to this node from the root node. */
-  path: ReadonlyArray<string | number>,
+  path: (string | number)[],
   /** All nodes and Arrays visited before reaching parent of this node.
    * These correspond to array indices in `path`.
    * Note: ancestors includes arrays which contain the parent of visited node.
    */
-  ancestors: ReadonlyArray<TAnyNode | ReadonlyArray<TAnyNode>>,
+  ancestors: (TAnyNode | TAnyNode[])[],
 ) => any;
 
 /**
  * A KeyMap describes each the traversable properties of each kind of node.
  */
-export type VisitorKeyMap<T> = { [P in keyof T]: ReadonlyArray<keyof T[P]> };
+export type VisitorKeyMap<T> = { [P in keyof T]: (keyof T[P])[] };
 
 export const QueryDocumentKeys: VisitorKeyMap<ASTKindToNode> = {
   Name: [],
@@ -141,7 +141,7 @@ export const QueryDocumentKeys: VisitorKeyMap<ASTKindToNode> = {
   UnionTypeExtension: ['name', 'directives', 'types'],
   EnumTypeExtension: ['name', 'directives', 'values'],
   InputObjectTypeExtension: ['name', 'directives', 'fields'],
-};
+} as const;
 
 export const BREAK: any = {};
 
@@ -262,7 +262,7 @@ export function visit(
         if (inArray) {
           node = node.slice();
         } else {
-          const clone = {};
+          const clone: any = {};
           for (const k of Object.keys(node)) {
             clone[k] = node[k];
           }
@@ -285,7 +285,7 @@ export function visit(
       }
       index = stack.index;
       keys = stack.keys;
-      edits = stack.edits';
+      edits = stack.edits;
       inArray = stack.inArray;
       stack = stack.prev;
     } else {
@@ -340,7 +340,7 @@ export function visit(
     } else {
       stack = { inArray, index, keys, edits, prev: stack };
       inArray = Array.isArray(node);
-      keys = inArray ? node : visitorKeys[node.kind] ?? [];
+      keys = inArray ? node : (visitorKeys as any)[node.kind] ?? [];
       index = -1;
       edits = [];
       if (parent) {
@@ -374,7 +374,7 @@ export function visitInParallel(
         if (skipping[i] == null) {
           const fn = getVisitFn(visitors[i], node.kind, /* isLeaving */ false);
           if (fn) {
-            const result = fn.apply(visitors[i], arguments);
+            const result = fn.apply(visitors[i], arguments as any);
             if (result === false) {
               skipping[i] = node;
             } else if (result === BREAK) {
@@ -391,7 +391,7 @@ export function visitInParallel(
         if (skipping[i] == null) {
           const fn = getVisitFn(visitors[i], node.kind, /* isLeaving */ true);
           if (fn) {
-            const result = fn.apply(visitors[i], arguments);
+            const result = fn.apply(visitors[i], arguments as any);
             if (result === BREAK) {
               skipping[i] = BREAK;
             } else if (result !== undefined && result !== false) {
@@ -415,7 +415,7 @@ export function getVisitFn(
   kind: string,
   isLeaving: boolean,
 ): Maybe<VisitFn<any>> {
-  const kindVisitor = visitor[kind];
+  const kindVisitor = (visitor as any)[kind];
   if (kindVisitor) {
     if (!isLeaving && typeof kindVisitor === 'function') {
       // { Kind() {} }
@@ -435,7 +435,7 @@ export function getVisitFn(
         // { enter() {}, leave() {} }
         return specificVisitor;
       }
-      const specificKindVisitor = specificVisitor[kind];
+      const specificKindVisitor = (specificVisitor as any)[kind];
       if (typeof specificKindVisitor === 'function') {
         // { enter: { Kind() {} }, leave: { Kind() {} } }
         return specificKindVisitor;

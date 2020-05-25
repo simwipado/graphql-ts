@@ -5,6 +5,7 @@ import { ObjMap } from '../jsutils/ObjMap.ts';
 
 import { Kind } from '../language/kinds.ts';
 import { ValueNode } from '../language/ast.ts';
+import Maybe from '../tsutils/Maybe.ts';
 
 /**
  * Produces a JavaScript value given a GraphQL Value AST.
@@ -24,7 +25,7 @@ import { ValueNode } from '../language/ast.ts';
  */
 export function valueFromASTUntyped(
   valueNode: ValueNode,
-  variables?: ?ObjMap<any>,
+  variables?: Maybe<ObjMap<any>>
 ): any {
   switch (valueNode.kind) {
     case Kind.NULL:
@@ -52,5 +53,5 @@ export function valueFromASTUntyped(
   }
 
   // Not reachable. All possible value nodes have been considered.
-  invariant(false, 'Unexpected value node: ' + inspect((valueNode: empty)));
+  invariant(false, 'Unexpected value node: ' + inspect(valueNode));
 }

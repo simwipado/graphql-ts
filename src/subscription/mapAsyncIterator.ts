@@ -1,5 +1,3 @@
-import { SYMBOL_ASYNC_ITERATOR } from '../polyfills/symbols.ts';
-
 import { PromiseOrValue } from '../jsutils/PromiseOrValue.ts';
 
 /**
@@ -9,12 +7,12 @@ import { PromiseOrValue } from '../jsutils/PromiseOrValue.ts';
 export default function mapAsyncIterator<T, U>(
   iterable: AsyncIterable<T>,
   callback: (arg: T) => PromiseOrValue<U>,
-  rejectCallback?: (arg: any) => PromiseOrValue<U>,
+  rejectCallback?: (arg: any) => PromiseOrValue<U>
 ): AsyncGenerator<U, void, void> {
-  const iteratorMethod = iterable[SYMBOL_ASYNC_ITERATOR];
+  const iteratorMethod = iterable[Symbol.asyncIterator];
   const iterator: any = iteratorMethod.call(iterable);
   let $return: any;
-  let abruptClose;
+  let abruptClose: (error: any) => any;
   if (typeof iterator.return === 'function') {
     $return = iterator.return;
     abruptClose = (error) => {
@@ -23,17 +21,17 @@ export default function mapAsyncIterator<T, U>(
     };
   }
 
-  function mapResult(result) {
+  function mapResult(result: any) {
     return result.done
       ? result
       : asyncMapValue(result.value, callback).then(iteratorResult, abruptClose);
   }
 
-  let mapReject;
+  let mapReject: any;
   if (rejectCallback) {
     // Capture rejectCallback to ensure it cannot be null.
     const reject = rejectCallback;
-    mapReject = (error) =>
+    mapReject = (error: any) =>
       asyncMapValue(error, reject).then(iteratorResult, abruptClose);
   }
 
@@ -54,10 +52,10 @@ export default function mapAsyncIterator<T, U>(
       }
       return Promise.reject(error).catch(abruptClose);
     },
-    [SYMBOL_ASYNC_ITERATOR]() {
+    [Symbol.asyncIterator]() {
       return this;
     },
-  }: any);
+  });
 }
 
 function asyncMapValue<T, U>(

@@ -1,5 +1,3 @@
-import find from '../polyfills/find.ts';
-
 import { Kind } from '../language/kinds.ts';
 import { Visitor, getVisitFn } from '../language/visitor.ts';
 import {
@@ -206,8 +204,7 @@ export class TypeInfo {
         let argType: any;
         const fieldOrDirective = this.getDirective() ?? this.getFieldDef();
         if (fieldOrDirective) {
-          argDef = find(
-            fieldOrDirective.args,
+          argDef = fieldOrDirective.args.find(
             (arg) => arg.name === node.name.value,
           );
 
@@ -234,8 +231,8 @@ export class TypeInfo {
       }
       case Kind.OBJECT_FIELD: {
         const objectType: any = getNamedType(this.getInputType());
-        let inputFieldType: GraphQLInputType | void;
-        let inputField: GraphQLInputField | void;
+        let inputFieldType: GraphQLInputType | undefined;
+        let inputField: GraphQLInputField | undefined;
         if (isInputObjectType(objectType)) {
           inputField = objectType.getFields()[node.name.value];
           if (inputField) {
@@ -354,7 +351,7 @@ export function visitWithTypeInfo(
       const fn = getVisitFn(visitor, node.kind, /* isLeaving */ true);
       let result;
       if (fn) {
-        result = fn.apply(visitor, arguments);
+        result = fn.apply(visitor, (arguments as any));
       }
       typeInfo.leave(node);
       return result;

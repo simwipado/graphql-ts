@@ -34,7 +34,7 @@ export function dedentBlockStringValue(rawString: string): string {
  * @internal
  */
 export function getBlockStringIndentation(
-  lines: ReadonlyArray<string>,
+  lines: string[],
 ): number {
   let commonIndent = null;
 

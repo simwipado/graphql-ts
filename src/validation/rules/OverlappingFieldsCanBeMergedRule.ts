@@ -1,6 +1,3 @@
-import find from '../../polyfills/find.ts';
-import objectEntries from '../../polyfills/objectEntries.ts';
-
 import inspect from '../../jsutils/inspect.ts';
 import { ObjMap } from '../../jsutils/ObjMap.ts';
 
@@ -89,11 +86,11 @@ export function OverlappingFieldsCanBeMergedRule(
   };
 }
 
-type Conflict = [ConflictReason, Array<FieldNode>, Array<FieldNode>];
+type Conflict = [ConflictReason, FieldNode[], FieldNode[]];
 // Field name and reason.
 type ConflictReason = [string, ConflictReasonMessage];
 // Reason is a string, or a nested list of conflicts.
-type ConflictReasonMessage = string | Array<ConflictReason>;
+type ConflictReasonMessage = string | ConflictReason[];
 // Tuple defining a field node in a context.
 type NodeAndDef = [
   GraphQLCompositeType,
@@ -101,7 +98,7 @@ type NodeAndDef = [
   Maybe<GraphQLField<any, any>>,
 ];
 // Map of array of those.
-type NodeAndDefCollection = ObjMap<Array<NodeAndDef>>;
+type NodeAndDefCollection = ObjMap<NodeAndDef[]>;
 
 /**
  * Algorithm:
@@ -167,7 +164,7 @@ function findConflictsWithinSelectionSet(
   comparedFragmentPairs: PairSet,
   parentType: Maybe<GraphQLNamedType>,
   selectionSet: SelectionSetNode,
-): Array<Conflict> {
+): Conflict[] {
   const conflicts: Conflict[] = [];
 
   const [fieldMap, fragmentNames] = getFieldsAndFragmentNames(
@@ -224,7 +221,7 @@ function findConflictsWithinSelectionSet(
 // including via spreading in any nested fragments.
 function collectConflictsBetweenFieldsAndFragment(
   context: ValidationContext,
-  conflicts: Array<Conflict>,
+  conflicts: Conflict[],
   cachedFieldsAndFragmentNames: any,
   comparedFragmentPairs: PairSet,
   areMutuallyExclusive: boolean,
@@ -278,7 +275,7 @@ function collectConflictsBetweenFieldsAndFragment(
 // any nested fragments.
 function collectConflictsBetweenFragments(
   context: ValidationContext,
-  conflicts: Array<Conflict>,
+  conflicts: Conflict[],
   cachedFieldsAndFragmentNames: any,
   comparedFragmentPairs: PairSet,
   areMutuallyExclusive: boolean,
@@ -372,7 +369,7 @@ function findConflictsBetweenSubSelectionSets(
   selectionSet1: SelectionSetNode,
   parentType2: Maybe<GraphQLNamedType>,
   selectionSet2: SelectionSetNode,
-): Array<Conflict> {
+): Conflict[] {
   const conflicts: Conflict[] = [];
 
   const [fieldMap1, fragmentNames1] = getFieldsAndFragmentNames(
@@ -453,7 +450,7 @@ function findConflictsBetweenSubSelectionSets(
 // Collect all Conflicts "within" one collection of fields.
 function collectConflictsWithin(
   context: ValidationContext,
-  conflicts: Array<Conflict>,
+  conflicts: Conflict[],
   cachedFieldsAndFragmentNames: any,
   comparedFragmentPairs: PairSet,
   fieldMap: NodeAndDefCollection,
@@ -462,7 +459,7 @@ function collectConflictsWithin(
   // name and the value at that key is a list of all fields which provide that
   // response name. For every response name, if there are multiple fields, they
   // must be compared to find a potential conflict.
-  for (const [responseName, fields] of objectEntries(fieldMap)) {
+  for (const [responseName, fields] of Object.entries(fieldMap)) {
     // This compares every field in the list to every other field in this list
     // (except to itself). If the list only has one item, nothing needs to
     // be compared.
@@ -494,7 +491,7 @@ function collectConflictsWithin(
 // each individual selection set.
 function collectConflictsBetween(
   context: ValidationContext,
-  conflicts: Array<Conflict>,
+  conflicts: Conflict[],
   cachedFieldsAndFragmentNames: any,
   comparedFragmentPairs: PairSet,
   parentFieldsAreMutuallyExclusive: boolean,
@@ -622,15 +619,14 @@ function findConflict(
 }
 
 function sameArguments(
-  arguments1: ReadonlyArray<ArgumentNode>,
-  arguments2: ReadonlyArray<ArgumentNode>,
+  arguments1: ArgumentNode[],
+  arguments2: ArgumentNode[],
 ): boolean {
   if (arguments1.length !== arguments2.length) {
     return false;
   }
   return arguments1.every((argument1) => {
-    const argument2 = find(
-      arguments2,
+    const argument2 = arguments2.find(
       (argument) => argument.name.value === argument1.name.value,
     );
     if (!argument2) {
@@ -681,7 +677,7 @@ function getFieldsAndFragmentNames(
   cachedFieldsAndFragmentNames: any,
   parentType: Maybe<GraphQLNamedType>,
   selectionSet: SelectionSetNode,
-): [NodeAndDefCollection, Array<string>] {
+): [NodeAndDefCollection, string[]] {
   let cached = cachedFieldsAndFragmentNames.get(selectionSet);
   if (!cached) {
     const nodeAndDefs = Object.create(null);
@@ -769,7 +765,7 @@ function _collectFieldsAndFragmentNames(
 // Given a series of Conflicts which occurred between two sub-fields, generate
 // a single Conflict.
 function subfieldConflicts(
-  conflicts: ReadonlyArray<Conflict>,
+  conflicts: Conflict[],
   responseName: string,
   node1: FieldNode,
   node2: FieldNode,
@@ -801,14 +797,14 @@ class PairSet {
 
   has(a: string, b: string, areMutuallyExclusive: boolean) {
     const first = this._data[a];
-    const result = first && first[b];
+    const result = first?.[b];
     if (result === undefined) {
       return false;
     }
     // areMutuallyExclusive being false is a superset of being true,
     // hence if we want to know if this PairSet "has" these two with no
     // exclusivity, we have to ensure it was added as such.
-    if (areMutuallyExclusive === false) {
+    if (!areMutuallyExclusive) {
       return result === false;
     }
     return true;

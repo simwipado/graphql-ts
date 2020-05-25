@@ -78,7 +78,7 @@ export interface DangerousChange {
 export function findBreakingChanges(
   oldSchema: GraphQLSchema,
   newSchema: GraphQLSchema,
-): Array<BreakingChange> {
+): BreakingChange[] {
   const breakingChanges = findSchemaChanges(oldSchema, newSchema).filter(
     (change) => change.type in BreakingChangeType,
   );
@@ -92,7 +92,7 @@ export function findBreakingChanges(
 export function findDangerousChanges(
   oldSchema: GraphQLSchema,
   newSchema: GraphQLSchema,
-): Array<DangerousChange> {
+): DangerousChange[] {
   const dangerousChanges = findSchemaChanges(oldSchema, newSchema).filter(
     (change) => change.type in DangerousChangeType,
   );
@@ -548,8 +548,8 @@ function stringifyValue(value: any, type: GraphQLInputType): string {
 }
 
 function diff<T extends {name: string}>(
-  oldArray: ReadonlyArray<T>,
-  newArray: ReadonlyArray<T>,
+  oldArray: T[],
+  newArray: T[],
 ): {
   added: T[],
   removed: T[],

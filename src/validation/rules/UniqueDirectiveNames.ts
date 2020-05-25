@@ -5,4 +5,4 @@
  * or
  *   import { UniqueDirectiveNamesRule } from 'graphql/validation'
  */
-export { UniqueDirectiveNamesRule as UniqueDirectiveNames } from './UniqueDirectiveNamesRule';
+export { UniqueDirectiveNamesRule as UniqueDirectiveNames } from './UniqueDirectiveNamesRule.ts';

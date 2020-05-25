@@ -1,16 +1,9 @@
-import objectEntries from '../polyfills/objectEntries.ts';
-import { SYMBOL_TO_STRING_TAG } from '../polyfills/symbols.ts';
-
 import inspect from '../jsutils/inspect.ts';
 import toObjMap from '../jsutils/toObjMap.ts';
 import devAssert from '../jsutils/devAssert.ts';
 import instanceOf from '../jsutils/instanceOf.ts';
 import isObjectLike from '../jsutils/isObjectLike.ts';
 import defineInspect from '../jsutils/defineInspect.ts';
-import {
-ReadOnlyObjMap,
-ReadOnlyObjMapLike,
-} from '../jsutils/ObjMap.ts';
 
 import { DirectiveDefinitionNode } from '../language/ast.ts';
 import {
@@ -50,9 +43,9 @@ export function assertDirective(directive: any): GraphQLDirective {
 export class GraphQLDirective {
   name: string;
   description: Maybe<string>;
-  locations: Array<DirectiveLocationEnum>;
+  locations: DirectiveLocationEnum[];
   isRepeatable: boolean;
-  args: Array<GraphQLArgument>;
+  args: GraphQLArgument[];
   extensions: Maybe<Readonly<Record<string, any>>>;
   astNode: Maybe<DirectiveDefinitionNode>;
 
@@ -76,7 +69,7 @@ export class GraphQLDirective {
       `@${config.name} args must be an object with argument names as keys.`,
     );
 
-    this.args = objectEntries(args).map(([argName, argConfig]: [string, any]) => ({
+    this.args = Object.entries(args).map(([argName, argConfig]: [string, any]) => ({
       name: argName,
       description: argConfig.description,
       type: argConfig.type,
@@ -111,7 +104,7 @@ export class GraphQLDirective {
   }
 
   // $FlowFixMe Flow doesn't support computed properties yet
-  get [SYMBOL_TO_STRING_TAG]() {
+  get [Symbol.toStringTag]() {
     return 'GraphQLDirective';
   }
 }
@@ -122,7 +115,7 @@ defineInspect(GraphQLDirective);
 export interface GraphQLDirectiveConfig {
   name: string;
   description?: Maybe<string>;
-  locations: Array<DirectiveLocationEnum>;
+  locations: DirectiveLocationEnum[];
   args?: Maybe<GraphQLFieldConfigArgumentMap>;
   isRepeatable?: Maybe<boolean>;
   extensions?: Maybe<Readonly<Record<string, any>>>;
@@ -143,7 +136,7 @@ export const GraphQLIncludeDirective = new GraphQLDirective({
   ],
   args: {
     if: {
-      type: GraphQLNonNull(GraphQLBoolean),
+      type: new GraphQLNonNull(GraphQLBoolean),
       description: 'Included when true.',
     },
   },
@@ -163,7 +156,7 @@ export const GraphQLSkipDirective = new GraphQLDirective({
   ],
   args: {
     if: {
-      type: GraphQLNonNull(GraphQLBoolean),
+      type: new GraphQLNonNull(GraphQLBoolean),
       description: 'Skipped when true.',
     },
   },
@@ -200,7 +193,7 @@ export const GraphQLSpecifiedByDirective = new GraphQLDirective({
   locations: [DirectiveLocation.SCALAR],
   args: {
     url: {
-      type: GraphQLNonNull(GraphQLString),
+      type: new GraphQLNonNull(GraphQLString),
       description: 'The URL that specifies the behaviour of this scalar.',
     },
   },
@@ -209,12 +202,12 @@ export const GraphQLSpecifiedByDirective = new GraphQLDirective({
 /**
  * The full list of specified directives.
  */
-export const specifiedDirectives = Object.freeze([
+export const specifiedDirectives = [
   GraphQLIncludeDirective,
   GraphQLSkipDirective,
   GraphQLDeprecatedDirective,
   GraphQLSpecifiedByDirective,
-]);
+] as const
 
 export function isSpecifiedDirective(
   directive: GraphQLDirective,

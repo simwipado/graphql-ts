@@ -16,7 +16,7 @@ import { TypeInfo, visitWithTypeInfo } from './TypeInfo.ts';
 export function findDeprecatedUsages(
   schema: GraphQLSchema,
   ast: DocumentNode,
-): Array<GraphQLError> {
+): GraphQLError[] {
   const errors: GraphQLError[] = [];
   const typeInfo = new TypeInfo(schema);
 

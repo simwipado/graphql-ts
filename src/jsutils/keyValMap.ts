@@ -18,7 +18,7 @@ import { ObjMap } from './ObjMap.ts';
  *
  */
 export default function keyValMap<T, V>(
-  list: ReadonlyArray<T>,
+  list: T[],
   keyFn: (item: T) => string,
   valFn: (item: T) => V,
 ): ObjMap<V> {

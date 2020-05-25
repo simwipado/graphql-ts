@@ -66,7 +66,7 @@ export function PossibleTypeExtensionsRule(
 
     let expectedKind;
     if (defNode) {
-      expectedKind = defKindToExtKind[defNode.kind];
+      expectedKind = (defKindToExtKind as any)[defNode.kind];
     } else if (existingType) {
       expectedKind = typeToExtKind(existingType);
     }

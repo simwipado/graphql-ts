@@ -1,4 +1,4 @@
-export { Path as ResponsePath } from '../jsutils/Path';
+export { Path as ResponsePath } from '../jsutils/Path.ts';
 
 export {
   // Predicate
@@ -153,4 +153,4 @@ export {
   TypeNameMetaFieldDef,
 } from './introspection.ts';
 
-export { validateSchema, assertValidSchema } from './validate';
+export { validateSchema, assertValidSchema } from './validate.ts';

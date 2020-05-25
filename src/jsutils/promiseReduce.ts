@@ -9,7 +9,7 @@ import { PromiseOrValue } from './PromiseOrValue.ts';
  * return a Promise.
  */
 export default function promiseReduce<T, U>(
-  values: ReadonlyArray<T>,
+  values: T[],
   callback: (arg1: U, arg2: T) => PromiseOrValue<U>,
   initialValue: PromiseOrValue<U>,
 ): PromiseOrValue<U> {

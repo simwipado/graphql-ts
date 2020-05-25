@@ -2,14 +2,14 @@
  * Memoizes the provided three-argument function.
  */
 export default function memoize3<
-  A1: { ... } | ReadonlyArray<any>,
-  A2: { ... } | ReadonlyArray<any>,
-  A3: { ... } | ReadonlyArray<any>,
-  R: any,
->(fn: (A1, A2, A3) => R): (A1, A2, A3) => R {
-  let cache0;
+  A1,
+  A2,
+  A3,
+  R,
+>(fn: (arg1: A1, arg2: A2, arg3: A3) => R) {
+  let cache0: any;
 
-  function memoized(a1, a2, a3) {
+  function memoized(a1: A1, a2: A2, a3: A3) {
     if (!cache0) {
       cache0 = new WeakMap();
     }

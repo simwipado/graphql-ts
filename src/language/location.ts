@@ -4,8 +4,8 @@ import { Source } from './source.ts';
  * Represents a location in a Source.
  */
 export type SourceLocation = {
-  readonly line: number;
-  readonly column: number;
+  line: number;
+  column: number;
 };
 
 /**

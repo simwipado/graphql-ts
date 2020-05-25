@@ -19,6 +19,7 @@ import {
 } from '../type/directives.ts';
 
 import { extendSchemaImpl } from './extendSchema.ts';
+import Maybe from '../tsutils/Maybe.ts';
 
 export interface BuildSchemaOptions extends GraphQLSchemaValidationOptions {
   /**
@@ -29,14 +30,14 @@ export interface BuildSchemaOptions extends GraphQLSchemaValidationOptions {
    *
    * Default: false
    */
-  commentDescriptions?: boolean,
+  commentDescriptions: Maybe<boolean>;
 
   /**
    * Set to true to assume the SDL is valid.
    *
    * Default: false
    */
-  assumeValidSDL?: boolean,
+  assumeValidSDL: Maybe<boolean>;
 };
 
 /**
@@ -57,7 +58,7 @@ export interface BuildSchemaOptions extends GraphQLSchemaValidationOptions {
  */
 export function buildASTSchema(
   documentAST: DocumentNode,
-  options?: BuildSchemaOptions,
+  options: Maybe<BuildSchemaOptions>
 ): GraphQLSchema {
   devAssert(
     documentAST != null && documentAST.kind === Kind.DOCUMENT,
@@ -77,13 +78,13 @@ export function buildASTSchema(
         // typed values below, that would throw immediately while type system
         // validation with validateSchema() will produce more actionable results.
         case 'Query':
-          config.query = type
+          (config as any).query = type
           break;
         case 'Mutation':
-          config.mutation = type
+          (config as any).mutation = type
           break;
         case 'Subscription':
-          config.subscription = type
+          (config as any).subscription = type
           break;
       }
     }
@@ -118,7 +119,7 @@ const emptySchemaConfig = new GraphQLSchema({ directives: [] }).toConfig();
  */
 export function buildSchema(
   source: string | Source,
-  options?: BuildSchemaOptions & ParseOptions,
+  options: Maybe<BuildSchemaOptions & ParseOptions>
 ): GraphQLSchema {
   const document = parse(source, {
     noLocation: options?.noLocation,

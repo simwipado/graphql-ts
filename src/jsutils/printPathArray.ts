@@ -2,7 +2,7 @@
  * Build a string describing the path.
  */
 export default function printPathArray(
-  path: ReadonlyArray<string | number>,
+  path: (string | number)[],
 ): string {
   return path
     .map((key) =>

@@ -44,6 +44,7 @@ IntrospectionInputObjectType,
 IntrospectionTypeRef,
 IntrospectionNamedTypeRef,
 } from './getIntrospectionQuery.ts';
+import Maybe from '../tsutils/Maybe.ts';
 
 /**
  * Build a GraphQLSchema for use by client tools.
@@ -59,7 +60,7 @@ IntrospectionNamedTypeRef,
  */
 export function buildClientSchema(
   introspection: IntrospectionQuery,
-  options?: GraphQLSchemaValidationOptions,
+  options: Maybe<GraphQLSchemaValidationOptions>
 ): GraphQLSchema {
   devAssert(
     isObjectLike(introspection) && isObjectLike(introspection.__schema),
@@ -123,7 +124,7 @@ export function buildClientSchema(
       if (!itemRef) {
         throw new Error('Decorated type deeper than introspection query.');
       }
-      return GraphQLList(getType(itemRef));
+      return new GraphQLList(getType(itemRef));
     }
     if (typeRef.kind === TypeKind.NON_NULL) {
       const nullableRef = typeRef.ofType;
@@ -131,13 +132,13 @@ export function buildClientSchema(
         throw new Error('Decorated type deeper than introspection query.');
       }
       const nullableType = getType(nullableRef);
-      return GraphQLNonNull(assertNullableType(nullableType));
+      return new GraphQLNonNull(assertNullableType(nullableType));
     }
     return getNamedType(typeRef);
   }
 
   function getNamedType(
-    typeRef: IntrospectionNamedTypeRef<>,
+    typeRef: IntrospectionNamedTypeRef<any>,
   ): GraphQLNamedType {
     const typeName = typeRef.name;
     if (!typeName) {
@@ -169,7 +170,7 @@ export function buildClientSchema(
   // Given a type's introspection result, construct the correct
   // GraphQLType instance.
   function buildType(type: IntrospectionType): GraphQLNamedType {
-    if (type != null && type.name != null && type.kind != null) {
+    if (type?.name != null && type.kind != null) {
       switch (type.kind) {
         case TypeKind.SCALAR:
           return buildScalarDef(type);

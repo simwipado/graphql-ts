@@ -1,6 +1,3 @@
-import find from '../polyfills/find.ts';
-import flatMap from '../polyfills/flatMap.ts';
-
 import inspect from '../jsutils/inspect.ts';
 
 import { GraphQLError } from '../error/GraphQLError.ts';
@@ -34,7 +31,9 @@ GraphQLInputObjectType,
   isInputType,
   isOutputType,
   isRequiredArgument,
+  GraphQLInputField,
 } from './definition.ts';
+import Maybe from '../tsutils/Maybe.ts';
 
 /**
  * Implements the "Type Validation" sub-sections of the specification's
@@ -45,7 +44,7 @@ GraphQLInputObjectType,
  */
 export function validateSchema(
   schema: GraphQLSchema,
-): ReadonlyArray<GraphQLError> {
+): GraphQLError[] {
   // First check to ensure the provided value is in fact a GraphQLSchema.
   assertSchema(schema);
 
@@ -79,19 +78,19 @@ export function assertValidSchema(schema: GraphQLSchema): void {
 }
 
 class SchemaValidationContext {
-  _errors: Array<GraphQLError>;
+  _errors: GraphQLError[];
   schema: GraphQLSchema;
 
-  constructor(schema) {
+  constructor(schema: GraphQLSchema) {
     this._errors = [];
     this.schema = schema;
   }
 
   reportError(
     message: string,
-    nodes?: ReadonlyArray<?ASTNode> | ?ASTNode,
+    nodes: Maybe<ReadonlyArray<Maybe<ASTNode>> | ASTNode>
   ): void {
-    const _nodes = Array.isArray(nodes) ? nodes.filter(Boolean) : nodes;
+    const _nodes: any = Array.isArray(nodes) ? nodes.filter(Boolean) : nodes;
     this.addError(new GraphQLError(message, _nodes));
   }
 
@@ -99,12 +98,12 @@ class SchemaValidationContext {
     this._errors.push(error);
   }
 
-  getErrors(): ReadonlyArray<GraphQLError> {
+  getErrors(): GraphQLError[] {
     return this._errors;
   }
 }
 
-function validateRootTypes(context) {
+function validateRootTypes(context: SchemaValidationContext) {
   const schema = context.schema;
   const queryType = schema.getQueryType();
   if (!queryType) {
@@ -114,7 +113,7 @@ function validateRootTypes(context) {
       `Query root type must be Object type, it cannot be ${inspect(
         queryType,
       )}.`,
-      getOperationTypeNode(schema, 'query') ?? queryType.astNode,
+      getOperationTypeNode(schema, 'query') ?? (queryType as any).astNode,
     );
   }
 
@@ -123,7 +122,7 @@ function validateRootTypes(context) {
     context.reportError(
       'Mutation root type must be Object type if provided, it cannot be ' +
         `${inspect(mutationType)}.`,
-      getOperationTypeNode(schema, 'mutation') ?? mutationType.astNode,
+      getOperationTypeNode(schema, 'mutation') ?? (mutationType as any).astNode,
     );
   }
 
@@ -132,7 +131,7 @@ function validateRootTypes(context) {
     context.reportError(
       'Subscription root type must be Object type if provided, it cannot be ' +
         `${inspect(subscriptionType)}.`,
-      getOperationTypeNode(schema, 'subscription') ?? subscriptionType.astNode,
+      getOperationTypeNode(schema, 'subscription') ?? (subscriptionType as any).astNode,
     );
   }
 }
@@ -140,7 +139,7 @@ function validateRootTypes(context) {
 function getOperationTypeNode(
   schema: GraphQLSchema,
   operation: OperationTypeNode,
-): Maybe<ASTNode>; {
+): Maybe<ASTNode> {
   const operationNodes = getAllSubNodes(schema, (node) => node.operationTypes);
   for (const node of operationNodes) {
     if (node.operation === operation) {
@@ -156,7 +155,7 @@ function validateDirectives(context: SchemaValidationContext): void {
     if (!isDirective(directive)) {
       context.reportError(
         `Expected directive but got: ${inspect(directive)}.`,
-        directive?.astNode,
+        (directive as any).astNode,
       );
       continue;
     }
@@ -185,7 +184,7 @@ function validateDirectives(context: SchemaValidationContext): void {
 
 function validateName(
   context: SchemaValidationContext,
-  node: { +name: string, +astNode: ?ASTNode, ... },
+  node: { name: string, astNode?: Maybe<ASTNode> },
 ): void {
   // Ensure names are valid, however introspection types opt out.
   const error = isValidNameError(node.name);
@@ -204,7 +203,7 @@ function validateTypes(context: SchemaValidationContext): void {
     if (!isNamedType(type)) {
       context.reportError(
         `Expected GraphQL named type but got: ${inspect(type)}.`,
-        type.astNode,
+        (type as any).astNode,
       );
       continue;
     }
@@ -252,7 +251,7 @@ function validateFields(
   if (fields.length === 0) {
     context.reportError(
       `Type ${type.name} must define one or more fields.`,
-      getAllNodes(type),
+      getAllNodes(type as any),
     );
   }
 
@@ -342,7 +341,7 @@ function validateTypeImplementsInterface(
     if (!typeField) {
       context.reportError(
         `Interface field ${iface.name}.${fieldName} expected but ${type.name} does not provide it.`,
-        [ifaceField.astNode, ...getAllNodes(type)],
+        [ifaceField.astNode, ...getAllNodes(type as any)],
       );
       continue;
     }
@@ -361,7 +360,7 @@ function validateTypeImplementsInterface(
     // Assert each interface field arg is implemented.
     for (const ifaceArg of ifaceField.args) {
       const argName = ifaceArg.name;
-      const typeArg = find(typeField.args, (arg) => arg.name === argName);
+      const typeArg = typeField.args.find((arg) => arg.name === argName);
 
       // Assert interface field arg exists on object field.
       if (!typeArg) {
@@ -391,7 +390,7 @@ function validateTypeImplementsInterface(
     // Assert additional arguments must not be required.
     for (const typeArg of typeField.args) {
       const argName = typeArg.name;
-      const ifaceArg = find(ifaceField.args, (arg) => arg.name === argName);
+      const ifaceArg = ifaceField.args.find((arg) => arg.name === argName);
       if (!ifaceArg && isRequiredArgument(typeArg)) {
         context.reportError(
           `Object field ${type.name}.${fieldName} includes required argument ${argName} that is missing from the Interface field ${iface.name}.${fieldName}.`,
@@ -521,7 +520,7 @@ function createInputObjectCircularRefsValidator(
   const visitedTypes = Object.create(null);
 
   // Array of types nodes used to produce meaningful errors
-  const fieldPath = [];
+  const fieldPath: GraphQLInputField[] = [];
 
   // Position in the type path
   const fieldPathIndexByTypeName = Object.create(null);
@@ -564,36 +563,34 @@ function createInputObjectCircularRefsValidator(
   }
 }
 
-type SDLDefinedObject<T, K> = {
-  +astNode: ?T,
-  +extensionASTNodes?: ?ReadonlyArray<K>,
-  ...
+interface SDLDefinedObject<T, K> {
+  astNode: Maybe<T>,
+  extensionASTNodes: Maybe<K[]>;
 };
 
-function getAllNodes<T: ASTNode, K: ASTNode>(
+function getAllNodes<T extends ASTNode, K extends ASTNode>(
   object: SDLDefinedObject<T, K>,
 ): ReadonlyArray<T | K> {
   const { astNode, extensionASTNodes } = object;
   return astNode
     ? extensionASTNodes
-      ? [astNode].concat(extensionASTNodes)
+      ? [astNode].concat(extensionASTNodes as any)
       : [astNode]
     : extensionASTNodes ?? [];
 }
 
-function getAllSubNodes<T: ASTNode, K: ASTNode, L: ASTNode>(
+function getAllSubNodes<T extends ASTNode, K extends ASTNode, L extends ASTNode>(
   object: SDLDefinedObject<T, K>,
-  getter: (T | K) => ?(L | ReadonlyArray<L>),
-): ReadonlyArray<L> {
-  // istanbul ignore next (See https://github.com/graphql/graphql-js/issues/2203)
-  return flatMap(getAllNodes(object), (item) => getter(item) ?? []);
+  getter: (arg: T | K) => Maybe<(L | L[])>,
+): L[] {
+  return getAllNodes(object).flatMap((item) => getter(item) ?? []);
 }
 
 function getAllImplementsInterfaceNodes(
   type: GraphQLObjectType | GraphQLInterfaceType,
   iface: GraphQLInterfaceType,
-): ReadonlyArray<NamedTypeNode> {
-  return getAllSubNodes(type, (typeNode) => typeNode.interfaces).filter(
+): NamedTypeNode[] {
+  return getAllSubNodes(type as any, (typeNode: any) => typeNode.interfaces).filter(
     (ifaceNode) => ifaceNode.name.value === iface.name,
   );
 }
@@ -601,7 +598,7 @@ function getAllImplementsInterfaceNodes(
 function getUnionMemberTypeNodes(
   union: GraphQLUnionType,
   typeName: string,
-): ?ReadonlyArray<NamedTypeNode> {
+): Maybe<NamedTypeNode[]> {
   return getAllSubNodes(union, (unionNode) => unionNode.types).filter(
     (typeNode) => typeNode.name.value === typeName,
   );

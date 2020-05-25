@@ -1,5 +1,3 @@
-import objectEntries from '../polyfills/objectEntries.ts';
-
 import { ObjMap } from './ObjMap.ts';
 
 /**
@@ -12,7 +10,7 @@ export default function mapValue<T, V>(
 ): ObjMap<V> {
   const result = Object.create(null);
 
-  for (const [key, value] of objectEntries<T>(map)) {
+  for (const [key, value] of Object.entries<T>(map)) {
     result[key] = fn(value, key);
   }
   return result;

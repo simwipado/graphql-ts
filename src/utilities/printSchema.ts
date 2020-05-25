@@ -60,7 +60,7 @@ export function printSchema(schema: GraphQLSchema, options?: Options): string {
 
 export function printIntrospectionSchema(
   schema: GraphQLSchema,
-  options?: Options,
+  options: Maybe<Options>;
 ): string {
   return printFilteredSchema(
     schema,
@@ -78,7 +78,7 @@ function printFilteredSchema(
   schema: GraphQLSchema,
   directiveFilter: (type: GraphQLDirective) => boolean,
   typeFilter: (type: GraphQLNamedType) => boolean,
-  options?: Options,
+  options: Maybe<Options>;
 ): string {
   const directives = schema.getDirectives().filter(directiveFilter);
   const types = Object.values(schema.getTypeMap()).filter(typeFilter);

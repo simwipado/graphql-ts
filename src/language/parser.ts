@@ -302,7 +302,7 @@ class Parser {
   /**
    * VariableDefinitions : ( VariableDefinition+ )
    */
-  parseVariableDefinitions(): Array<VariableDefinitionNode> {
+  parseVariableDefinitions(): VariableDefinitionNode[] {
     return this.optionalMany(
       TokenKind.PAREN_L,
       this.parseVariableDefinition,
@@ -402,7 +402,7 @@ class Parser {
   /**
    * Arguments[Const] : ( Argument[?Const]+ )
    */
-  parseArguments(isConst: boolean): Array<ArgumentNode> {
+  parseArguments(isConst: boolean): ArgumentNode[] {
     const item = isConst ? this.parseConstArgument : this.parseArgument;
     return this.optionalMany(TokenKind.PAREN_L, item, TokenKind.PAREN_R);
   }
@@ -638,7 +638,7 @@ class Parser {
   /**
    * Directives[Const] : Directive[?Const]+
    */
-  parseDirectives(isConst: boolean): Array<DirectiveNode> {
+  parseDirectives(isConst: boolean): DirectiveNode[] {
     const directives = [];
     while (this.peek(TokenKind.AT)) {
       directives.push(this.parseDirective(isConst));
@@ -849,7 +849,7 @@ class Parser {
    *   - implements `&`? NamedType
    *   - ImplementsInterfaces & NamedType
    */
-  parseImplementsInterfaces(): Array<NamedTypeNode> {
+  parseImplementsInterfaces(): NamedTypeNode[] {
     const types = [];
     if (this.expectOptionalKeyword('implements')) {
       // Optional leading ampersand
@@ -869,7 +869,7 @@ class Parser {
   /**
    * FieldsDefinition : { FieldDefinition+ }
    */
-  parseFieldsDefinition(): Array<FieldDefinitionNode> {
+  parseFieldsDefinition(): FieldDefinitionNode[] {
     // Legacy support for the SDL?
     if (
       this._options?.allowLegacySDLEmptyFields === true &&
@@ -913,7 +913,7 @@ class Parser {
   /**
    * ArgumentsDefinition : ( InputValueDefinition+ )
    */
-  parseArgumentDefs(): Array<InputValueDefinitionNode> {
+  parseArgumentDefs(): InputValueDefinitionNode[] {
     return this.optionalMany(
       TokenKind.PAREN_L,
       this.parseInputValueDef,
@@ -996,7 +996,7 @@ class Parser {
    *   - = `|`? NamedType
    *   - UnionMemberTypes | NamedType
    */
-  parseUnionMemberTypes(): Array<NamedTypeNode> {
+  parseUnionMemberTypes(): NamedTypeNode[] {
     const types = [];
     if (this.expectOptionalToken(TokenKind.EQUALS)) {
       // Optional leading pipe
@@ -1032,7 +1032,7 @@ class Parser {
   /**
    * EnumValuesDefinition : { EnumValueDefinition+ }
    */
-  parseEnumValuesDefinition(): Array<EnumValueDefinitionNode> {
+  parseEnumValuesDefinition(): EnumValueDefinitionNode[] {
     return this.optionalMany(
       TokenKind.BRACE_L,
       this.parseEnumValueDefinition,
@@ -1083,7 +1083,7 @@ class Parser {
   /**
    * InputFieldsDefinition : { InputValueDefinition+ }
    */
-  parseInputFieldsDefinition(): Array<InputValueDefinitionNode> {
+  parseInputFieldsDefinition(): InputValueDefinitionNode[] {
     return this.optionalMany(
       TokenKind.BRACE_L,
       this.parseInputValueDef,
@@ -1340,7 +1340,7 @@ class Parser {
    *   - `|`? DirectiveLocation
    *   - DirectiveLocations | DirectiveLocation
    */
-  parseDirectiveLocations(): Array<NameNode> {
+  parseDirectiveLocations(): NameNode[] {
     // Optional leading pipe
     this.expectOptionalToken(TokenKind.PIPE);
     const locations = [];
@@ -1493,7 +1493,7 @@ class Parser {
     openKind: TokenKindEnum,
     parseFn: () => T,
     closeKind: TokenKindEnum,
-  ): Array<T> {
+  ): T[] {
     this.expectToken(openKind);
     const nodes = [];
     while (!this.expectOptionalToken(closeKind)) {
@@ -1513,7 +1513,7 @@ class Parser {
     openKind: TokenKindEnum,
     parseFn: () => T,
     closeKind: TokenKindEnum,
-  ): Array<T> {
+  ): T[] {
     if (this.expectOptionalToken(openKind)) {
       const nodes = [];
       do {
@@ -1534,7 +1534,7 @@ class Parser {
     openKind: TokenKindEnum,
     parseFn: () => T,
     closeKind: TokenKindEnum,
-  ): Array<T> {
+  ): T[] {
     this.expectToken(openKind);
     const nodes = [];
     do {

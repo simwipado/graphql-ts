@@ -44,11 +44,11 @@ export function typeFromAST(
   let innerType;
   if (typeNode.kind === Kind.LIST_TYPE) {
     innerType = typeFromAST(schema, typeNode.type);
-    return innerType && GraphQLList(innerType);
+    return innerType && new GraphQLList(innerType);
   }
   if (typeNode.kind === Kind.NON_NULL_TYPE) {
     innerType = typeFromAST(schema, typeNode.type);
-    return innerType && GraphQLNonNull(innerType);
+    return innerType && new GraphQLNonNull(innerType);
   }
   if (typeNode.kind === Kind.NAMED_TYPE) {
     return schema.getType(typeNode.name.value);

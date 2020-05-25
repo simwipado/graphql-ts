@@ -1,5 +1,3 @@
-import { SYMBOL_ITERATOR } from '../polyfills/symbols.ts';
-
 /**
  * Returns true if the provided object is an Object (i.e. not a string literal)
  * and is either Iterable or Array-like.
@@ -33,5 +31,5 @@ export default function isCollection(obj: any): boolean {
   }
 
   // Is Iterable?
-  return typeof obj[SYMBOL_ITERATOR] === 'function';
+  return typeof obj[Symbol.iterator] === 'function';
 }

@@ -2,7 +2,6 @@
 import keyMap from '../jsutils/keyMap.ts';
 import inspect from '../jsutils/inspect.ts';
 import invariant from '../jsutils/invariant.ts';
-import { ObjMap } from '../jsutils/ObjMap.ts';
 
 import { Kind } from '../language/kinds.ts';
 import { ValueNode } from '../language/ast.ts';
@@ -39,8 +38,8 @@ import Maybe from '../tsutils/Maybe.ts';
 export function valueFromAST(
   valueNode: Maybe<ValueNode>,
   type: GraphQLInputType,
-  variables?: Maybe<{ [key: string]: any }>,
-): any | void {
+  variables?: Maybe<{ [key: string]: any }>
+): any {
   if (!valueNode) {
     // When there is no node, then there is also no value.
     // Importantly, this is different from returning the value null.
@@ -151,7 +150,7 @@ export function valueFromAST(
 
 // Returns true if the provided valueNode is a variable which is not defined
 // in the set of variables.
-function isMissingVariable(valueNode, variables) {
+function isMissingVariable(valueNode: ValueNode, variables: any) {
   return (
     valueNode.kind === Kind.VARIABLE &&
     (variables == null || variables[valueNode.name.value] === undefined)

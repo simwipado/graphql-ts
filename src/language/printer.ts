@@ -1,5 +1,5 @@
 import { visit } from './visitor.ts';
-import { ASTNode } from './ast.ts';
+import { ASTNode, NameNode, VariableNode, DocumentNode, OperationDefinitionNode, VariableDefinitionNode, FieldNode, ArgumentNode, FragmentSpreadNode, InlineFragmentNode, FragmentDefinitionNode, IntValueNode, FloatValueNode, StringValueNode, BooleanValueNode, EnumValueNode, ListValueNode, ObjectValueNode, ObjectFieldNode, DirectiveNode, NamedTypeNode, ListTypeNode, NonNullTypeNode, SchemaDefinitionNode, OperationTypeDefinitionNode, ScalarTypeDefinitionNode, ObjectTypeDefinitionNode, FieldDefinitionNode, InputValueDefinitionNode, InterfaceTypeDefinitionNode, UnionTypeDefinitionNode, EnumTypeDefinitionNode, EnumValueDefinitionNode, InputObjectTypeDefinitionNode, DirectiveDefinitionNode, SchemaExtensionNode, ScalarTypeExtensionNode, ObjectTypeExtensionNode, InterfaceTypeExtensionNode, UnionTypeExtensionNode, EnumTypeExtensionNode, InputObjectTypeExtensionNode } from './ast.ts';
 import { printBlockString } from './blockString.ts';
 
 /**
@@ -12,14 +12,14 @@ export function print(ast: ASTNode): string {
 
 // TODO: provide better type coverage in future
 const printDocASTReducer: any = {
-  Name: (node) => node.value,
-  Variable: (node) => '$' + node.name,
+  Name: (node: NameNode) => node.value,
+  Variable: (node: VariableNode) => '$' + node.name,
 
   // Document
 
-  Document: (node) => join(node.definitions, '\n\n') + '\n',
+  Document: (node: DocumentNode) => join(node.definitions, '\n\n') + '\n',
 
-  OperationDefinition(node) {
+  OperationDefinition(node: OperationDefinitionNode) {
     const op = node.operation;
     const name = node.name;
     const varDefs = wrap('(', join(node.variableDefinitions, ', '), ')');
@@ -32,15 +32,14 @@ const printDocASTReducer: any = {
       : join([op, join([name, varDefs]), directives, selectionSet], ' ');
   },
 
-  VariableDefinition: ({ variable, type, defaultValue, directives }) =>
+  VariableDefinition: ({ variable, defaultValue, directives }: VariableDefinitionNode) =>
     variable +
     ': ' +
-  +
-    wrap(' = ', defaultValue) +
+  Number(wrap(' = ', defaultValue)) +
     wrap(' ', join(directives, ' ')),
   SelectionSet: ({ selections }) => block(selections),
 
-  Field: ({ alias, name, arguments: args, directives, selectionSet }) =>
+  Field: ({ alias, name, arguments: args, directives, selectionSet }: FieldNode) =>
     join(
       [
         wrap('', alias, ': ') + name + wrap('(', join(args, ', '), ')'),
@@ -50,14 +49,14 @@ const printDocASTReducer: any = {
       ' ',
     ),
 
-  Argument: ({ name, value }) => name + ': ' + value,
+  Argument: ({ name, value }: ArgumentNode) => name + ': ' + value,
 
   // Fragments
 
-  FragmentSpread: ({ name, directives }) =>
+  FragmentSpread: ({ name, directives }: FragmentSpreadNode) =>
     '...' + name + wrap(' ', join(directives, ' ')),
 
-  InlineFragment: ({ typeCondition, directives, selectionSet }) =>
+  InlineFragment: ({ typeCondition, directives, selectionSet }: InlineFragmentNode) =>
     join(
       ['...', wrap('on ', typeCondition), join(directives, ' '), selectionSet],
       ' ',
@@ -69,7 +68,7 @@ const printDocASTReducer: any = {
     variableDefinitions,
     directives,
     selectionSet,
-  }) =>
+  }: FragmentDefinitionNode) =>
     // Note: fragment variable definitions are experimental and may be changed
     // or removed in the future.
     `fragment ${name}${wrap('(', join(variableDefinitions, ', '), ')')} ` +
@@ -78,44 +77,44 @@ const printDocASTReducer: any = {
 
   // Value
 
-  IntValue: ({ value }) => value,
-  FloatValue: ({ value }) => value,
-  StringValue: ({ value, block: isBlockString }, key) =>
+  IntValue: ({ value }: IntValueNode) => value,
+  FloatValue: ({ value }: FloatValueNode) => value,
+  StringValue: ({ value, block: isBlockString }: StringValueNode, key: string) =>
     isBlockString
       ? printBlockString(value, key === 'description' ? '' : '  ')
       : JSON.stringify(value),
-  BooleanValue: ({ value }) => (value ? 'true' : 'false'),
+  BooleanValue: ({ value }: BooleanValueNode) => (value ? 'true' : 'false'),
   NullValue: () => 'null',
-  EnumValue: ({ value }) => value,
-  ListValue: ({ values }) => '[' + join(values, ', ') + ']',
-  ObjectValue: ({ fields }) => '{' + join(fields, ', ') + '}',
-  ObjectField: ({ name, value }) => name + ': ' + value,
+  EnumValue: ({ value }: EnumValueNode) => value,
+  ListValue: ({ values }: ListValueNode) => '[' + join(values, ', ') + ']',
+  ObjectValue: ({ fields }: ObjectValueNode) => '{' + join(fields, ', ') + '}',
+  ObjectField: ({ name, value }: ObjectFieldNode) => name + ': ' + value,
 
   // Directive
 
-  Directive: ({ name, arguments: args }) =>
+  Directive: ({ name, arguments: args }: DirectiveNode) =>
     '@' + name + wrap('(', join(args, ', '), ')'),
 
   // Type
 
-  NamedType: ({ name }) => name,
-  ListType: ({ type }) => '[' + type + ']',
-  NonNullType: ({ type }) => type + '!',
+  NamedType: ({ name }: NamedTypeNode) => name,
+  ListType: ({ type }: ListTypeNode) => '[' + type + ']',
+  NonNullType: ({ type }: NonNullTypeNode) => type + '!',
 
   // Type System Definitions
 
-  SchemaDefinition: addDescription(({ directives, operationTypes }) =>
+  SchemaDefinition: addDescription(({ directives, operationTypes }: SchemaDefinitionNode) =>
     join(['schema', join(directives, ' '), block(operationTypes)], ' '),
   ),
 
-  OperationTypeDefinition: ({ operation, type }) => operation + ': ' + type,
+  OperationTypeDefinition: ({ operation, type }: OperationTypeDefinitionNode) => operation + ': ' + type,
 
-  ScalarTypeDefinition: addDescription(({ name, directives }) =>
+  ScalarTypeDefinition: addDescription(({ name, directives }: ScalarTypeDefinitionNode) =>
     join(['scalar', name, join(directives, ' ')], ' '),
   ),
 
   ObjectTypeDefinition: addDescription(
-    ({ name, interfaces, directives, fields }) =>
+    ({ name, interfaces, directives, fields }: ObjectTypeDefinitionNode) =>
       join(
         [
           'type',
@@ -129,18 +128,17 @@ const printDocASTReducer: any = {
   ),
 
   FieldDefinition: addDescription(
-    ({ name, arguments: args, type, directives }) =>
+    ({ name, arguments: args, type, directives }: FieldDefinitionNode) =>
       name +
       (hasMultilineItems(args)
         ? wrap('(\n', indent(join(args, '\n')), '\n)')
         : wrap('(', join(args, ', '), ')')) +
       ': ' +
-    +
-      wrap(' ', join(directives, ' ')),
+    Number(wrap(' ', join(directives, ' '))),
   ),
 
   InputValueDefinition: addDescription(
-    ({ name, type, defaultValue, directives }) =>
+    ({ name, type, defaultValue, directives }: InputValueDefinitionNode) =>
       join(
         [name + ': ' + type, wrap('= ', defaultValue), join(directives, ' ')],
         ' ',
@@ -148,7 +146,7 @@ const printDocASTReducer: any = {
   ),
 
   InterfaceTypeDefinition: addDescription(
-    ({ name, interfaces, directives, fields }) =>
+    ({ name, interfaces, directives, fields }: InterfaceTypeDefinitionNode) =>
       join(
         [
           'interface',
@@ -161,7 +159,7 @@ const printDocASTReducer: any = {
       ),
   ),
 
-  UnionTypeDefinition: addDescription(({ name, directives, types }) =>
+  UnionTypeDefinition: addDescription(({ name, directives, types }: UnionTypeDefinitionNode) =>
     join(
       [
         'union',
@@ -173,20 +171,20 @@ const printDocASTReducer: any = {
     ),
   ),
 
-  EnumTypeDefinition: addDescription(({ name, directives, values }) =>
+  EnumTypeDefinition: addDescription(({ name, directives, values }: EnumTypeDefinitionNode) =>
     join(['enum', name, join(directives, ' '), block(values)], ' '),
   ),
 
-  EnumValueDefinition: addDescription(({ name, directives }) =>
+  EnumValueDefinition: addDescription(({ name, directives }: EnumValueDefinitionNode) =>
     join([name, join(directives, ' ')], ' '),
   ),
 
-  InputObjectTypeDefinition: addDescription(({ name, directives, fields }) =>
+  InputObjectTypeDefinition: addDescription(({ name, directives, fields }: InputObjectTypeDefinitionNode) =>
     join(['input', name, join(directives, ' '), block(fields)], ' '),
   ),
 
   DirectiveDefinition: addDescription(
-    ({ name, arguments: args, repeatable, locations }) =>
+    ({ name, arguments: args, repeatable, locations }: DirectiveDefinitionNode) =>
       'directive @' +
       name +
       (hasMultilineItems(args)
@@ -197,13 +195,13 @@ const printDocASTReducer: any = {
       join(locations, ' | '),
   ),
 
-  SchemaExtension: ({ directives, operationTypes }) =>
+  SchemaExtension: ({ directives, operationTypes }: SchemaExtensionNode) =>
     join(['extend schema', join(directives, ' '), block(operationTypes)], ' '),
 
-  ScalarTypeExtension: ({ name, directives }) =>
+  ScalarTypeExtension: ({ name, directives }: ScalarTypeExtensionNode) =>
     join(['extend scalar', name, join(directives, ' ')], ' '),
 
-  ObjectTypeExtension: ({ name, interfaces, directives, fields }) =>
+  ObjectTypeExtension: ({ name, interfaces, directives, fields }: ObjectTypeExtensionNode) =>
     join(
       [
         'extend type',
@@ -215,7 +213,7 @@ const printDocASTReducer: any = {
       ' ',
     ),
 
-  InterfaceTypeExtension: ({ name, interfaces, directives, fields }) =>
+  InterfaceTypeExtension: ({ name, interfaces, directives, fields }: InterfaceTypeExtensionNode) =>
     join(
       [
         'extend interface',
@@ -227,7 +225,7 @@ const printDocASTReducer: any = {
       ' ',
     ),
 
-  UnionTypeExtension: ({ name, directives, types }) =>
+  UnionTypeExtension: ({ name, directives, types }: UnionTypeExtensionNode) =>
     join(
       [
         'extend union',
@@ -238,22 +236,22 @@ const printDocASTReducer: any = {
       ' ',
     ),
 
-  EnumTypeExtension: ({ name, directives, values }) =>
+  EnumTypeExtension: ({ name, directives, values }: EnumTypeExtensionNode) =>
     join(['extend enum', name, join(directives, ' '), block(values)], ' '),
 
-  InputObjectTypeExtension: ({ name, directives, fields }) =>
+  InputObjectTypeExtension: ({ name, directives, fields }: InputObjectTypeExtensionNode) =>
     join(['extend input', name, join(directives, ' '), block(fields)], ' '),
 };
 
-function addDescription(cb) {
-  return (node) => join([node.description, cb(node)], '\n');
+function addDescription(cb: any) {
+  return (node: any) => join([node.description, cb(node)], '\n');
 }
 
 /**
  * Given maybeArray, print an empty string if it is null or empty, otherwise
  * print all items together separated by separator if provided
  */
-function join(maybeArray: ?Array<string>, separator = '') {
+function join(maybeArray: string[], separator = '') {
   return maybeArray?.filter((x) => x).join(separator) ?? '';
 }
 
@@ -261,7 +259,7 @@ function join(maybeArray: ?Array<string>, separator = '') {
  * Given array, print each item on its own line, wrapped in an
  * indented "{ }" block.
  */
-function block(array) {
+function block(array: any[]) {
   return array && array.length !== 0
     ? '{\n' + indent(join(array, '\n')) + '\n}'
     : '';
@@ -271,18 +269,18 @@ function block(array) {
  * If maybeString is not null or empty, then wrap with start and end, otherwise
  * print an empty string.
  */
-function wrap(start, maybeString, end = '') {
+function wrap(start: string, maybeString: string, end = '') {
   return maybeString ? start + maybeString + end : '';
 }
 
-function indent(maybeString) {
+function indent(maybeString: string) {
   return maybeString && '  ' + maybeString.replace(/\n/g, '\n  ');
 }
 
-function isMultiline(string) {
+function isMultiline(string: string) {
   return string.indexOf('\n') !== -1;
 }
 
-function hasMultilineItems(maybeArray) {
-  return maybeArray && maybeArray.some(isMultiline);
+function hasMultilineItems(maybeArray: any[]) {
+  return maybeArray?.some(isMultiline);
 }

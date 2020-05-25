@@ -1,5 +1,3 @@
-import flatMap from '../polyfills/flatMap.ts';
-
 import { DocumentNode } from '../language/ast.ts';
 
 /**
@@ -7,9 +5,9 @@ import { DocumentNode } from '../language/ast.ts';
  * concatenate the ASTs together into batched AST, useful for validating many
  * GraphQL source files which together represent one conceptual application.
  */
-export function concatAST(asts: ReadonlyArray<DocumentNode>): DocumentNode {
+export function concatAST(asts: DocumentNode[]): DocumentNode {
   return {
     kind: 'Document',
-    definitions: flatMap(asts, (ast) => ast.definitions),
+    definitions: asts.flatMap((ast) => ast.definitions),
   };
 }

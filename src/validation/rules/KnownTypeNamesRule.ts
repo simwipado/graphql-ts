@@ -71,7 +71,7 @@ function isSpecifiedScalarName(typeName: string) {
   return specifiedScalarsNames.indexOf(typeName) !== -1;
 }
 
-function isSDLNode(value: ASTNode | readonly ASTNode[]): boolean {
+function isSDLNode(value: ASTNode | ASTNode[]): boolean {
   return (
     !(Array.isArray(value)) &&
     (isTypeSystemDefinitionNode(value) || isTypeSystemExtensionNode(value))

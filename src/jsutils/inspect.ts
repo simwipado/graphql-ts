@@ -10,23 +10,20 @@ export default function inspect(value: any): string {
   return formatValue(value, []);
 }
 
-function formatValue(value, seenValues) {
+function formatValue(value: any, seenValues: any[]): string {
   switch (typeof value) {
     case 'string':
       return JSON.stringify(value);
     case 'function':
-      return value.name ? `[function ${value.name}]` : '[function]';
+      return value.name ? `[function ${value.name as string}]` : '[function]';
     case 'object':
-      if (value === null) {
-        return 'null';
-      }
       return formatObjectValue(value, seenValues);
     default:
       return String(value);
   }
 }
 
-function formatObjectValue(value, previouslySeenValues) {
+function formatObjectValue(value: any, previouslySeenValues: any) {
   if (previouslySeenValues.indexOf(value) !== -1) {
     return '[Circular]';
   }
@@ -35,7 +32,6 @@ function formatObjectValue(value, previouslySeenValues) {
   const customInspectFn = getCustomFn(value);
 
   if (customInspectFn !== undefined) {
-    // $FlowFixMe(>=0.90.0)
     const customValue = customInspectFn.call(value);
 
     // check for infinite recursion
@@ -51,7 +47,7 @@ function formatObjectValue(value, previouslySeenValues) {
   return formatObject(value, seenValues);
 }
 
-function formatObject(object, seenValues) {
+function formatObject(object: any, seenValues: any) {
   const keys = Object.keys(object);
   if (keys.length === 0) {
     return '{}';
@@ -69,7 +65,7 @@ function formatObject(object, seenValues) {
   return '{ ' + properties.join(', ') + ' }';
 }
 
-function formatArray(array, seenValues) {
+function formatArray(array: any[], seenValues: any[]) {
   if (array.length === 0) {
     return '[]';
   }
@@ -95,7 +91,7 @@ function formatArray(array, seenValues) {
   return '[' + items.join(', ') + ']';
 }
 
-function getCustomFn(object) {
+function getCustomFn(object: any): (() => undefined) | undefined {
   const customInspectFn = object[String(nodejsCustomInspectSymbol)];
 
   if (typeof customInspectFn === 'function') {
@@ -107,7 +103,7 @@ function getCustomFn(object) {
   }
 }
 
-function getObjectTag(object) {
+function getObjectTag(object: any): string {
   const tag = Object.prototype.toString
     .call(object)
     .replace(/^\[object /, '')

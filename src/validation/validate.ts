@@ -16,7 +16,7 @@ ValidationRule,
   SDLValidationContext,
   ValidationContext,
 } from './ValidationContext.ts';
-import Maybe from '../tsutils/Maybe.ts';
+import { specifiedRules, specifiedSDLRules } from './specifiedRules.ts';
 
 /**
  * Implements the "Validation" section of the spec.
@@ -37,15 +37,15 @@ import Maybe from '../tsutils/Maybe.ts';
 export function validate(
   schema: GraphQLSchema,
   documentAST: DocumentNode,
-  rules?: ReadonlyArray<ValidationRule>,
-  typeInfo?: TypeInfo,
-  options?: { maxErrors?: number },
-): ReadonlyArray<GraphQLError> {
+  rules: ValidationRule[] = specifiedRules,
+  typeInfo: TypeInfo = new TypeInfo(schema),
+  options?: { maxErrors?: number }
+): GraphQLError[] {
   devAssert(documentAST, 'Must provide document.');
   // If the schema used for validation is invalid, throw an error.
   assertValidSchema(schema);
 
-  const abortObj = Object.freeze({});
+  const abortObj = {} as const;
   const errors: GraphQLError[] = [];
   const context = new ValidationContext(
     schema,
@@ -84,9 +84,9 @@ export function validate(
  */
 export function validateSDL(
   documentAST: DocumentNode,
-  schemaToExtend?: Maybe<GraphQLSchema>,
-  rules?: ReadonlyArray<SDLValidationRule>,
-): ReadonlyArray<GraphQLError> {
+  schemaToExtend?: GraphQLSchema,
+  rules: SDLValidationRule[] = specifiedSDLRules,
+): GraphQLError[] {
   const errors: GraphQLError[] = [];
   const context = new SDLValidationContext(
     documentAST,

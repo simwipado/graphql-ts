@@ -1,6 +1,3 @@
-import isFinite from '../polyfills/isFinite.ts';
-import isInteger from '../polyfills/isInteger.ts';
-
 import inspect from '../jsutils/inspect.ts';
 import isObjectLike from '../jsutils/isObjectLike.ts';
 
@@ -31,7 +28,7 @@ function serializeInt(outputValue: any): number {
     num = Number(coercedValue);
   }
 
-  if (!isInteger(num)) {
+  if (!Number.isInteger(num)) {
     throw new GraphQLError(
       `Int cannot represent non-integer value: ${inspect(coercedValue)}`,
     );
@@ -46,7 +43,7 @@ function serializeInt(outputValue: any): number {
 }
 
 function coerceInt(inputValue: any): number {
-  if (!isInteger(inputValue)) {
+  if (!Number.isInteger(inputValue)) {
     throw new GraphQLError(
       `Int cannot represent non-integer value: ${inspect(inputValue)}`,
     );
@@ -238,7 +235,7 @@ function serializeID(outputValue: any): string {
   if (typeof coercedValue === 'string') {
     return coercedValue;
   }
-  if (isInteger(coercedValue)) {
+  if (Number.isInteger(coercedValue)) {
     return String(coercedValue);
   }
   throw new GraphQLError(`ID cannot represent value: ${inspect(outputValue)}`);
@@ -248,7 +245,7 @@ function coerceID(inputValue: any): string {
   if (typeof inputValue === 'string') {
     return inputValue;
   }
-  if (isInteger(inputValue)) {
+  if (Number.isInteger(inputValue)) {
     return inputValue.toString();
   }
   throw new GraphQLError(`ID cannot represent value: ${inspect(inputValue)}`);
@@ -272,13 +269,13 @@ export const GraphQLID = new GraphQLScalarType({
   },
 });
 
-export const specifiedScalarTypes = Object.freeze([
+export const specifiedScalarTypes = [
   GraphQLString,
   GraphQLInt,
   GraphQLFloat,
   GraphQLBoolean,
   GraphQLID,
-]);
+] as const;
 
 export function isSpecifiedScalarType(type: GraphQLNamedType): boolean {
   return specifiedScalarTypes.some(({ name }) => type.name === name);

@@ -28,9 +28,9 @@ import Maybe from '../tsutils/Maybe.ts';
 
 type NodeWithSelectionSet = OperationDefinitionNode | FragmentDefinitionNode;
 type VariableUsage = {
-  readonly node: VariableNode;
-  readonly type: Maybe<GraphQLInputType>;
-  readonly defaultValue: Maybe<any>;
+  node: VariableNode;
+  type: Maybe<GraphQLInputType>;
+  defaultValue: Maybe<any>;
 };
 
 /**
@@ -82,11 +82,11 @@ export class ASTValidationContext {
 
   getFragmentSpreads(
     node: SelectionSetNode,
-  ): ReadonlyArray<FragmentSpreadNode> {
+  ): FragmentSpreadNode[] {
     let spreads = this._fragmentSpreads.get(node);
     if (!spreads) {
       spreads = [];
-      const setsToVisit: Array<SelectionSetNode> = [node];
+      const setsToVisit: SelectionSetNode[] = [node];
       while (setsToVisit.length !== 0) {
         const set = setsToVisit.pop() as SelectionSetNode;
         for (const selection of set.selections) {
@@ -104,12 +104,12 @@ export class ASTValidationContext {
 
   getRecursivelyReferencedFragments(
     operation: OperationDefinitionNode,
-  ): ReadonlyArray<FragmentDefinitionNode> {
+  ): FragmentDefinitionNode[] {
     let fragments = this._recursivelyReferencedFragments.get(operation);
     if (!fragments) {
       fragments = [];
       const collectedNames = Object.create(null);
-      const nodesToVisit: Array<SelectionSetNode> = [operation.selectionSet];
+      const nodesToVisit: SelectionSetNode[] = [operation.selectionSet];
       while (nodesToVisit.length !== 0) {
         const node = nodesToVisit.pop() as SelectionSetNode;
         for (const spread of this.getFragmentSpreads(node)) {
@@ -153,10 +153,10 @@ export type SDLValidationRule = (context: SDLValidationContext) => ASTVisitor;
 export class ValidationContext extends ASTValidationContext {
   _schema: GraphQLSchema;
   _typeInfo: Maybe<TypeInfo>;
-  _variableUsages: Map<NodeWithSelectionSet, ReadonlyArray<VariableUsage>>;
+  _variableUsages: Map<NodeWithSelectionSet, VariableUsage[]>;
   _recursiveVariableUsages: Map<
     OperationDefinitionNode,
-    ReadonlyArray<VariableUsage>
+    VariableUsage[]
   >;
 
   constructor(
@@ -176,7 +176,7 @@ export class ValidationContext extends ASTValidationContext {
     return this._schema;
   }
 
-  getVariableUsages(node: NodeWithSelectionSet): ReadonlyArray<VariableUsage> {
+  getVariableUsages(node: NodeWithSelectionSet): VariableUsage[] {
     let usages = this._variableUsages.get(node);
     if (!usages) {
       const newUsages: {node: VariableNode, type: Maybe<GraphQLInputType>, defaultValue: any}[] = [];
@@ -202,7 +202,7 @@ export class ValidationContext extends ASTValidationContext {
 
   getRecursiveVariableUsages(
     operation: OperationDefinitionNode,
-  ): ReadonlyArray<VariableUsage> {
+  ): VariableUsage[] {
     let usages = this._recursiveVariableUsages.get(operation);
     if (!usages) {
       usages = this.getVariableUsages(operation);

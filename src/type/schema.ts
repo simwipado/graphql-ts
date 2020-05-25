@@ -1,7 +1,3 @@
-import find from '../polyfills/find.ts';
-import arrayFrom from '../polyfills/arrayFrom.ts';
-import { SYMBOL_TO_STRING_TAG } from '../polyfills/symbols.ts';
-
 import inspect from '../jsutils/inspect.ts';
 import toObjMap from '../jsutils/toObjMap.ts';
 import devAssert from '../jsutils/devAssert.ts';
@@ -120,23 +116,23 @@ export class GraphQLSchema {
   description: Maybe<string>;
   extensions: Maybe<Readonly<Record<string, any>>>;
   astNode: Maybe<SchemaDefinitionNode>;
-  extensionASTNodes: Maybe<ReadonlyArray<SchemaExtensionNode>>;
+  extensionASTNodes: Maybe<SchemaExtensionNode[]>;
 
   _queryType: Maybe<GraphQLObjectType>;
   _mutationType: Maybe<GraphQLObjectType>;
   _subscriptionType: Maybe<GraphQLObjectType>;
-  _directives: ReadonlyArray<GraphQLDirective>;
+  _directives: GraphQLDirective[];
   _typeMap: TypeMap;
   _subTypeMap: ObjMap<ObjMap<boolean>>;
   _implementationsMap: ObjMap<{
-    objects: Array<GraphQLObjectType>,
-    interfaces: Array<GraphQLInterfaceType>,
+    objects: GraphQLObjectType[],
+    interfaces: GraphQLInterfaceType[],
   }>;
 
   // Used as a cache for validateSchema().
-  __validationErrors: Maybe<ReadonlyArray<GraphQLError>>;
+  __validationErrors: Maybe<GraphQLError[]>;
 
-  constructor(config: Readonly<GraphQLSchemaConfig>): void {
+  constructor(config: Readonly<GraphQLSchemaConfig>) {
     // If this schema was built from a source known to be valid, then it may be
     // marked with assumeValid to avoid an additional type system validation.
     this.__validationErrors = config.assumeValid === true ? [] : undefined;
@@ -202,7 +198,7 @@ export class GraphQLSchema {
     // Keep track of all implementations by interface name.
     this._implementationsMap = Object.create(null);
 
-    for (const namedType of arrayFrom(allReferencedTypes)) {
+    for (const namedType of Array.from(allReferencedTypes)) {
       if (namedType == null) {
         continue;
       }
@@ -253,15 +249,15 @@ export class GraphQLSchema {
     }
   }
 
-  getQueryType(): Maybe<GraphQLObjectType>; {
+  getQueryType(): Maybe<GraphQLObjectType> {
     return this._queryType;
   }
 
-  getMutationType(): Maybe<GraphQLObjectType>; {
+  getMutationType(): Maybe<GraphQLObjectType> {
     return this._mutationType;
   }
 
-  getSubscriptionType(): Maybe<GraphQLObjectType>; {
+  getSubscriptionType(): Maybe<GraphQLObjectType> {
     return this._subscriptionType;
   }
 
@@ -269,23 +265,23 @@ export class GraphQLSchema {
     return this._typeMap;
   }
 
-  getType(name: string): Maybe<GraphQLNamedType>; {
+  getType(name: string): Maybe<GraphQLNamedType> {
     return this.getTypeMap()[name];
   }
 
   getPossibleTypes(
     abstractType: GraphQLAbstractType,
-  ): ReadonlyArray<GraphQLObjectType> {
+  ): GraphQLObjectType[] {
     return isUnionType(abstractType)
       ? abstractType.getTypes()
-      : this.getImplementations(abstractType).objects';
+      : this.getImplementations(abstractType).objects;
   }
 
   getImplementations(
     interfaceType: GraphQLInterfaceType,
   ): {
-    objects: /* Readonly */ Array<GraphQLObjectType>,
-    interfaces: /* Readonly */ Array<GraphQLInterfaceType>,
+    objects: /* Readonly */ GraphQLObjectType[],
+    interfaces: /* Readonly */ GraphQLInterfaceType[],
   } {
     const implementations = this._implementationsMap[interfaceType.name];
     return implementations ?? { objects: [], interfaces: [] };
@@ -326,12 +322,13 @@ export class GraphQLSchema {
     return map[maybeSubType.name] !== undefined;
   }
 
-  getDirectives(): ReadonlyArray<GraphQLDirective> {
+  getDirectives(): GraphQLDirective[] {
     return this._directives;
   }
 
-  getDirective(name: string): Maybe<GraphQLDirective>; {
-    return find(this.getDirectives(), (directive) => directive.name === name);
+  getDirective(name: string): Maybe<GraphQLDirective> {
+    const directive = this.getDirectives().find((directive) => directive.name === name);
+    return directive ? directive : undefined;
   }
 
   toConfig(): GraphQLSchemaNormalizedConfig {
@@ -350,7 +347,7 @@ export class GraphQLSchema {
   }
 
   // $FlowFixMe Flow doesn't support computed properties yet
-  get [SYMBOL_TO_STRING_TAG]() {
+  get [Symbol.toStringTag]() {
     return 'GraphQLSchema';
   }
 }
@@ -365,30 +362,30 @@ export type GraphQLSchemaValidationOptions = {
    *
    * Default: false
    */
-  assumeValid?: boolean,
+  assumeValid?: Maybe<boolean>;
 };
 
 export interface GraphQLSchemaConfig extends GraphQLSchemaValidationOptions {
-  description?: string,
-  query?: GraphQLObjectType,
-  mutation?: GraphQLObjectType,
-  subscription?: GraphQLObjectType,
-  types?: Array<GraphQLNamedType>,
-  directives?: Array<GraphQLDirective>,
-  extensions?: ReadOnlyObjMapLike<any>,
-  astNode?: SchemaDefinitionNode,
-  extensionASTNodes?: ReadonlyArray<SchemaExtensionNode>,
+  description?: Maybe<string>;
+  query?: Maybe<GraphQLObjectType>;
+  mutation?: Maybe<GraphQLObjectType>;
+  subscription?: Maybe<GraphQLObjectType>;
+  types?: Maybe<GraphQLNamedType[]>;
+  directives?: Maybe<GraphQLDirective[]>;
+  extensions?: Maybe<ReadOnlyObjMapLike<any>>;
+  astNode?: Maybe<SchemaDefinitionNode>;
+  extensionASTNodes?: Maybe<SchemaExtensionNode[]>;
 };
 
 /**
  * @internal
  */
 export interface GraphQLSchemaNormalizedConfig extends GraphQLSchemaConfig {
-  description: string,
-  types: Array<GraphQLNamedType>,
-  directives: Array<GraphQLDirective>,
-  extensions: ReadOnlyObjMap<any>,
-  extensionASTNodes: ReadonlyArray<SchemaExtensionNode>,
+  description: Maybe<string>,
+  types: GraphQLNamedType[],
+  directives: GraphQLDirective[],
+  extensions: Maybe<ReadOnlyObjMap<any>>,
+  extensionASTNodes: SchemaExtensionNode[],
   assumeValid: boolean,
 };
 
@@ -398,8 +395,8 @@ function collectReferencedTypes(
 ): Set<GraphQLNamedType> {
   const namedType = getNamedType(type);
 
-  if (!typeSet.has(namedType)) {
-    typeSet.add(namedType);
+  if (!typeSet.has(namedType as any)) {
+    typeSet.add(namedType as any);
     if (isUnionType(namedType)) {
       for (const memberType of namedType.getTypes()) {
         collectReferencedTypes(memberType, typeSet);

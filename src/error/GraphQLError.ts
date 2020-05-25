@@ -2,7 +2,6 @@
 // flowlint uninitialized-instance-property:off
 
 import isObjectLike from '../jsutils/isObjectLike.ts';
-import { SYMBOL_TO_STRING_TAG } from '../polyfills/symbols.ts';
 
 import { ASTNode } from '../language/ast.ts';
 import { Source } from '../language/source.ts';
@@ -24,7 +23,7 @@ export class GraphQLError extends Error {
    *
    * Note: should be treated as readonly, despite invariant usage.
    */
-  message: string;
+  message: string = '';
 
   /**
    * An array of { line, column } locations within the source GraphQL document
@@ -36,7 +35,7 @@ export class GraphQLError extends Error {
    *
    * Enumerable, and appears in the result of JSON.stringify().
    */
-  readonly locations: ReadonlyArray<SourceLocation> | undefined;
+  locations: SourceLocation[] | undefined;
 
   /**
    * An array describing the JSON-path into the execution response which
@@ -44,12 +43,12 @@ export class GraphQLError extends Error {
    *
    * Enumerable, and appears in the result of JSON.stringify().
    */
-  readonly path: ReadonlyArray<string | number> | undefined;
+  path: (string | number)[] | undefined;
 
   /**
    * An array of GraphQL AST Nodes corresponding to this error.
    */
-  readonly nodes: ReadonlyArray<ASTNode> | undefined;
+  nodes: ASTNode[] | undefined;
 
   /**
    * The source GraphQL document corresponding to this error.
@@ -57,33 +56,33 @@ export class GraphQLError extends Error {
    * Note that if this Error represents more than one node, the source may not
    * represent nodes after the first node.
    */
-  readonly source: Source | undefined;
+  source: Source | undefined;
 
   /**
    * An array of character offsets within the source GraphQL document
    * which correspond to this error.
    */
-  readonly positions: ReadonlyArray<number> | undefined;
+  positions: number[] | undefined;
 
   /**
    * The original error thrown from a field resolver during execution.
    */
-  readonly originalError: Maybe<Error>;
+  originalError: Maybe<Error>;
 
   /**
    * Extension fields to add to the formatted error.
    */
-  readonly extensions: { [key: string]: any } | undefined;
+  extensions: { [key: string]: any } | undefined;
 
   constructor(
     message: string,
-    nodes?: ReadonlyArray<ASTNode> | ASTNode | undefined,
-    source?: Maybe<Source>,
-    positions?: Maybe<ReadonlyArray<number>>,
-    path?: Maybe<ReadonlyArray<string | number>>,
-    originalError?: Maybe<Error>,
-    extensions?: Maybe<{ [key: string]: any }>,
-  ): void {
+    nodes?: ASTNode[] | ASTNode | undefined,
+    source?: Source,
+    positions?: number[],
+    path?: (string | number)[],
+    originalError?: Maybe<Error & { extensions?: any }>,
+    extensions?: { [key: string]: any },
+  ) {
     super(message);
 
     // Compute list of blame nodes.
@@ -103,7 +102,7 @@ export class GraphQLError extends Error {
 
     let _positions = positions;
     if (!_positions && _nodes) {
-      _positions = _nodes.reduce((list, node) => {
+      _positions = _nodes.reduce<number[]>((list, node) => {
         if (node.loc) {
           list.push(node.loc.start);
         }
@@ -118,7 +117,7 @@ export class GraphQLError extends Error {
     if (positions && source) {
       _locations = positions.map((pos) => getLocation(source, pos));
     } else if (_nodes) {
-      _locations = _nodes.reduce((list, node) => {
+      _locations = _nodes.reduce<SourceLocation[]>((list, node) => {
         if (node.loc) {
           list.push(getLocation(node.loc.source, node.loc.start));
         }
@@ -134,7 +133,7 @@ export class GraphQLError extends Error {
       }
     }
 
-    Object.defineProperties((this: any), {
+    Object.defineProperties(this, {
       name: { value: 'GraphQLError' },
       message: {
         value: message,
@@ -196,8 +195,8 @@ export class GraphQLError extends Error {
     }
 
     // istanbul ignore next (See: https://github.com/graphql/graphql-js/issues/2317)
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, GraphQLError);
+    if ('captureStackTrace' in Error) {
+      (Error as any).captureStackTrace(this, GraphQLError);
     } else {
       Object.defineProperty(this, 'stack', {
         value: Error().stack,
@@ -213,7 +212,7 @@ export class GraphQLError extends Error {
 
   // FIXME: workaround to not break chai comparisons, should be remove in v16
   // $FlowFixMe Flow doesn't support computed properties yet
-  get [SYMBOL_TO_STRING_TAG](): string {
+  get [Symbol.toStringTag](): string {
     return 'Object';
   }
 }

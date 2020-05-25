@@ -1,5 +1,3 @@
-import arrayFrom from '../polyfills/arrayFrom.ts';
-
 import inspect from '../jsutils/inspect.ts';
 import invariant from '../jsutils/invariant.ts';
 import didYouMean from '../jsutils/didYouMean.ts';
@@ -17,6 +15,7 @@ GraphQLInputType,
   isListType,
   isNonNullType,
 } from '../type/definition.ts';
+import Maybe from '../tsutils/Maybe.ts';
 
 type OnErrorCB = (
   path: ReadonlyArray<string | number>,
@@ -30,7 +29,7 @@ type OnErrorCB = (
 export function coerceInputValue(
   inputValue: any,
   type: GraphQLInputType,
-  onError?: OnErrorCB = defaultOnError,
+  onError: Maybe<OnErrorCB> = defaultOnError,
 ): any {
   return coerceInputValueImpl(inputValue, type, onError);
 }
@@ -52,7 +51,7 @@ function coerceInputValueImpl(
   inputValue: any,
   type: GraphQLInputType,
   onError: OnErrorCB,
-  path: Path | void,
+  path: Maybe<Path>,
 ): any {
   if (isNonNullType(type)) {
     if (inputValue != null) {
@@ -76,7 +75,7 @@ function coerceInputValueImpl(
   if (isListType(type)) {
     const itemType = type.ofType;
     if (isCollection(inputValue)) {
-      return arrayFrom(inputValue, (itemValue, index) => {
+      return Array.from(inputValue, (itemValue, index) => {
         const itemPath = addPath(path, index);
         return coerceInputValueImpl(itemValue, itemType, onError, itemPath);
       });
@@ -95,7 +94,7 @@ function coerceInputValueImpl(
       return;
     }
 
-    const coercedValue = {};
+    const coercedValue: any= {};
     const fieldDefs = type.getFields();
 
     for (const field of Object.values(fieldDefs)) {
@@ -183,5 +182,5 @@ function coerceInputValueImpl(
   }
 
   // Not reachable. All possible input types have been considered.
-  invariant(false, 'Unexpected input type: ' + inspect((type: empty)));
+  invariant(false, 'Unexpected input type: ' + inspect(type));
 }

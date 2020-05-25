@@ -1,5 +1,3 @@
-import arrayFrom from '../../polyfills/arrayFrom.ts';
-
 import didYouMean from '../../jsutils/didYouMean.ts';
 import suggestionList from '../../jsutils/suggestionList.ts';
 
@@ -73,7 +71,7 @@ function getSuggestedTypeNames(
   schema: GraphQLSchema,
   type: GraphQLOutputType,
   fieldName: string,
-): Array<string> {
+): string[] {
   if (!isAbstractType(type)) {
     // Must be an Object type, which does not have possible fields.
     return [];
@@ -104,7 +102,7 @@ function getSuggestedTypeNames(
     }
   }
 
-  return arrayFrom(suggestedTypes)
+  return Array.from(suggestedTypes)
     .sort((typeA, typeB) => {
       // Suggest both interface and object types based on how common they are.
       const usageCountDiff = usageCount[typeB.name] - usageCount[typeA.name];
@@ -132,7 +130,7 @@ function getSuggestedTypeNames(
 function getSuggestedFieldNames(
   type: GraphQLOutputType,
   fieldName: string,
-): Array<string> {
+): string[] {
   if (isObjectType(type) || isInterfaceType(type)) {
     const possibleFieldNames = Object.keys(type.getFields());
     return suggestionList(fieldName, possibleFieldNames);

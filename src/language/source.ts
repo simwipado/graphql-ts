@@ -1,5 +1,3 @@
-import { SYMBOL_TO_STRING_TAG } from '../polyfills/symbols.ts';
-
 import devAssert from '../jsutils/devAssert.ts';
 
 interface Location {
@@ -39,7 +37,7 @@ export class Source {
   }
 
   // $FlowFixMe Flow doesn't support computed properties yet
-  get [SYMBOL_TO_STRING_TAG]() {
+  get [Symbol.toStringTag]() {
     return 'Source';
   }
 }

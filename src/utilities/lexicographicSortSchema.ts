@@ -25,6 +25,7 @@ GraphQLNamedType,
   isEnumType,
   isInputObjectType,
   GraphQLInputType,
+  GraphQLInputFieldMap,
 } from '../type/definition.ts';
 
 /**
@@ -75,14 +76,14 @@ export function lexicographicSortSchema(schema: GraphQLSchema): GraphQLSchema {
     });
   }
 
-  function sortArgs(args) {
+  function sortArgs(args: GraphQLInputFieldMap) {
     return sortObjMap(args, (arg) => ({
       ...arg,
       type: replaceType(arg.type),
     }));
   }
 
-  function sortFields(fieldsMap) {
+  function sortFields(fieldsMap: GraphQLInputFieldMap) {
     return sortObjMap(fieldsMap, (field) => ({
       ...field,
       type: replaceType(field.type),
@@ -90,14 +91,14 @@ export function lexicographicSortSchema(schema: GraphQLSchema): GraphQLSchema {
     }));
   }
 
-  function sortInputFields(fieldsMap) {
+  function sortInputFields(fieldsMap: GraphQLInputFieldMap) {
     return sortObjMap(fieldsMap, (field) => ({
       ...field,
       type: replaceType(field.type),
     }));
   }
 
-  function sortTypes<T extends GraphQLNamedType>(arr: ReadonlyArray<T>): Array<T> {
+  function sortTypes<T extends GraphQLNamedType>(arr: T[]): T[] {
     return sortByName(arr).map(replaceNamedType);
   }
 
@@ -144,11 +145,11 @@ export function lexicographicSortSchema(schema: GraphQLSchema): GraphQLSchema {
     }
 
     // Not reachable. All possible types have been considered.
-    invariant(false, 'Unexpected type: ' + inspect((type: empty)));
+    invariant(false, 'Unexpected type: ' + inspect(type));
   }
 }
 
-function sortObjMap<T, R>(map: ObjMap<T>, sortValueFn?: (T) => R): ObjMap<R> {
+function sortObjMap<T, R>(map: ObjMap<T>, sortValueFn?: (arg: T) => R): ObjMap<R> {
   const sortedMap = Object.create(null);
   const sortedKeys = sortBy(Object.keys(map), (x) => x);
   for (const key of sortedKeys) {
@@ -159,15 +160,15 @@ function sortObjMap<T, R>(map: ObjMap<T>, sortValueFn?: (T) => R): ObjMap<R> {
 }
 
 function sortByName<T extends { name: string }>(
-  array: ReadonlyArray<T>,
-): Array<T> {
+  array: T[],
+): T[] {
   return sortBy(array, (obj) => obj.name);
 }
 
 function sortBy<T>(
-  array: ReadonlyArray<T>,
+  array: T[],
   mapToKey: (arg: T) => string,
-): Array<T> {
+): T[] {
   return array.slice().sort((obj1, obj2) => {
     const key1 = mapToKey(obj1);
     const key2 = mapToKey(obj2);

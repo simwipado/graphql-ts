@@ -4,8 +4,8 @@
  */
 export default function suggestionList(
   input: string,
-  options: ReadonlyArray<string>,
-): Array<string> {
+  options: string[],
+): string[] {
   const optionsByDistance = Object.create(null);
   const lexicalDistance = new LexicalDistance(input);
 
@@ -40,8 +40,8 @@ export default function suggestionList(
 class LexicalDistance {
   _input: string;
   _inputLowerCase: string;
-  _inputArray: Array<number>;
-  _rows: [Array<number>, Array<number>, Array<number>];
+  _inputArray: number[];
+  _rows: [number[], number[], number[]];
 
   constructor(input: string) {
     this._input = input;
@@ -55,7 +55,7 @@ class LexicalDistance {
     ];
   }
 
-  measure(option: string, threshold: number): number | void {
+  measure(option: string, threshold: number): number | undefined {
     if (this._input === option) {
       return 0;
     }
@@ -125,7 +125,7 @@ class LexicalDistance {
   }
 }
 
-function stringToArray(str) {
+function stringToArray(str: string) {
   const strLength = str.length;
   const array = new Array(strLength);
   for (let i = 0; i < strLength; ++i) {

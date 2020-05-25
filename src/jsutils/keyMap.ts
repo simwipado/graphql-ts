@@ -24,7 +24,7 @@ import { ObjMap } from './ObjMap.ts';
  *
  */
 export default function keyMap<T>(
-  list: ReadonlyArray<T>,
+  list: T[],
   keyFn: (item: T) => string,
 ): ObjMap<T> {
   return list.reduce((map, item) => {

@@ -1,5 +1,3 @@
-import find from '../polyfills/find.ts';
-
 import keyMap from '../jsutils/keyMap.ts';
 import inspect from '../jsutils/inspect.ts';
 import { ObjMap } from '../jsutils/ObjMap.ts';
@@ -29,7 +27,7 @@ import { coerceInputValue } from '../utilities/coerceInputValue.ts';
 import Maybe from '../tsutils/Maybe.ts';
 
 type CoercedVariableValues =
-  | { errors: ReadonlyArray<GraphQLError>; coerced?: never }
+  | { errors: GraphQLError[]; coerced?: never }
   | { errors?: never; coerced: { [key: string]: any } };
 
 /**
@@ -45,14 +43,14 @@ type CoercedVariableValues =
  */
 export function getVariableValues(
   schema: GraphQLSchema,
-  varDefNodes: ReadonlyArray<VariableDefinitionNode>,
+  varDefNodes: VariableDefinitionNode[],
   inputs: { [key: string]: any },
-  options?: { maxErrors?: number },
+  options: Maybe<{ maxErrors?: number }>
 ): CoercedVariableValues {
   const errors = [];
   const maxErrors = options?.maxErrors;
   try {
-    const coerced = coerceVariableValues(
+    const coerced: any = coerceVariableValues(
       schema,
       varDefNodes,
       inputs,
@@ -78,11 +76,11 @@ export function getVariableValues(
 
 function coerceVariableValues(
   schema: GraphQLSchema,
-  varDefNodes: ReadonlyArray<VariableDefinitionNode>,
+  varDefNodes: VariableDefinitionNode[],
   inputs: Maybe<{[key: string]: any}>,
   onError: (error: GraphQLError) => void,
 ): Maybe<{[key: string]: any}> {
-  const coercedValues = {};
+  const coercedValues: any = {};
   for (const varDefNode of varDefNodes) {
     const varName = varDefNode.variable.name.value;
     const varType = typeFromAST(schema, varDefNode.type);
@@ -114,7 +112,7 @@ function coerceVariableValues(
       continue;
     }
 
-    const value = inputs[varName];
+    const value = (inputs as any)[varName];
     if (value === null && isNonNullType(varType)) {
       const varTypeStr = inspect(varType);
       onError(
@@ -165,9 +163,9 @@ function coerceVariableValues(
 export function getArgumentValues(
   def: GraphQLField<any, any> | GraphQLDirective,
   node: FieldNode | DirectiveNode,
-  variableValues?: ?ObjMap<any>,
+  variableValues: Maybe<ObjMap<any>>
 ): { [argument: string]: any } {
-  const coercedValues = {};
+  const coercedValues: any = {};
 
   // istanbul ignore next (See https://github.com/graphql/graphql-js/issues/2203)
   const argumentNodes = node.arguments ?? [];
@@ -251,16 +249,13 @@ export function getArgumentValues(
 export function getDirectiveValues(
   directiveDef: GraphQLDirective,
   node: {
-    readonly directives?: ReadonlyArray<DirectiveNode>;
+    directives?: DirectiveNode[];
   },
-  variableValues?: Maybe<{ [key: string]: any }>,
+  variableValues?: { [key: string]: any }
 ): undefined | { [key: string]: any } {
   const directiveNode =
     node.directives &&
-    find(
-      node.directives,
-      (directive) => directive.name.value === directiveDef.name,
-    );
+      node.directives.find((directive) => directive.name.value === directiveDef.name);
 
   if (directiveNode) {
     return getArgumentValues(directiveDef, directiveNode, variableValues);

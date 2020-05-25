@@ -1,5 +1,3 @@
-import { SYMBOL_ASYNC_ITERATOR } from '../polyfills/symbols.ts';
-
 import inspect from '../jsutils/inspect.ts';
 import { addPath, pathToArray } from '../jsutils/Path.ts';
 
@@ -62,34 +60,33 @@ export interface SubscriptionArgs {
 export function subscribe(
   args: SubscriptionArgs,
 ): Promise<AsyncIterableIterator<ExecutionResult> | ExecutionResult>;
-/* eslint-disable no-redeclare */
 export function subscribe(
   schema: GraphQLSchema,
   document: DocumentNode,
   rootValue?: any,
   contextValue?: any,
-  variableValues?: Maybe<{ [key: string]: any }>,
-  operationName?: Maybe<string>,
-  fieldResolver?: Maybe<GraphQLFieldResolver<any, any>>,
-  subscribeFieldResolver?: Maybe<GraphQLFieldResolver<any, any>>,
+  variableValues?: { [key: string]: any },
+  operationName?: string,
+  fieldResolver?: GraphQLFieldResolver<any, any>,
+  subscribeFieldResolver?: GraphQLFieldResolver<any, any>,
 ): Promise<AsyncIterableIterator<ExecutionResult> | ExecutionResult>;
 export function subscribe(
-  argsOrSchema: GraphQLSchema,
+  argsOrSchema: GraphQLSchema | SubscriptionArgs,
   document?: DocumentNode,
   rootValue?: any,
   contextValue?: any,
-  variableValues?: Maybe<{ [key: string]: any }>,
-  operationName?: Maybe<string>,
-  fieldResolver?: Maybe<GraphQLFieldResolver<any, any>>,
-  subscribeFieldResolver?: Maybe<GraphQLFieldResolver<any, any>>,
+  variableValues?: { [key: string]: any },
+  operationName?: string,
+  fieldResolver?: GraphQLFieldResolver<any, any>,
+  subscribeFieldResolver?: GraphQLFieldResolver<any, any>,
 ) {
   /* eslint-enable no-redeclare */
   // Extract arguments from object args if provided.
-  return arguments.length === 1
+  return 'schema' in argsOrSchema
     ? subscribeImpl(argsOrSchema)
     : subscribeImpl({
         schema: argsOrSchema,
-        document,
+        document: document as DocumentNode,
         rootValue,
         contextValue,
         variableValues,
@@ -104,7 +101,7 @@ export function subscribe(
  * an ExecutionResult, containing only errors and no data. Otherwise treat the
  * error as a system-class error and re-throw it.
  */
-function reportGraphQLError(error) {
+function reportGraphQLError(error: any) {
   if (error instanceof GraphQLError) {
     return { errors: [error] };
   }
@@ -141,7 +138,7 @@ function subscribeImpl(
   // the GraphQL specification. The `execute` function provides the
   // "ExecuteSubscriptionEvent" algorithm, as it is nearly identical to the
   // "ExecuteQuery" algorithm, for which `execute` is also used.
-  const mapSourceToResponse = (payload) =>
+  const mapSourceToResponse = (payload: any) =>
     execute({
       schema,
       document,
@@ -154,7 +151,7 @@ function subscribeImpl(
 
   // Resolve the Source Stream, then map every source value to a
   // ExecutionResult value as described above.
-  return sourcePromise.then((resultOrStream) =>
+  return sourcePromise.then((resultOrStream: any) =>
     // Note: Flow can't refine isAsyncIterable, so explicit casts are used.
     isAsyncIterable(resultOrStream)
       ? mapAsyncIterator(
@@ -162,7 +159,7 @@ function subscribeImpl(
           mapSourceToResponse,
           reportGraphQLError,
         )
-      : ((resultOrStream: any): ExecutionResult),
+      : resultOrStream,
   );
 }
 
@@ -199,7 +196,7 @@ export function createSourceEventStream(
   document: DocumentNode,
   rootValue?: any,
   contextValue?: any,
-  variableValues?: { [key: string]: any },
+  variableValues?: Maybe<{ [key: string]: any }>,
   operationName?: Maybe<string>,
   fieldResolver?: Maybe<GraphQLFieldResolver<any, any>>,
 ): Promise<AsyncIterable<any> | ExecutionResult> {
@@ -279,7 +276,7 @@ export function createSourceEventStream(
       // Assert field returned an event stream, otherwise yield an error.
       if (isAsyncIterable(eventStream)) {
         // Note: isAsyncIterable above ensures this will be correct.
-        return ((eventStream: any): AsyncIterable<any>);
+        return eventStream;
       }
 
       throw new Error(
@@ -306,5 +303,5 @@ function isAsyncIterable(maybeAsyncIterable: any): boolean {
     return false;
   }
 
-  return typeof maybeAsyncIterable[SYMBOL_ASYNC_ITERATOR] === 'function';
+  return typeof maybeAsyncIterable[Symbol.asyncIterator] === 'function';
 }

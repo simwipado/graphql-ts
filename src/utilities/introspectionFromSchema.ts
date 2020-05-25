@@ -22,7 +22,7 @@ IntrospectionOptions,
  */
 export function introspectionFromSchema(
   schema: GraphQLSchema,
-  options?: IntrospectionOptions,
+  options: Maybe<IntrospectionOptions>;
 ): IntrospectionQuery {
   const optionsWithDefaults = {
     directiveIsRepeatable: true,

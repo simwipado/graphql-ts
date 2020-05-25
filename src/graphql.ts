@@ -72,31 +72,31 @@ export function graphql(
   source: Source | string,
   rootValue?: any,
   contextValue?: any,
-  variableValues?: Maybe<{ [key: string]: any }>,
-  operationName?: Maybe<string>,
-  fieldResolver?: Maybe<GraphQLFieldResolver<any, any>>,
-  typeResolver?: Maybe<GraphQLTypeResolver<any, any>>,
+  variableValues?: { [key: string]: any },
+  operationName?: string,
+  fieldResolver?: GraphQLFieldResolver<any, any>,
+  typeResolver?: GraphQLTypeResolver<any, any>,
 ): Promise<ExecutionResult>;
 export function graphql(
-  argsOrSchema: GraphQLSchema,
+  argsOrSchema: GraphQLSchema | GraphQLArgs,
   source?: Source | string,
   rootValue?: any,
   contextValue?: any,
-  variableValues?: Maybe<{ [key: string]: any }>,
-  operationName?: Maybe<string>,
-  fieldResolver?: Maybe<GraphQLFieldResolver<any, any>>,
-  typeResolver?: Maybe<GraphQLTypeResolver<any, any>>,
+  variableValues?: { [key: string]: any },
+  operationName?: string,
+  fieldResolver?: GraphQLFieldResolver<any, any>,
+  typeResolver?: GraphQLTypeResolver<any, any>,
 ): Promise<ExecutionResult> {
   /* eslint-enable no-redeclare */
   // Always return a Promise for a consistent API.
   return new Promise((resolve) =>
     resolve(
       // Extract arguments from object args if provided.
-      arguments.length === 1
+      'schema' in argsOrSchema
         ? graphqlImpl(argsOrSchema)
         : graphqlImpl({
             schema: argsOrSchema,
-            source,
+            source: source as string | Source,
             rootValue,
             contextValue,
             variableValues,
@@ -120,29 +120,29 @@ export function graphqlSync(
   source: Source | string,
   rootValue?: any,
   contextValue?: any,
-  variableValues?: Maybe<{ [key: string]: any }>,
-  operationName?: Maybe<string>,
-  fieldResolver?: Maybe<GraphQLFieldResolver<any, any>>,
-  typeResolver?: Maybe<GraphQLTypeResolver<any, any>>,
+  variableValues?: { [key: string]: any },
+  operationName?: string,
+  fieldResolver?: GraphQLFieldResolver<any, any>,
+  typeResolver?: GraphQLTypeResolver<any, any>,
 ): ExecutionResult;
 export function graphqlSync(
-  argsOrSchema: GraphQLSchema,
-  source: Source | string,
+  argsOrSchema: GraphQLSchema | GraphQLArgs,
+  source?: Source | string,
   rootValue?: any,
   contextValue?: any,
-  variableValues?: Maybe<{ [key: string]: any }>,
-  operationName?: Maybe<string>,
-  fieldResolver?: Maybe<GraphQLFieldResolver<any, any>>,
-  typeResolver?: Maybe<GraphQLTypeResolver<any, any>>,
+  variableValues?: { [key: string]: any },
+  operationName?: string,
+  fieldResolver?: GraphQLFieldResolver<any, any>,
+  typeResolver?: GraphQLTypeResolver<any, any>,
 ) {
   /* eslint-enable no-redeclare */
   // Extract arguments from object args if provided.
   const result =
-    arguments.length === 1
+    'schema' in argsOrSchema
       ? graphqlImpl(argsOrSchema)
       : graphqlImpl({
           schema: argsOrSchema,
-          source,
+          source: source as Source | string,
           rootValue,
           contextValue,
           variableValues,

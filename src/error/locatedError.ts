@@ -1,7 +1,6 @@
 import { ASTNode } from '../language/ast.ts';
 
 import { GraphQLError } from './GraphQLError.ts';
-import Maybe from '../tsutils/Maybe.ts';
 
 /**
  * Given an arbitrary Error, presumably thrown while attempting to execute a
@@ -10,8 +9,8 @@ import Maybe from '../tsutils/Maybe.ts';
  */
 export function locatedError(
   originalError: Error | GraphQLError,
-  nodes: ASTNode | ReadonlyArray<ASTNode> | undefined,
-  path?: Maybe<ReadonlyArray<string | number>>,
+  nodes: ASTNode | ASTNode[] | undefined | null,
+  path?: (string | number)[]
 ): GraphQLError {
   // Note: this uses a brand-check to support GraphQL errors originating from
   // other contexts.
@@ -21,9 +20,9 @@ export function locatedError(
 
   return new GraphQLError(
     originalError.message,
-    originalError.nodes ?? nodes,
-    originalError.source,
-    originalError.positions,
+    (originalError as any).nodes ?? nodes,
+    (originalError as any).source,
+    (originalError as any).positions,
     path,
     originalError,
   );

@@ -46,7 +46,7 @@ export function printSourceLocation(
       locationStr +
       printPrefixedLines([
         [`${lineNum}`, subLines[0]],
-        ...subLines.slice(1, subLineIndex + 1).map((subLine) => ['', subLine]),
+        ...(subLines.slice(1, subLineIndex + 1).map((subLine) => ['', subLine]) as [string, string][]),
         [' ', whitespace(subLineColumnNum - 1) + '^'],
         ['', subLines[subLineIndex + 1]],
       ])
@@ -65,7 +65,7 @@ export function printSourceLocation(
   );
 }
 
-function printPrefixedLines(lines: ReadonlyArray<[string, string]>): string {
+function printPrefixedLines(lines: [string, string][]): string {
   const existingLines = lines.filter(([_, line]) => line !== undefined);
 
   const padLen = Math.max(...existingLines.map(([prefix]) => prefix.length));

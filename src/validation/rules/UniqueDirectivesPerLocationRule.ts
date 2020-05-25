@@ -52,8 +52,6 @@ export function UniqueDirectivesPerLocationRule(
         return;
       }
 
-      node.directives
-
       let seenDirectives;
       if (
         node.kind === Kind.SCHEMA_DEFINITION ||
