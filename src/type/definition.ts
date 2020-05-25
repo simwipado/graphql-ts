@@ -998,7 +998,7 @@ export type GraphQLFieldResolver<
 export type GraphQLFieldConfigArgumentMap = ObjMap<GraphQLArgumentConfig>;
 
 export interface GraphQLArgumentConfig {
-  description: Maybe<string>;
+  description?: Maybe<string>;
   type: GraphQLInputType;
   defaultValue?: any;
   extensions?: Maybe<Readonly<Record<string, any>>>;
@@ -1628,11 +1628,11 @@ export type GraphQLInputFieldConfigMap = {
 
 export interface GraphQLInputField {
   name: string;
-  description?: Maybe<string>;
+  description: Maybe<string>;
   type: GraphQLInputType;
-  defaultValue?: any;
+  defaultValue: any;
   extensions: Maybe<Readonly<Record<string, any>>>;
-  astNode?: Maybe<InputValueDefinitionNode>;
+  astNode: Maybe<InputValueDefinitionNode>;
 }
 
 export function isRequiredInputField(

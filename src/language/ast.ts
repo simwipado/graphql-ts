@@ -263,8 +263,8 @@ export interface OperationDefinitionNode {
   loc?: Location;
   operation: OperationTypeNode;
   name?: NameNode;
-  variableDefinitions?: VariableDefinitionNode[];
-  directives?: DirectiveNode[];
+  variableDefinitions: VariableDefinitionNode[];
+  directives: DirectiveNode[];
   selectionSet: SelectionSetNode;
 }
 
@@ -275,8 +275,8 @@ export interface VariableDefinitionNode {
   loc?: Location;
   variable: VariableNode;
   type: TypeNode;
-  defaultValue?: ValueNode;
-  directives?: DirectiveNode[];
+  defaultValue: ValueNode;
+  directives: DirectiveNode[];
 }
 
 export interface VariableNode {
@@ -298,9 +298,9 @@ export interface FieldNode {
   loc?: Location;
   alias?: NameNode;
   name: NameNode;
-  arguments?: ArgumentNode[];
-  directives?: DirectiveNode[];
-  selectionSet?: SelectionSetNode;
+  arguments: ArgumentNode[];
+  directives: DirectiveNode[];
+  selectionSet: SelectionSetNode;
 }
 
 export interface ArgumentNode {
@@ -316,14 +316,14 @@ export interface FragmentSpreadNode {
   kind: 'FragmentSpread';
   loc?: Location;
   name: NameNode;
-  directives?: DirectiveNode[];
+  directives: DirectiveNode[];
 }
 
 export interface InlineFragmentNode {
   kind: 'InlineFragment';
   loc?: Location;
-  typeCondition?: NamedTypeNode;
-  directives?: DirectiveNode[];
+  typeCondition: NamedTypeNode;
+  directives: DirectiveNode[];
   selectionSet: SelectionSetNode;
 }
 
@@ -333,9 +333,9 @@ export interface FragmentDefinitionNode {
   name: NameNode;
   // Note: fragment variable definitions are experimental and may be changed
   // or removed in the future.
-  variableDefinitions?: VariableDefinitionNode[];
+  variableDefinitions: VariableDefinitionNode[];
   typeCondition: NamedTypeNode;
-  directives?: DirectiveNode[];
+  directives: DirectiveNode[];
   selectionSet: SelectionSetNode;
 }
 
@@ -413,7 +413,7 @@ export interface DirectiveNode {
   kind: 'Directive';
   loc?: Location;
   name: NameNode;
-  arguments?: ArgumentNode[];
+  arguments: ArgumentNode[];
 }
 
 // Type Reference
@@ -449,7 +449,7 @@ export interface SchemaDefinitionNode {
   kind: 'SchemaDefinition';
   loc?: Location;
   description?: StringValueNode;
-  directives?: DirectiveNode[];
+  directives: DirectiveNode[];
   operationTypes: OperationTypeDefinitionNode[];
 }
 
@@ -475,7 +475,7 @@ export interface ScalarTypeDefinitionNode {
   loc?: Location;
   description?: StringValueNode;
   name: NameNode;
-  directives?: DirectiveNode[];
+  directives: DirectiveNode[];
 }
 
 export interface ObjectTypeDefinitionNode {
@@ -483,9 +483,9 @@ export interface ObjectTypeDefinitionNode {
   loc?: Location;
   description?: StringValueNode;
   name: NameNode;
-  interfaces?: NamedTypeNode[];
-  directives?: DirectiveNode[];
-  fields?: FieldDefinitionNode[];
+  interfaces: NamedTypeNode[];
+  directives: DirectiveNode[];
+  fields: FieldDefinitionNode[];
 }
 
 export interface FieldDefinitionNode {
@@ -493,9 +493,9 @@ export interface FieldDefinitionNode {
   loc?: Location;
   description?: StringValueNode;
   name: NameNode;
-  arguments?: InputValueDefinitionNode[];
+  arguments: InputValueDefinitionNode[];
   type: TypeNode;
-  directives?: DirectiveNode[];
+  directives: DirectiveNode[];
 }
 
 export interface InputValueDefinitionNode {
@@ -505,7 +505,7 @@ export interface InputValueDefinitionNode {
   name: NameNode;
   type: TypeNode;
   defaultValue?: ValueNode;
-  directives?: DirectiveNode[];
+  directives: DirectiveNode[];
 }
 
 export interface InterfaceTypeDefinitionNode {
@@ -513,9 +513,9 @@ export interface InterfaceTypeDefinitionNode {
   loc?: Location;
   description?: StringValueNode;
   name: NameNode;
-  interfaces?: NamedTypeNode[];
-  directives?: DirectiveNode[];
-  fields?: FieldDefinitionNode[];
+  interfaces: NamedTypeNode[];
+  directives: DirectiveNode[];
+  fields: FieldDefinitionNode[];
 }
 
 export interface UnionTypeDefinitionNode {
@@ -523,7 +523,7 @@ export interface UnionTypeDefinitionNode {
   loc?: Location;
   description?: StringValueNode;
   name: NameNode;
-  directives?: DirectiveNode[];
+  directives: DirectiveNode[];
   types?: NamedTypeNode[];
 }
 
@@ -532,8 +532,8 @@ export interface EnumTypeDefinitionNode {
   loc?: Location;
   description?: StringValueNode;
   name: NameNode;
-  directives?: DirectiveNode[];
-  values?: EnumValueDefinitionNode[];
+  directives: DirectiveNode[];
+  values: EnumValueDefinitionNode[];
 }
 
 export interface EnumValueDefinitionNode {
@@ -541,7 +541,7 @@ export interface EnumValueDefinitionNode {
   loc?: Location;
   description?: StringValueNode;
   name: NameNode;
-  directives?: DirectiveNode[];
+  directives: DirectiveNode[];
 }
 
 export interface InputObjectTypeDefinitionNode {
@@ -549,8 +549,8 @@ export interface InputObjectTypeDefinitionNode {
   loc?: Location;
   description?: StringValueNode;
   name: NameNode;
-  directives?: DirectiveNode[];
-  fields?: InputValueDefinitionNode[];
+  directives: DirectiveNode[];
+  fields: InputValueDefinitionNode[];
 }
 
 // Directive Definitions
@@ -560,7 +560,7 @@ export interface DirectiveDefinitionNode {
   loc?: Location;
   description?: StringValueNode;
   name: NameNode;
-  arguments?: InputValueDefinitionNode[];
+  arguments: InputValueDefinitionNode[];
   repeatable: boolean;
   locations: NameNode[];
 }
@@ -572,8 +572,8 @@ export type TypeSystemExtensionNode = SchemaExtensionNode | TypeExtensionNode;
 export type SchemaExtensionNode = {
   kind: 'SchemaExtension';
   loc?: Location;
-  directives?: DirectiveNode[];
-  operationTypes?: OperationTypeDefinitionNode[];
+  directives: DirectiveNode[];
+  operationTypes: OperationTypeDefinitionNode[];
 };
 
 // Type Extensions
@@ -590,47 +590,47 @@ export interface ScalarTypeExtensionNode {
   kind: 'ScalarTypeExtension';
   loc?: Location;
   name: NameNode;
-  directives?: DirectiveNode[];
+  directives: DirectiveNode[];
 }
 
 export interface ObjectTypeExtensionNode {
   kind: 'ObjectTypeExtension';
   loc?: Location;
   name: NameNode;
-  interfaces?: NamedTypeNode[];
-  directives?: DirectiveNode[];
-  fields?: FieldDefinitionNode[];
+  interfaces: NamedTypeNode[];
+  directives: DirectiveNode[];
+  fields: FieldDefinitionNode[];
 }
 
 export interface InterfaceTypeExtensionNode {
   kind: 'InterfaceTypeExtension';
   loc?: Location;
   name: NameNode;
-  interfaces?: NamedTypeNode[];
-  directives?: DirectiveNode[];
-  fields?: FieldDefinitionNode[];
+  interfaces: NamedTypeNode[];
+  directives: DirectiveNode[];
+  fields: FieldDefinitionNode[];
 }
 
 export interface UnionTypeExtensionNode {
   kind: 'UnionTypeExtension';
   loc?: Location;
   name: NameNode;
-  directives?: DirectiveNode[];
-  types?: NamedTypeNode[];
+  directives: DirectiveNode[];
+  types: NamedTypeNode[];
 }
 
 export interface EnumTypeExtensionNode {
   kind: 'EnumTypeExtension';
   loc?: Location;
   name: NameNode;
-  directives?: DirectiveNode[];
-  values?: EnumValueDefinitionNode[];
+  directives: DirectiveNode[];
+  values: EnumValueDefinitionNode[];
 }
 
 export interface InputObjectTypeExtensionNode {
   kind: 'InputObjectTypeExtension';
   loc?: Location;
   name: NameNode;
-  directives?: DirectiveNode[];
-  fields?: InputValueDefinitionNode[];
+  directives: DirectiveNode[];
+  fields: InputValueDefinitionNode[];
 }

@@ -37,7 +37,7 @@ import { specifiedRules, specifiedSDLRules } from './specifiedRules.ts';
 export function validate(
   schema: GraphQLSchema,
   documentAST: DocumentNode,
-  rules: ValidationRule[] = specifiedRules,
+  rules: readonly ValidationRule[] = specifiedRules,
   typeInfo: TypeInfo = new TypeInfo(schema),
   options?: { maxErrors?: number }
 ): GraphQLError[] {
@@ -85,7 +85,7 @@ export function validate(
 export function validateSDL(
   documentAST: DocumentNode,
   schemaToExtend?: GraphQLSchema,
-  rules: SDLValidationRule[] = specifiedSDLRules,
+  rules: readonly SDLValidationRule[] = specifiedSDLRules,
 ): GraphQLError[] {
   const errors: GraphQLError[] = [];
   const context = new SDLValidationContext(

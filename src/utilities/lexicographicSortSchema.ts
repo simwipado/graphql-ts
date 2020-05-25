@@ -24,9 +24,9 @@ GraphQLNamedType,
   isUnionType,
   isEnumType,
   isInputObjectType,
-  GraphQLInputType,
-  GraphQLInputFieldMap,
+  GraphQLType,
 } from '../type/definition.ts';
+import Maybe from '../tsutils/Maybe.ts';
 
 /**
  * Sort GraphQLSchema.
@@ -43,14 +43,14 @@ export function lexicographicSortSchema(schema: GraphQLSchema): GraphQLSchema {
 
   return new GraphQLSchema({
     ...schemaConfig,
-    types: Object.values(typeMap),
+    types: Object.values(typeMap) as any,
     directives: sortByName(schemaConfig.directives).map(sortDirective),
     query: replaceMaybeType(schemaConfig.query),
     mutation: replaceMaybeType(schemaConfig.mutation),
     subscription: replaceMaybeType(schemaConfig.subscription),
   });
 
-  function replaceType(type: GraphQLInputType) {
+  function replaceType(type: GraphQLType): GraphQLList<any> | GraphQLNonNull<any> | GraphQLNamedType {
     if (isListType(type)) {
       return new GraphQLList(replaceType(type.ofType));
     } else if (isNonNullType(type)) {
@@ -60,14 +60,14 @@ export function lexicographicSortSchema(schema: GraphQLSchema): GraphQLSchema {
   }
 
   function replaceNamedType<T extends GraphQLNamedType>(type: T): T {
-    return typeMap[type.name]
+    return typeMap[type.name] as any
   }
 
-  function replaceMaybeType(maybeType: GraphQLObjectType | undefined) {
+  function replaceMaybeType(maybeType: Maybe<GraphQLObjectType>) {
     return maybeType && replaceNamedType(maybeType);
   }
 
-  function sortDirective(directive) {
+  function sortDirective(directive: GraphQLDirective) {
     const config = directive.toConfig();
     return new GraphQLDirective({
       ...config,
@@ -76,23 +76,23 @@ export function lexicographicSortSchema(schema: GraphQLSchema): GraphQLSchema {
     });
   }
 
-  function sortArgs(args: GraphQLInputFieldMap) {
-    return sortObjMap(args, (arg) => ({
+  function sortArgs(args: any) {
+    return sortObjMap(args, (arg: any) => ({
       ...arg,
       type: replaceType(arg.type),
     }));
   }
 
-  function sortFields(fieldsMap: GraphQLInputFieldMap) {
-    return sortObjMap(fieldsMap, (field) => ({
+  function sortFields(fieldsMap: any) {
+    return sortObjMap(fieldsMap, (field: any) => ({
       ...field,
       type: replaceType(field.type),
       args: sortArgs(field.args),
     }));
   }
 
-  function sortInputFields(fieldsMap: GraphQLInputFieldMap) {
-    return sortObjMap(fieldsMap, (field) => ({
+  function sortInputFields(fieldsMap: any) {
+    return sortObjMap(fieldsMap, (field: any) => ({
       ...field,
       type: replaceType(field.type),
     }));

@@ -1,5 +1,49 @@
 import { visit } from './visitor.ts';
-import { ASTNode, NameNode, VariableNode, DocumentNode, OperationDefinitionNode, VariableDefinitionNode, FieldNode, ArgumentNode, FragmentSpreadNode, InlineFragmentNode, FragmentDefinitionNode, IntValueNode, FloatValueNode, StringValueNode, BooleanValueNode, EnumValueNode, ListValueNode, ObjectValueNode, ObjectFieldNode, DirectiveNode, NamedTypeNode, ListTypeNode, NonNullTypeNode, SchemaDefinitionNode, OperationTypeDefinitionNode, ScalarTypeDefinitionNode, ObjectTypeDefinitionNode, FieldDefinitionNode, InputValueDefinitionNode, InterfaceTypeDefinitionNode, UnionTypeDefinitionNode, EnumTypeDefinitionNode, EnumValueDefinitionNode, InputObjectTypeDefinitionNode, DirectiveDefinitionNode, SchemaExtensionNode, ScalarTypeExtensionNode, ObjectTypeExtensionNode, InterfaceTypeExtensionNode, UnionTypeExtensionNode, EnumTypeExtensionNode, InputObjectTypeExtensionNode } from './ast.ts';
+import { 
+  ASTNode,
+  NameNode,
+  VariableNode,
+  DocumentNode,
+  OperationDefinitionNode,
+  VariableDefinitionNode,
+  FieldNode,
+  ArgumentNode,
+  FragmentSpreadNode,
+  InlineFragmentNode,
+  FragmentDefinitionNode,
+  IntValueNode,
+  FloatValueNode,
+  StringValueNode,
+  BooleanValueNode,
+  EnumValueNode,
+  ListValueNode,
+  ObjectValueNode,
+  ObjectFieldNode,
+  DirectiveNode,
+  NamedTypeNode,
+  ListTypeNode,
+  NonNullTypeNode,
+  SchemaDefinitionNode,
+  OperationTypeDefinitionNode,
+  ScalarTypeDefinitionNode,
+  ObjectTypeDefinitionNode,
+  FieldDefinitionNode,
+  InputValueDefinitionNode,
+  InterfaceTypeDefinitionNode,
+  UnionTypeDefinitionNode,
+  EnumTypeDefinitionNode,
+  EnumValueDefinitionNode,
+  InputObjectTypeDefinitionNode,
+  DirectiveDefinitionNode,
+  SchemaExtensionNode,
+  ScalarTypeExtensionNode,
+  ObjectTypeExtensionNode,
+  InterfaceTypeExtensionNode,
+  UnionTypeExtensionNode,
+  EnumTypeExtensionNode,
+  InputObjectTypeExtensionNode,
+  SelectionSetNode
+} from './ast.ts';
 import { printBlockString } from './blockString.ts';
 
 /**
@@ -17,34 +61,34 @@ const printDocASTReducer: any = {
 
   // Document
 
-  Document: (node: DocumentNode) => join(node.definitions, '\n\n') + '\n',
+  Document: (node: DocumentNode) => join((node.definitions.map(d => String(d))), '\n\n') + '\n',
 
   OperationDefinition(node: OperationDefinitionNode) {
     const op = node.operation;
     const name = node.name;
-    const varDefs = wrap('(', join(node.variableDefinitions, ', '), ')');
-    const directives = join(node.directives, ' ');
+    const varDefs = wrap('(', join(node.variableDefinitions.map(d => String(d)), ', '), ')');
+    const directives = join(node.directives.map(d => String(d)), ' ');
     const selectionSet = node.selectionSet;
     // Anonymous queries with no directives or variable definitions can use
     // the query short form.
     return !name && !directives && !varDefs && op === 'query'
       ? selectionSet
-      : join([op, join([name, varDefs]), directives, selectionSet], ' ');
+      : join([op, join([String(name), varDefs]), directives, String(selectionSet)], ' ');
   },
 
   VariableDefinition: ({ variable, defaultValue, directives }: VariableDefinitionNode) =>
     variable +
     ': ' +
-  Number(wrap(' = ', defaultValue)) +
-    wrap(' ', join(directives, ' ')),
-  SelectionSet: ({ selections }) => block(selections),
+  Number(wrap(' = ', String(defaultValue))) +
+    wrap(' ', join(directives.map(d => String(d)), ' ')),
+  SelectionSet: ({ selections }: SelectionSetNode) => block(selections),
 
   Field: ({ alias, name, arguments: args, directives, selectionSet }: FieldNode) =>
     join(
       [
-        wrap('', alias, ': ') + name + wrap('(', join(args, ', '), ')'),
-        join(directives, ' '),
-        selectionSet,
+        wrap('', String(alias), ': ') + name + wrap('(', join(args.map(d => String(d)), ', '), ')'),
+        join(directives.map(d => String(d)), ' '),
+        String(selectionSet),
       ],
       ' ',
     ),
@@ -54,11 +98,11 @@ const printDocASTReducer: any = {
   // Fragments
 
   FragmentSpread: ({ name, directives }: FragmentSpreadNode) =>
-    '...' + name + wrap(' ', join(directives, ' ')),
+    '...' + name + wrap(' ', join(directives.map(d => String(d)), ' ')),
 
   InlineFragment: ({ typeCondition, directives, selectionSet }: InlineFragmentNode) =>
     join(
-      ['...', wrap('on ', typeCondition), join(directives, ' '), selectionSet],
+      ['...', wrap('on ', String(typeCondition)), join(directives.map(d => String(d)), ' '), String(selectionSet)],
       ' ',
     ),
 
@@ -71,8 +115,8 @@ const printDocASTReducer: any = {
   }: FragmentDefinitionNode) =>
     // Note: fragment variable definitions are experimental and may be changed
     // or removed in the future.
-    `fragment ${name}${wrap('(', join(variableDefinitions, ', '), ')')} ` +
-    `on ${typeCondition} ${wrap('', join(directives, ' '), ' ')}` +
+    `fragment ${name}${wrap('(', join(variableDefinitions.map(d => String(d)), ', '), ')')} ` +
+    `on ${typeCondition} ${wrap('', join(directives.map(d => String(d)), ' '), ' ')}` +
     selectionSet,
 
   // Value
@@ -86,14 +130,14 @@ const printDocASTReducer: any = {
   BooleanValue: ({ value }: BooleanValueNode) => (value ? 'true' : 'false'),
   NullValue: () => 'null',
   EnumValue: ({ value }: EnumValueNode) => value,
-  ListValue: ({ values }: ListValueNode) => '[' + join(values, ', ') + ']',
-  ObjectValue: ({ fields }: ObjectValueNode) => '{' + join(fields, ', ') + '}',
+  ListValue: ({ values }: ListValueNode) => '[' + join(values.map(d => String(d)), ', ') + ']',
+  ObjectValue: ({ fields }: ObjectValueNode) => '{' + join(fields.map(d => String(d)), ', ') + '}',
   ObjectField: ({ name, value }: ObjectFieldNode) => name + ': ' + value,
 
   // Directive
 
   Directive: ({ name, arguments: args }: DirectiveNode) =>
-    '@' + name + wrap('(', join(args, ', '), ')'),
+    '@' + name + wrap('(', join(args.map(d => String(d)), ', '), ')'),
 
   // Type
 
@@ -104,13 +148,13 @@ const printDocASTReducer: any = {
   // Type System Definitions
 
   SchemaDefinition: addDescription(({ directives, operationTypes }: SchemaDefinitionNode) =>
-    join(['schema', join(directives, ' '), block(operationTypes)], ' '),
+    join(['schema', join(directives.map(d => String(d)), ' '), block(operationTypes)], ' '),
   ),
 
   OperationTypeDefinition: ({ operation, type }: OperationTypeDefinitionNode) => operation + ': ' + type,
 
   ScalarTypeDefinition: addDescription(({ name, directives }: ScalarTypeDefinitionNode) =>
-    join(['scalar', name, join(directives, ' ')], ' '),
+    join(['scalar', String(name), join(directives.map(d => String(d)), ' ')], ' '),
   ),
 
   ObjectTypeDefinition: addDescription(
@@ -118,9 +162,9 @@ const printDocASTReducer: any = {
       join(
         [
           'type',
-          name,
-          wrap('implements ', join(interfaces, ' & ')),
-          join(directives, ' '),
+          String(name),
+          wrap('implements ', join(interfaces.map(d => String(d)), ' & ')),
+          join(directives.map(d => String(d)), ' '),
           block(fields),
         ],
         ' ',
@@ -131,16 +175,17 @@ const printDocASTReducer: any = {
     ({ name, arguments: args, type, directives }: FieldDefinitionNode) =>
       name +
       (hasMultilineItems(args)
-        ? wrap('(\n', indent(join(args, '\n')), '\n)')
-        : wrap('(', join(args, ', '), ')')) +
+        ? wrap('(\n', indent(join(args.map(d => String(d)), '\n')), '\n)')
+        : wrap('(', join(args.map(d => String(d)), ', '), ')')) +
       ': ' +
-    Number(wrap(' ', join(directives, ' '))),
+      type +
+      wrap(' ', join(directives.map(d => String(d)), ' ')),
   ),
 
   InputValueDefinition: addDescription(
     ({ name, type, defaultValue, directives }: InputValueDefinitionNode) =>
       join(
-        [name + ': ' + type, wrap('= ', defaultValue), join(directives, ' ')],
+        [name + ': ' + type, wrap('= ', String(defaultValue)), join(directives.map(d => String(d)), ' ')],
         ' ',
       ),
   ),
@@ -150,9 +195,9 @@ const printDocASTReducer: any = {
       join(
         [
           'interface',
-          name,
-          wrap('implements ', join(interfaces, ' & ')),
-          join(directives, ' '),
+          String(name),
+          wrap('implements ', join(interfaces.map(d => String(d)), ' & ')),
+          join(directives.map(d => String(d)), ' '),
           block(fields),
         ],
         ' ',
@@ -163,24 +208,24 @@ const printDocASTReducer: any = {
     join(
       [
         'union',
-        name,
-        join(directives, ' '),
-        types && types.length !== 0 ? '= ' + join(types, ' | ') : '',
+        String(name),
+        join(directives.map(d => String(d)), ' '),
+        types && types.length !== 0 ? '= ' + join(types.map(d => String(d)), ' | ') : '',
       ],
       ' ',
     ),
   ),
 
   EnumTypeDefinition: addDescription(({ name, directives, values }: EnumTypeDefinitionNode) =>
-    join(['enum', name, join(directives, ' '), block(values)], ' '),
+    join(['enum', String(name), join(directives.map(d => String(d)), ' '), block(values)], ' '),
   ),
 
   EnumValueDefinition: addDescription(({ name, directives }: EnumValueDefinitionNode) =>
-    join([name, join(directives, ' ')], ' '),
+    join([String(name), join(directives.map(d => String(d)), ' ')], ' '),
   ),
 
   InputObjectTypeDefinition: addDescription(({ name, directives, fields }: InputObjectTypeDefinitionNode) =>
-    join(['input', name, join(directives, ' '), block(fields)], ' '),
+    join(['input', String(name), join(directives.map(d => String(d)), ' '), block(fields)], ' '),
   ),
 
   DirectiveDefinition: addDescription(
@@ -188,26 +233,26 @@ const printDocASTReducer: any = {
       'directive @' +
       name +
       (hasMultilineItems(args)
-        ? wrap('(\n', indent(join(args, '\n')), '\n)')
-        : wrap('(', join(args, ', '), ')')) +
+        ? wrap('(\n', indent(join(args.map(d => String(d)), '\n')), '\n)')
+        : wrap('(', join(args.map(d => String(d)), ', '), ')')) +
       (repeatable ? ' repeatable' : '') +
       ' on ' +
-      join(locations, ' | '),
+      join(locations.map(d => String(d)), ' | '),
   ),
 
   SchemaExtension: ({ directives, operationTypes }: SchemaExtensionNode) =>
-    join(['extend schema', join(directives, ' '), block(operationTypes)], ' '),
+    join(['extend schema', join(directives.map(d => String(d)), ' '), block(operationTypes)], ' '),
 
   ScalarTypeExtension: ({ name, directives }: ScalarTypeExtensionNode) =>
-    join(['extend scalar', name, join(directives, ' ')], ' '),
+    join(['extend scalar', String(name), join(directives.map(d => String(d)), ' ')], ' '),
 
   ObjectTypeExtension: ({ name, interfaces, directives, fields }: ObjectTypeExtensionNode) =>
     join(
       [
         'extend type',
-        name,
-        wrap('implements ', join(interfaces, ' & ')),
-        join(directives, ' '),
+        String(name),
+        wrap('implements ', join(interfaces.map(d => String(d)), ' & ')),
+        join(directives.map(d => String(d)), ' '),
         block(fields),
       ],
       ' ',
@@ -217,9 +262,9 @@ const printDocASTReducer: any = {
     join(
       [
         'extend interface',
-        name,
-        wrap('implements ', join(interfaces, ' & ')),
-        join(directives, ' '),
+        String(name),
+        wrap('implements ', join(interfaces.map(d => String(d)), ' & ')),
+        join(directives.map(d => String(d)), ' '),
         block(fields),
       ],
       ' ',
@@ -229,18 +274,18 @@ const printDocASTReducer: any = {
     join(
       [
         'extend union',
-        name,
-        join(directives, ' '),
-        types && types.length !== 0 ? '= ' + join(types, ' | ') : '',
+        String(name),
+        join(directives.map(d => String(d)), ' '),
+        types && types.length !== 0 ? '= ' + join(types.map(d => String(d)), ' | ') : '',
       ],
       ' ',
     ),
 
   EnumTypeExtension: ({ name, directives, values }: EnumTypeExtensionNode) =>
-    join(['extend enum', name, join(directives, ' '), block(values)], ' '),
+    join(['extend enum', String(name), join(directives.map(d => String(d)), ' '), block(values)], ' '),
 
   InputObjectTypeExtension: ({ name, directives, fields }: InputObjectTypeExtensionNode) =>
-    join(['extend input', name, join(directives, ' '), block(fields)], ' '),
+    join(['extend input', String(name), join(directives.map(d => String(d)), ' '), block(fields)], ' '),
 };
 
 function addDescription(cb: any) {

@@ -82,7 +82,7 @@ export function findBreakingChanges(
   const breakingChanges = findSchemaChanges(oldSchema, newSchema).filter(
     (change) => change.type in BreakingChangeType,
   );
-  return breakingChanges;
+  return breakingChanges as any;
 }
 
 /**
@@ -96,7 +96,7 @@ export function findDangerousChanges(
   const dangerousChanges = findSchemaChanges(oldSchema, newSchema).filter(
     (change) => change.type in DangerousChangeType,
   );
-  return dangerousChanges;
+  return dangerousChanges as any;
 }
 
 function findSchemaChanges(
@@ -529,11 +529,15 @@ function typeKindName(type: GraphQLNamedType): string {
 
   // Not reachable. All possible named types have been considered.
   invariant(false, 'Unexpected type: ' + inspect(type));
+  throw Error;
 }
 
 function stringifyValue(value: any, type: GraphQLInputType): string {
   const ast = astFromValue(value, type);
   invariant(ast != null);
+  if (!ast) {
+    throw Error;
+  }
 
   const sortedAST = visit(ast, {
     ObjectValue(objectNode) {
@@ -548,8 +552,8 @@ function stringifyValue(value: any, type: GraphQLInputType): string {
 }
 
 function diff<T extends {name: string}>(
-  oldArray: T[],
-  newArray: T[],
+  oldArray: readonly T[],
+  newArray: readonly T[],
 ): {
   added: T[],
   removed: T[],

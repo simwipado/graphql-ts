@@ -319,9 +319,7 @@ class Parser {
       kind: Kind.VARIABLE_DEFINITION,
       variable: this.parseVariable(),
       type: (this.expectToken(TokenKind.COLON), this.parseTypeReference()),
-      defaultValue: this.expectOptionalToken(TokenKind.EQUALS)
-        ? this.parseValueLiteral(true)
-        : undefined,
+      defaultValue: this.parseValueLiteral(true),
       directives: this.parseDirectives(true),
       loc: this.loc(start),
     };
@@ -392,9 +390,7 @@ class Parser {
       name,
       arguments: this.parseArguments(false),
       directives: this.parseDirectives(false),
-      selectionSet: this.peek(TokenKind.BRACE_L)
-        ? this.parseSelectionSet()
-        : undefined,
+      selectionSet: this.parseSelectionSet(),
       loc: this.loc(start),
     };
   }
@@ -457,7 +453,7 @@ class Parser {
     }
     return {
       kind: Kind.INLINE_FRAGMENT,
-      typeCondition: hasTypeCondition ? this.parseNamedType() : undefined,
+      typeCondition: this.parseNamedType(),
       directives: this.parseDirectives(false),
       selectionSet: this.parseSelectionSet(),
       loc: this.loc(start),
@@ -494,6 +490,7 @@ class Parser {
       directives: this.parseDirectives(false),
       selectionSet: this.parseSelectionSet(),
       loc: this.loc(start),
+      variableDefinitions: this.parseVariableDefinitions(),
     };
   }
 

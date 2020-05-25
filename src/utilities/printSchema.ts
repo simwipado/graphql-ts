@@ -26,9 +26,13 @@ GraphQLInputObjectType,
   isUnionType,
   isEnumType,
   isInputObjectType,
+  GraphQLArgument,
+  GraphQLField,
+  GraphQLEnumValue,
 } from '../type/definition.ts';
 
 import { astFromValue } from './astFromValue.ts';
+import Maybe from '../tsutils/Maybe.ts';
 
 export interface Options {
   /**
@@ -60,7 +64,7 @@ export function printSchema(schema: GraphQLSchema, options?: Options): string {
 
 export function printIntrospectionSchema(
   schema: GraphQLSchema,
-  options: Maybe<Options>;
+  options?: Options
 ): string {
   return printFilteredSchema(
     schema,
@@ -78,7 +82,7 @@ function printFilteredSchema(
   schema: GraphQLSchema,
   directiveFilter: (type: GraphQLDirective) => boolean,
   typeFilter: (type: GraphQLNamedType) => boolean,
-  options: Maybe<Options>;
+  options?: Options
 ): string {
   const directives = schema.getDirectives().filter(directiveFilter);
   const types = Object.values(schema.getTypeMap()).filter(typeFilter);
@@ -174,6 +178,7 @@ export function printType(type: GraphQLNamedType, options?: Options): string {
 
   // Not reachable. All possible types have been considered.
   invariant(false, 'Unexpected type: ' + inspect(type));
+  throw Error;
 }
 
 function printScalar(type: GraphQLScalarType, options?: Options): string {
@@ -243,7 +248,7 @@ function printInputObject(type: GraphQLInputObjectType, options?: Options): stri
   );
 }
 
-function printFields(options: Options, type) {
+function printFields(options: Maybe<Options>, type: GraphQLObjectType | GraphQLInterfaceType) {
   const fields = Object.values(type.getFields()).map(
     (f, i) =>
       printDescription(options, f, '  ', !i) +
@@ -257,11 +262,11 @@ function printFields(options: Options, type) {
   return printBlock(fields);
 }
 
-function printBlock(items) {
+function printBlock(items: string[]) {
   return items.length !== 0 ? ' {\n' + items.join('\n') + '\n}' : '';
 }
 
-function printArgs(options, args, indentation = '') {
+function printArgs(options: Maybe<Options>, args: GraphQLArgument[], indentation = '') {
   if (args.length === 0) {
     return '';
   }
@@ -288,7 +293,7 @@ function printArgs(options, args, indentation = '') {
   );
 }
 
-function printInputValue(arg) {
+function printInputValue(arg: GraphQLArgument) {
   const defaultAST = astFromValue(arg.defaultValue, arg.type);
   let argDecl = arg.name + ': ' + String(arg.type);
   if (defaultAST) {
@@ -297,7 +302,7 @@ function printInputValue(arg) {
   return argDecl;
 }
 
-function printDirective(directive, options) {
+function printDirective(directive: GraphQLDirective, options: Maybe<Options>) {
   return (
     printDescription(options, directive) +
     'directive @' +
@@ -309,7 +314,7 @@ function printDirective(directive, options) {
   );
 }
 
-function printDeprecated(fieldOrEnumVal) {
+function printDeprecated(fieldOrEnumVal: GraphQLField<any, any> | GraphQLEnumValue) {
   if (!fieldOrEnumVal.isDeprecated) {
     return '';
   }
@@ -331,12 +336,15 @@ function printSpecifiedByUrl(scalar: GraphQLScalarType) {
     urlAST,
     'Unexpected null value returned from `astFromValue` for specifiedByUrl',
   );
+  if (!urlAST) {
+    throw Error;
+  }
   return ' @specifiedBy(url: ' + print(urlAST) + ')';
 }
 
 function printDescription(
-  options,
-  def,
+  options: Maybe<Options>,
+  def: any,
   indentation = '',
   firstInBlock = true,
 ): string {
@@ -357,7 +365,7 @@ function printDescription(
   return prefix + blockString.replace(/\n/g, '\n' + indentation) + '\n';
 }
 
-function printDescriptionWithComments(description, indentation, firstInBlock) {
+function printDescriptionWithComments(description: string, indentation: string, firstInBlock: boolean) {
   const prefix = indentation && !firstInBlock ? '\n' : '';
   const comment = description
     .split('\n')

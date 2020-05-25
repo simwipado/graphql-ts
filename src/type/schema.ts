@@ -121,7 +121,7 @@ export class GraphQLSchema {
   _queryType: Maybe<GraphQLObjectType>;
   _mutationType: Maybe<GraphQLObjectType>;
   _subscriptionType: Maybe<GraphQLObjectType>;
-  _directives: GraphQLDirective[];
+  _directives: readonly GraphQLDirective[];
   _typeMap: TypeMap;
   _subTypeMap: ObjMap<ObjMap<boolean>>;
   _implementationsMap: ObjMap<{
@@ -167,7 +167,7 @@ export class GraphQLSchema {
       for (const type of config.types) {
         // When we ready to process this type, we remove it from "collected" types
         // and then add it together with all dependent types in the correct position.
-        allReferencedTypes.delete(type);
+        allReferencedTypes.delete(type as any);
         collectReferencedTypes(type, allReferencedTypes);
       }
     }
@@ -322,7 +322,7 @@ export class GraphQLSchema {
     return map[maybeSubType.name] !== undefined;
   }
 
-  getDirectives(): GraphQLDirective[] {
+  getDirectives(): readonly GraphQLDirective[] {
     return this._directives;
   }
 
@@ -370,7 +370,7 @@ export interface GraphQLSchemaConfig extends GraphQLSchemaValidationOptions {
   query?: Maybe<GraphQLObjectType>;
   mutation?: Maybe<GraphQLObjectType>;
   subscription?: Maybe<GraphQLObjectType>;
-  types?: Maybe<GraphQLNamedType[]>;
+  types?: GraphQLNamedType[];
   directives?: Maybe<GraphQLDirective[]>;
   extensions?: Maybe<ReadOnlyObjMapLike<any>>;
   astNode?: Maybe<SchemaDefinitionNode>;
@@ -390,7 +390,7 @@ export interface GraphQLSchemaNormalizedConfig extends GraphQLSchemaConfig {
 };
 
 function collectReferencedTypes(
-  type: GraphQLType,
+  type: Maybe<GraphQLType>,
   typeSet: Set<GraphQLNamedType>,
 ): Set<GraphQLNamedType> {
   const namedType = getNamedType(type);
