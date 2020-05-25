@@ -5,4 +5,3 @@ export * from './syntaxError.ts';
 export * from './locatedError.ts';
 
 export * from './formatError.ts';
-export * from './formatError.ts';

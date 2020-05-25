@@ -2,8 +2,6 @@
 // Accepts optional IntrospectionOptions.
 export * from './getIntrospectionQuery.ts';
 
-export * from './getIntrospectionQuery.ts';
-
 // Gets the target Operation from a Document.
 export * from './getOperationAST.ts';
 
@@ -17,7 +15,6 @@ export * from './introspectionFromSchema.ts';
 export * from './buildClientSchema.ts';
 
 // Build a GraphQLSchema from GraphQL Schema language.
-export * from './buildASTSchema.ts';
 export * from './buildASTSchema.ts';
 
 // Extends an existing GraphQLSchema from a parsed GraphQL Schema language AST.
@@ -65,7 +62,6 @@ export * from './typeComparators.ts';
 export * from './assertValidName.ts';
 
 // Compares two GraphQLSchemas and detects breaking changes.
-export * from './findBreakingChanges.ts';
 export * from './findBreakingChanges.ts';
 
 // Report all deprecated usage within a GraphQL document.

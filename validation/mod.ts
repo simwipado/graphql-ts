@@ -1,7 +1,6 @@
 export * from './validate.ts';
 
 export * from './ValidationContext.ts';
-export * from './ValidationContext.ts';
 
 // All validation rules in the GraphQL Specification.
 export * from './specifiedRules.ts';
