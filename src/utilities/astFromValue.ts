@@ -83,7 +83,7 @@ export function astFromValue(value: any, type: GraphQLInputType): Maybe<ValueNod
       return null;
     }
     const fieldNodes = [];
-    for (const field of Object.values(type.getFields())) {
+    for (const field of (Object as any).values(type.getFields())) {
       const fieldValue = astFromValue(value[field.name], field.type);
       if (fieldValue) {
         fieldNodes.push({
@@ -99,7 +99,7 @@ export function astFromValue(value: any, type: GraphQLInputType): Maybe<ValueNod
   if (isLeafType(type)) {
     // Since value is an internally represented value, it must be serialized
     // to an externally represented value before converting into an AST.
-    const serialized = type.serialize(value);
+    const serialized = (type.serialize as any)(value);
     if (serialized == null) {
       return null;
     }
