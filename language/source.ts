@@ -20,7 +20,7 @@ export class Source {
 
   constructor(
     body: string,
-    name: string = 'GraphQL request',
+    name = 'GraphQL request',
     locationOffset: Location = { line: 1, column: 1 },
   ) {
     this.body = body;
@@ -36,8 +36,7 @@ export class Source {
     );
   }
 
-  // $FlowFixMe Flow doesn't support computed properties yet
-  get [Symbol.toStringTag]() {
+  get [Symbol.toStringTag](): string {
     return 'Source';
   }
 }

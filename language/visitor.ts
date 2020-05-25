@@ -1,3 +1,4 @@
+/* eslint-disable prefer-rest-params */
 import inspect from '../utilities/inspect.ts';
 
 import { 
