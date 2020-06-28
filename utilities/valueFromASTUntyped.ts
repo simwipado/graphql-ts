@@ -1,11 +1,11 @@
-import inspect from '../utilities/inspect.ts';
-import invariant from '../utilities/invariant.ts';
-import keyValMap from '../utilities/keyValMap.ts';
-import { ObjMap } from '../utilities/ObjMap.ts';
+import inspect from "../utilities/inspect.ts";
+import invariant from "../utilities/invariant.ts";
+import keyValMap from "../utilities/keyValMap.ts";
+import { ObjMap } from "../utilities/ObjMap.ts";
 
-import { Kind } from '../language/kinds.ts';
-import { ValueNode } from '../language/ast.ts';
-import Maybe from '../utilities/Maybe.ts';
+import { Kind } from "../language/kinds.ts";
+import { ValueNode } from "../language/ast.ts";
+import Maybe from "../utilities/Maybe.ts";
 
 /**
  * Produces a JavaScript value given a GraphQL Value AST.
@@ -25,7 +25,7 @@ import Maybe from '../utilities/Maybe.ts';
  */
 export function valueFromASTUntyped(
   valueNode: ValueNode,
-  variables?: Maybe<ObjMap<any>>
+  variables?: Maybe<ObjMap<any>>,
 ): any {
   switch (valueNode.kind) {
     case Kind.NULL:
@@ -40,7 +40,7 @@ export function valueFromASTUntyped(
       return valueNode.value;
     case Kind.LIST:
       return valueNode.values.map((node) =>
-        valueFromASTUntyped(node, variables),
+        valueFromASTUntyped(node, variables)
       );
     case Kind.OBJECT:
       return keyValMap(
@@ -53,5 +53,5 @@ export function valueFromASTUntyped(
   }
 
   // Not reachable. All possible value nodes have been considered.
-  invariant(false, 'Unexpected value node: ' + inspect(valueNode));
+  invariant(false, "Unexpected value node: " + inspect(valueNode));
 }

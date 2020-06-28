@@ -1,16 +1,16 @@
-import { Kind } from './kinds.ts';
-import { 
-  ASTNode, 
+import { Kind } from "./kinds.ts";
+import {
+  ASTNode,
   DefinitionNode,
-  ExecutableDefinitionNode, 
-  SelectionNode, 
-  ValueNode, 
-  TypeNode, 
-  TypeSystemDefinitionNode, 
-  TypeDefinitionNode, 
-  TypeSystemExtensionNode, 
-  TypeExtensionNode
-} from './ast.ts';
+  ExecutableDefinitionNode,
+  SelectionNode,
+  ValueNode,
+  TypeNode,
+  TypeSystemDefinitionNode,
+  TypeDefinitionNode,
+  TypeSystemExtensionNode,
+  TypeExtensionNode,
+} from "./ast.ts";
 
 export function isDefinitionNode(node: ASTNode): node is DefinitionNode {
   return (
@@ -20,7 +20,9 @@ export function isDefinitionNode(node: ASTNode): node is DefinitionNode {
   );
 }
 
-export function isExecutableDefinitionNode(node: ASTNode): node is ExecutableDefinitionNode {
+export function isExecutableDefinitionNode(
+  node: ASTNode,
+): node is ExecutableDefinitionNode {
   return (
     node.kind === Kind.OPERATION_DEFINITION ||
     node.kind === Kind.FRAGMENT_DEFINITION
@@ -57,7 +59,9 @@ export function isTypeNode(node: ASTNode): node is TypeNode {
   );
 }
 
-export function isTypeSystemDefinitionNode(node: ASTNode): node is TypeSystemDefinitionNode {
+export function isTypeSystemDefinitionNode(
+  node: ASTNode,
+): node is TypeSystemDefinitionNode {
   return (
     node.kind === Kind.SCHEMA_DEFINITION ||
     isTypeDefinitionNode(node) ||
@@ -65,7 +69,9 @@ export function isTypeSystemDefinitionNode(node: ASTNode): node is TypeSystemDef
   );
 }
 
-export function isTypeDefinitionNode(node: ASTNode): node is TypeDefinitionNode {
+export function isTypeDefinitionNode(
+  node: ASTNode,
+): node is TypeDefinitionNode {
   return (
     node.kind === Kind.SCALAR_TYPE_DEFINITION ||
     node.kind === Kind.OBJECT_TYPE_DEFINITION ||
@@ -76,7 +82,9 @@ export function isTypeDefinitionNode(node: ASTNode): node is TypeDefinitionNode 
   );
 }
 
-export function isTypeSystemExtensionNode(node: ASTNode): node is TypeSystemExtensionNode {
+export function isTypeSystemExtensionNode(
+  node: ASTNode,
+): node is TypeSystemExtensionNode {
   return node.kind === Kind.SCHEMA_EXTENSION || isTypeExtensionNode(node);
 }
 

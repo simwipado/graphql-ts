@@ -1,22 +1,22 @@
-import devAssert from '../utilities/devAssert.ts';
+import devAssert from "../utilities/devAssert.ts";
 
-import { GraphQLError } from '../error/GraphQLError.ts';
+import { GraphQLError } from "../error/GraphQLError.ts";
 
-import { DocumentNode } from '../language/ast.ts';
-import { visit, visitInParallel } from '../language/visitor.ts';
+import { DocumentNode } from "../language/ast.ts";
+import { visit, visitInParallel } from "../language/visitor.ts";
 
-import { GraphQLSchema } from '../type/schema.ts';
-import { assertValidSchema } from '../type/validate.ts';
+import { GraphQLSchema } from "../type/schema.ts";
+import { assertValidSchema } from "../type/validate.ts";
 
-import { TypeInfo, visitWithTypeInfo } from '../utilities/TypeInfo.ts';
+import { TypeInfo, visitWithTypeInfo } from "../utilities/TypeInfo.ts";
 
 import {
-SDLValidationRule,
-ValidationRule,
+  SDLValidationRule,
+  ValidationRule,
   SDLValidationContext,
   ValidationContext,
-} from './ValidationContext.ts';
-import { specifiedRules, specifiedSDLRules } from './specifiedRules.ts';
+} from "./ValidationContext.ts";
+import { specifiedRules, specifiedSDLRules } from "./specifiedRules.ts";
 
 /**
  * Implements the "Validation" section of the spec.
@@ -39,9 +39,9 @@ export function validate(
   documentAST: DocumentNode,
   rules: readonly ValidationRule[] = specifiedRules,
   typeInfo: TypeInfo = new TypeInfo(schema),
-  options?: { maxErrors?: number }
+  options?: { maxErrors?: number },
 ): GraphQLError[] {
-  devAssert(documentAST, 'Must provide document.');
+  devAssert(documentAST, "Must provide document.");
   // If the schema used for validation is invalid, throw an error.
   assertValidSchema(schema);
 
@@ -55,7 +55,7 @@ export function validate(
       if (options?.maxErrors != null && errors.length >= options.maxErrors) {
         errors.push(
           new GraphQLError(
-            'Too many validation errors, error limit reached. Validation aborted.',
+            "Too many validation errors, error limit reached. Validation aborted.",
           ),
         );
         throw abortObj;
@@ -110,7 +110,7 @@ export function validateSDL(
 export function assertValidSDL(documentAST: DocumentNode): void {
   const errors = validateSDL(documentAST);
   if (errors.length !== 0) {
-    throw new Error(errors.map((error) => error.message).join('\n\n'));
+    throw new Error(errors.map((error) => error.message).join("\n\n"));
   }
 }
 
@@ -126,6 +126,6 @@ export function assertValidSDLExtension(
 ): void {
   const errors = validateSDL(documentAST, schema);
   if (errors.length !== 0) {
-    throw new Error(errors.map((error) => error.message).join('\n\n'));
+    throw new Error(errors.map((error) => error.message).join("\n\n"));
   }
 }

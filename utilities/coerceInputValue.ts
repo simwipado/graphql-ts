@@ -1,21 +1,21 @@
-import inspect from '../utilities/inspect.ts';
-import invariant from '../utilities/invariant.ts';
-import didYouMean from '../utilities/didYouMean.ts';
-import isObjectLike from '../utilities/isObjectLike.ts';
-import isCollection from '../utilities/isCollection.ts';
-import suggestionList from '../utilities/suggestionList.ts';
-import printPathArray from '../utilities/printPathArray.ts';
-import { Path, addPath, pathToArray } from '../utilities/Path.ts';
+import inspect from "../utilities/inspect.ts";
+import invariant from "../utilities/invariant.ts";
+import didYouMean from "../utilities/didYouMean.ts";
+import isObjectLike from "../utilities/isObjectLike.ts";
+import isCollection from "../utilities/isCollection.ts";
+import suggestionList from "../utilities/suggestionList.ts";
+import printPathArray from "../utilities/printPathArray.ts";
+import { Path, addPath, pathToArray } from "../utilities/Path.ts";
 
-import { GraphQLError } from '../error/GraphQLError.ts';
+import { GraphQLError } from "../error/GraphQLError.ts";
 import {
-GraphQLInputType,
+  GraphQLInputType,
   isLeafType,
   isInputObjectType,
   isListType,
   isNonNullType,
-} from '../type/definition.ts';
-import Maybe from '../utilities/Maybe.ts';
+} from "../type/definition.ts";
+import Maybe from "../utilities/Maybe.ts";
 
 type OnErrorCB = (
   path: (string | number)[],
@@ -39,11 +39,11 @@ function defaultOnError(
   invalidValue: any,
   error: GraphQLError,
 ) {
-  let errorPrefix = 'Invalid value ' + inspect(invalidValue);
+  let errorPrefix = "Invalid value " + inspect(invalidValue);
   if (path.length > 0) {
     errorPrefix += ` at "value${printPathArray(path)}"`;
   }
-  error.message = errorPrefix + ': ' + error.message;
+  error.message = errorPrefix + ": " + error.message;
   throw error;
 }
 
@@ -94,7 +94,7 @@ function coerceInputValueImpl(
       return;
     }
 
-    const coercedValue: any= {};
+    const coercedValue: any = {};
     const fieldDefs = type.getFields();
 
     for (const field of Object.values(fieldDefs)) {
@@ -182,5 +182,5 @@ function coerceInputValueImpl(
   }
 
   // Not reachable. All possible input types have been considered.
-  invariant(false, 'Unexpected input type: ' + inspect(type));
+  invariant(false, "Unexpected input type: " + inspect(type));
 }

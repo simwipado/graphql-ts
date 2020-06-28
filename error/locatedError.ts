@@ -1,6 +1,6 @@
-import { ASTNode } from '../language/ast.ts';
+import { ASTNode } from "../language/ast.ts";
 
-import { GraphQLError } from './GraphQLError.ts';
+import { GraphQLError } from "./GraphQLError.ts";
 
 /**
  * Given an arbitrary Error, presumably thrown while attempting to execute a
@@ -10,11 +10,11 @@ import { GraphQLError } from './GraphQLError.ts';
 export function locatedError(
   originalError: Error | GraphQLError,
   nodes: ASTNode | ASTNode[] | undefined | null,
-  path?: (string | number)[]
+  path?: (string | number)[],
 ): GraphQLError {
   // Note: this uses a brand-check to support GraphQL errors originating from
   // other contexts.
-  if ('path' in originalError && Array.isArray(originalError.path)) {
+  if ("path" in originalError && Array.isArray(originalError.path)) {
     return originalError;
   }
 

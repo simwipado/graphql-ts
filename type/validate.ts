@@ -1,26 +1,26 @@
-import inspect from '../utilities/inspect.ts';
+import inspect from "../utilities/inspect.ts";
 
-import { GraphQLError } from '../error/GraphQLError.ts';
-import { locatedError } from '../error/locatedError.ts';
+import { GraphQLError } from "../error/GraphQLError.ts";
+import { locatedError } from "../error/locatedError.ts";
 
 import {
-ASTNode,
-NamedTypeNode,
-OperationTypeNode,
-} from '../language/ast.ts';
+  ASTNode,
+  NamedTypeNode,
+  OperationTypeNode,
+} from "../language/ast.ts";
 
-import { isValidNameError } from '../utilities/assertValidName.ts';
-import { isEqualType, isTypeSubTypeOf } from '../utilities/typeComparators.ts';
+import { isValidNameError } from "../utilities/assertValidName.ts";
+import { isEqualType, isTypeSubTypeOf } from "../utilities/typeComparators.ts";
 
-import { isDirective } from './directives.ts';
-import { isIntrospectionType } from './introspection.ts';
-import { GraphQLSchema, assertSchema } from './schema.ts';
+import { isDirective } from "./directives.ts";
+import { isIntrospectionType } from "./introspection.ts";
+import { GraphQLSchema, assertSchema } from "./schema.ts";
 import {
-GraphQLObjectType,
-GraphQLInterfaceType,
-GraphQLUnionType,
-GraphQLEnumType,
-GraphQLInputObjectType,
+  GraphQLObjectType,
+  GraphQLInterfaceType,
+  GraphQLUnionType,
+  GraphQLEnumType,
+  GraphQLInputObjectType,
   isObjectType,
   isInterfaceType,
   isUnionType,
@@ -32,8 +32,8 @@ GraphQLInputObjectType,
   isOutputType,
   isRequiredArgument,
   GraphQLInputField,
-} from './definition.ts';
-import Maybe from '../utilities/Maybe.ts';
+} from "./definition.ts";
+import Maybe from "../utilities/Maybe.ts";
 
 /**
  * Implements the "Type Validation" sub-sections of the specification's
@@ -73,7 +73,7 @@ export function validateSchema(
 export function assertValidSchema(schema: GraphQLSchema): void {
   const errors = validateSchema(schema);
   if (errors.length !== 0) {
-    throw new Error(errors.map((error) => error.message).join('\n\n'));
+    throw new Error(errors.map((error) => error.message).join("\n\n"));
   }
 }
 
@@ -88,7 +88,7 @@ class SchemaValidationContext {
 
   reportError(
     message: string,
-    nodes: Maybe<ReadonlyArray<Maybe<ASTNode>> | ASTNode>
+    nodes: Maybe<ReadonlyArray<Maybe<ASTNode>> | ASTNode>,
   ): void {
     const _nodes: any = Array.isArray(nodes) ? nodes.filter(Boolean) : nodes;
     this.addError(new GraphQLError(message, _nodes));
@@ -107,31 +107,34 @@ function validateRootTypes(context: SchemaValidationContext) {
   const schema = context.schema;
   const queryType = schema.getQueryType();
   if (!queryType) {
-    context.reportError('Query root type must be provided.', schema.astNode);
+    context.reportError("Query root type must be provided.", schema.astNode);
   } else if (!isObjectType(queryType)) {
     context.reportError(
-      `Query root type must be Object type, it cannot be ${inspect(
-        queryType,
-      )}.`,
-      getOperationTypeNode(schema, 'query') ?? (queryType as any).astNode,
+      `Query root type must be Object type, it cannot be ${
+        inspect(
+          queryType,
+        )
+      }.`,
+      getOperationTypeNode(schema, "query") ?? (queryType as any).astNode,
     );
   }
 
   const mutationType = schema.getMutationType();
   if (mutationType && !isObjectType(mutationType)) {
     context.reportError(
-      'Mutation root type must be Object type if provided, it cannot be ' +
+      "Mutation root type must be Object type if provided, it cannot be " +
         `${inspect(mutationType)}.`,
-      getOperationTypeNode(schema, 'mutation') ?? (mutationType as any).astNode,
+      getOperationTypeNode(schema, "mutation") ?? (mutationType as any).astNode,
     );
   }
 
   const subscriptionType = schema.getSubscriptionType();
   if (subscriptionType && !isObjectType(subscriptionType)) {
     context.reportError(
-      'Subscription root type must be Object type if provided, it cannot be ' +
+      "Subscription root type must be Object type if provided, it cannot be " +
         `${inspect(subscriptionType)}.`,
-      getOperationTypeNode(schema, 'subscription') ?? (subscriptionType as any).astNode,
+      getOperationTypeNode(schema, "subscription") ??
+        (subscriptionType as any).astNode,
     );
   }
 }
@@ -184,7 +187,7 @@ function validateDirectives(context: SchemaValidationContext): void {
 
 function validateName(
   context: SchemaValidationContext,
-  node: { name: string, astNode?: Maybe<ASTNode> },
+  node: { name: string; astNode?: Maybe<ASTNode> },
 ): void {
   // Ensure names are valid, however introspection types opt out.
   const error = isValidNameError(node.name);
@@ -194,9 +197,10 @@ function validateName(
 }
 
 function validateTypes(context: SchemaValidationContext): void {
-  const validateInputObjectCircularRefs = createInputObjectCircularRefsValidator(
-    context,
-  );
+  const validateInputObjectCircularRefs =
+    createInputObjectCircularRefsValidator(
+      context,
+    );
   const typeMap = context.schema.getTypeMap();
   for (const type of Object.values(typeMap)) {
     // Ensure all provided types are in fact GraphQL type.
@@ -473,7 +477,7 @@ function validateEnumValues(
 
     // Ensure valid name.
     validateName(context, enumValue);
-    if (valueName === 'true' || valueName === 'false' || valueName === 'null') {
+    if (valueName === "true" || valueName === "false" || valueName === "null") {
       context.reportError(
         `Enum type ${enumType.name} cannot include value: ${valueName}.`,
         enumValue.astNode,
@@ -549,7 +553,7 @@ function createInputObjectCircularRefsValidator(
           detectCycleRecursive(fieldType);
         } else {
           const cyclePath = fieldPath.slice(cycleIndex);
-          const pathStr = cyclePath.map((fieldObj) => fieldObj.name).join('.');
+          const pathStr = cyclePath.map((fieldObj) => fieldObj.name).join(".");
           context.reportError(
             `Cannot reference Input Object "${fieldType.name}" within itself through a series of non-null fields: "${pathStr}".`,
             cyclePath.map((fieldObj) => fieldObj.astNode),
@@ -564,22 +568,24 @@ function createInputObjectCircularRefsValidator(
 }
 
 interface SDLDefinedObject<T, K> {
-  astNode: Maybe<T>,
+  astNode: Maybe<T>;
   extensionASTNodes: Maybe<K[]>;
-};
+}
 
 function getAllNodes<T extends ASTNode, K extends ASTNode>(
   object: SDLDefinedObject<T, K>,
 ): ReadonlyArray<T | K> {
   const { astNode, extensionASTNodes } = object;
   return astNode
-    ? extensionASTNodes
-      ? [astNode].concat(extensionASTNodes as any)
-      : [astNode]
+    ? extensionASTNodes ? [astNode].concat(extensionASTNodes as any) : [astNode]
     : extensionASTNodes ?? [];
 }
 
-function getAllSubNodes<T extends ASTNode, K extends ASTNode, L extends ASTNode>(
+function getAllSubNodes<
+  T extends ASTNode,
+  K extends ASTNode,
+  L extends ASTNode,
+>(
   object: SDLDefinedObject<T, K>,
   getter: (arg: T | K) => Maybe<(L | L[])>,
 ): L[] {
@@ -590,9 +596,10 @@ function getAllImplementsInterfaceNodes(
   type: GraphQLObjectType | GraphQLInterfaceType,
   iface: GraphQLInterfaceType,
 ): NamedTypeNode[] {
-  return getAllSubNodes(type as any, (typeNode: any) => typeNode.interfaces).filter(
-    (ifaceNode) => ifaceNode.name.value === iface.name,
-  );
+  return getAllSubNodes(type as any, (typeNode: any) => typeNode.interfaces)
+    .filter(
+      (ifaceNode) => ifaceNode.name.value === iface.name,
+    );
 }
 
 function getUnionMemberTypeNodes(

@@ -1,20 +1,20 @@
-import inspect from '../utilities/inspect.ts';
-import memoize3 from '../utilities/memoize3.ts';
-import invariant from '../utilities/invariant.ts';
-import devAssert from '../utilities/devAssert.ts';
-import isPromise from '../utilities/isPromise.ts';
-import { ObjMap } from '../utilities/ObjMap.ts';
-import isObjectLike from '../utilities/isObjectLike.ts';
-import isCollection from '../utilities/isCollection.ts';
-import promiseReduce from '../utilities/promiseReduce.ts';
-import promiseForObject from '../utilities/promiseForObject.ts';
-import { PromiseOrValue } from '../utilities/PromiseOrValue.ts';
-import { Path, addPath, pathToArray } from '../utilities/Path.ts';
+import inspect from "../utilities/inspect.ts";
+import memoize3 from "../utilities/memoize3.ts";
+import invariant from "../utilities/invariant.ts";
+import devAssert from "../utilities/devAssert.ts";
+import isPromise from "../utilities/isPromise.ts";
+import { ObjMap } from "../utilities/ObjMap.ts";
+import isObjectLike from "../utilities/isObjectLike.ts";
+import isCollection from "../utilities/isCollection.ts";
+import promiseReduce from "../utilities/promiseReduce.ts";
+import promiseForObject from "../utilities/promiseForObject.ts";
+import { PromiseOrValue } from "../utilities/PromiseOrValue.ts";
+import { Path, addPath, pathToArray } from "../utilities/Path.ts";
 
-import { GraphQLError } from '../error/GraphQLError.ts';
-import { locatedError } from '../error/locatedError.ts';
+import { GraphQLError } from "../error/GraphQLError.ts";
+import { locatedError } from "../error/locatedError.ts";
 
-import { Kind } from '../language/kinds.ts';
+import { Kind } from "../language/kinds.ts";
 import {
   DocumentNode,
   OperationDefinitionNode,
@@ -23,19 +23,19 @@ import {
   FragmentSpreadNode,
   InlineFragmentNode,
   FragmentDefinitionNode,
-} from '../language/ast.ts';
+} from "../language/ast.ts";
 
-import { assertValidSchema } from '../type/validate.ts';
-import { GraphQLSchema } from '../type/schema.ts';
+import { assertValidSchema } from "../type/validate.ts";
+import { GraphQLSchema } from "../type/schema.ts";
 import {
   SchemaMetaFieldDef,
   TypeMetaFieldDef,
   TypeNameMetaFieldDef,
-} from '../type/introspection.ts';
+} from "../type/introspection.ts";
 import {
   GraphQLIncludeDirective,
   GraphQLSkipDirective,
-} from '../type/directives.ts';
+} from "../type/directives.ts";
 import {
   GraphQLObjectType,
   GraphQLOutputType,
@@ -51,17 +51,17 @@ import {
   isLeafType,
   isListType,
   isNonNullType,
-} from '../type/definition.ts';
+} from "../type/definition.ts";
 
-import { typeFromAST } from '../utilities/typeFromAST.ts';
-import { getOperationRootType } from '../utilities/getOperationRootType.ts';
+import { typeFromAST } from "../utilities/typeFromAST.ts";
+import { getOperationRootType } from "../utilities/getOperationRootType.ts";
 
 import {
   getVariableValues,
   getArgumentValues,
   getDirectiveValues,
-} from './values.ts';
-import Maybe from '../utilities/Maybe.ts';
+} from "./values.ts";
+import Maybe from "../utilities/Maybe.ts";
 
 /**
  * Terminology
@@ -158,18 +158,16 @@ export function execute(
 ) {
   /* eslint-enable no-redeclare */
   // Extract arguments from object args if provided.
-  return 'schema' in argsOrSchema
-    ? executeImpl(argsOrSchema)
-    : executeImpl({
-        schema: argsOrSchema,
-        document: document as DocumentNode,
-        rootValue,
-        contextValue,
-        variableValues,
-        operationName,
-        fieldResolver,
-        typeResolver,
-      });
+  return "schema" in argsOrSchema ? executeImpl(argsOrSchema) : executeImpl({
+    schema: argsOrSchema,
+    document: document as DocumentNode,
+    rootValue,
+    contextValue,
+    variableValues,
+    operationName,
+    fieldResolver,
+    typeResolver,
+  });
 }
 
 function executeImpl(args: ExecutionArgs): PromiseOrValue<ExecutionResult> {
@@ -243,7 +241,7 @@ export function assertValidExecutionArguments(
   document: DocumentNode,
   rawVariableValues: Maybe<{ [key: string]: any }>,
 ): void {
-  devAssert(document, 'Must provide document.');
+  devAssert(document, "Must provide document.");
 
   // If the schema used for execution is invalid, throw an error.
   assertValidSchema(schema);
@@ -251,7 +249,7 @@ export function assertValidExecutionArguments(
   // Variables, if provided, must be an object.
   devAssert(
     rawVariableValues == null || isObjectLike(rawVariableValues),
-    'Variables must be provided as an Object where each property is a variable value. Perhaps look to see if an unparsed JSON string was provided.',
+    "Variables must be provided as an Object where each property is a variable value. Perhaps look to see if an unparsed JSON string was provided.",
   );
 }
 
@@ -271,7 +269,7 @@ export function buildExecutionContext(
   rawVariableValues: Maybe<{ [key: string]: any }>,
   operationName: Maybe<string>,
   fieldResolver: Maybe<GraphQLFieldResolver<any, any>>,
-  typeResolver?: Maybe<GraphQLTypeResolver<any, any>>
+  typeResolver?: Maybe<GraphQLTypeResolver<any, any>>,
 ): GraphQLError[] | ExecutionContext {
   let operation: OperationDefinitionNode | undefined;
   const fragments: ObjMap<FragmentDefinitionNode> = Object.create(null);
@@ -282,7 +280,7 @@ export function buildExecutionContext(
           if (operation !== undefined) {
             return [
               new GraphQLError(
-                'Must provide operation name if query contains multiple operations.',
+                "Must provide operation name if query contains multiple operations.",
               ),
             ];
           }
@@ -301,7 +299,7 @@ export function buildExecutionContext(
     if (operationName != null) {
       return [new GraphQLError(`Unknown operation named "${operationName}".`)];
     }
-    return [new GraphQLError('Must provide an operation.')];
+    return [new GraphQLError("Must provide an operation.")];
   }
 
   // istanbul ignore next (See https://github.com/graphql/graphql-js/issues/2203)
@@ -356,10 +354,9 @@ function executeOperation(
   //
   // Similar to completeValueCatchingError.
   try {
-    const result =
-      operation.operation === 'mutation'
-        ? executeFieldsSerially(exeContext, type, rootValue, path, fields)
-        : executeFields(exeContext, type, rootValue, path, fields);
+    const result = operation.operation === "mutation"
+      ? executeFieldsSerially(exeContext, type, rootValue, path, fields)
+      : executeFields(exeContext, type, rootValue, path, fields);
     if (isPromise(result)) {
       return result.then(undefined, (error) => {
         exeContext.errors.push(error);
@@ -709,7 +706,7 @@ function asErrorInstance(error: any): Error {
   if (error instanceof Error) {
     return error;
   }
-  return new Error('Unexpected error value: ' + inspect(error));
+  return new Error("Unexpected error value: " + inspect(error));
 }
 
 // This is a small wrapper around completeValue which detects and logs errors
@@ -726,7 +723,7 @@ function completeValueCatchingError(
     let completed;
     if (isPromise(result)) {
       completed = result.then((resolved) =>
-        completeValue(exeContext, returnType, fieldNodes, info, path, resolved),
+        completeValue(exeContext, returnType, fieldNodes, info, path, resolved)
       );
     } else {
       completed = completeValue(
@@ -742,8 +739,10 @@ function completeValueCatchingError(
     if (isPromise(completed)) {
       // Note: we don't rely on a `catch` method, but we do expect "thenable"
       // to take a second callback for the error case.
-      return completed.then(undefined, (error) =>
-        handleFieldError(error, fieldNodes, path, returnType, exeContext),
+      return completed.then(
+        undefined,
+        (error) =>
+          handleFieldError(error, fieldNodes, path, returnType, exeContext),
       );
     }
     return completed;
@@ -757,7 +756,7 @@ function handleFieldError(
   fieldNodes: FieldNode[],
   path: Path,
   returnType: GraphQLOutputType,
-  exeContext: ExecutionContext
+  exeContext: ExecutionContext,
 ) {
   const error = locatedError(
     asErrorInstance(rawError),
@@ -881,7 +880,7 @@ function completeValue(
   // Not reachable. All possible output types have been considered.
   invariant(
     false,
-    'Cannot complete value of unexpected output type: ' +
+    "Cannot complete value of unexpected output type: " +
       inspect(returnType),
   );
 }
@@ -978,7 +977,7 @@ function completeAbstractValue(
         info,
         path,
         result,
-      ),
+      )
     );
   }
 
@@ -1007,10 +1006,9 @@ function ensureValidRuntimeType(
   info: GraphQLResolveInfo,
   result: any,
 ): GraphQLObjectType {
-  const runtimeType =
-    typeof runtimeTypeOrName === 'string'
-      ? exeContext.schema.getType(runtimeTypeOrName)
-      : runtimeTypeOrName;
+  const runtimeType = typeof runtimeTypeOrName === "string"
+    ? exeContext.schema.getType(runtimeTypeOrName)
+    : runtimeTypeOrName;
 
   if (!isObjectType(runtimeType)) {
     throw new GraphQLError(
@@ -1144,7 +1142,7 @@ export const defaultTypeResolver: GraphQLTypeResolver<any, any> = function (
   abstractType,
 ) {
   // First, look for `__typename`.
-  if (isObjectLike(value) && typeof value.__typename === 'string') {
+  if (isObjectLike(value) && typeof value.__typename === "string") {
     return value.__typename;
   }
 
@@ -1188,9 +1186,9 @@ export const defaultFieldResolver: GraphQLFieldResolver<
   any
 > = function (source: any, args, contextValue, info) {
   // ensure source is a value for which property access is acceptable.
-  if (isObjectLike(source) || typeof source === 'function') {
+  if (isObjectLike(source) || typeof source === "function") {
     const property = source[info.fieldName];
-    if (typeof property === 'function') {
+    if (typeof property === "function") {
       return source[info.fieldName](args, contextValue, info);
     }
     return property;

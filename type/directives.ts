@@ -1,24 +1,24 @@
-import inspect from '../utilities/inspect.ts';
-import toObjMap from '../utilities/toObjMap.ts';
-import devAssert from '../utilities/devAssert.ts';
-import instanceOf from '../utilities/instanceOf.ts';
-import isObjectLike from '../utilities/isObjectLike.ts';
-import defineInspect from '../utilities/defineInspect.ts';
+import inspect from "../utilities/inspect.ts";
+import toObjMap from "../utilities/toObjMap.ts";
+import devAssert from "../utilities/devAssert.ts";
+import instanceOf from "../utilities/instanceOf.ts";
+import isObjectLike from "../utilities/isObjectLike.ts";
+import defineInspect from "../utilities/defineInspect.ts";
 
-import { DirectiveDefinitionNode } from '../language/ast.ts';
+import { DirectiveDefinitionNode } from "../language/ast.ts";
 import {
   DirectiveLocation,
-DirectiveLocationEnum,
-} from '../language/directiveLocation.ts';
+  DirectiveLocationEnum,
+} from "../language/directiveLocation.ts";
 
-import { GraphQLString, GraphQLBoolean } from './scalars.ts';
+import { GraphQLString, GraphQLBoolean } from "./scalars.ts";
 import {
-GraphQLFieldConfigArgumentMap,
-GraphQLArgument,
+  GraphQLFieldConfigArgumentMap,
+  GraphQLArgument,
   argsToArgsConfig,
   GraphQLNonNull,
-} from './definition.ts';
-import Maybe from '../utilities/Maybe.ts';
+} from "./definition.ts";
+import Maybe from "../utilities/Maybe.ts";
 
 /**
  * Test if the given value is a GraphQL directive.
@@ -57,7 +57,7 @@ export class GraphQLDirective {
     this.extensions = config.extensions && toObjMap(config.extensions);
     this.astNode = config.astNode;
 
-    devAssert(config.name, 'Directive must be named.');
+    devAssert(config.name, "Directive must be named.");
     devAssert(
       Array.isArray(config.locations),
       `@${config.name} locations must be an Array.`,
@@ -69,7 +69,9 @@ export class GraphQLDirective {
       `@${config.name} args must be an object with argument names as keys.`,
     );
 
-    this.args = Object.entries(args).map(([argName, argConfig]: [string, any]) => ({
+    this.args = Object.entries(args).map((
+      [argName, argConfig]: [string, any],
+    ) => ({
       name: argName,
       description: argConfig.description,
       type: argConfig.type,
@@ -96,7 +98,7 @@ export class GraphQLDirective {
   }
 
   toString(): string {
-    return '@' + this.name;
+    return "@" + this.name;
   }
 
   toJSON(): string {
@@ -105,7 +107,7 @@ export class GraphQLDirective {
 
   // $FlowFixMe Flow doesn't support computed properties yet
   get [Symbol.toStringTag]() {
-    return 'GraphQLDirective';
+    return "GraphQLDirective";
   }
 }
 
@@ -126,9 +128,9 @@ export interface GraphQLDirectiveConfig {
  * Used to conditionally include fields or fragments.
  */
 export const GraphQLIncludeDirective = new GraphQLDirective({
-  name: 'include',
+  name: "include",
   description:
-    'Directs the executor to include this field or fragment only when the `if` argument is true.',
+    "Directs the executor to include this field or fragment only when the `if` argument is true.",
   locations: [
     DirectiveLocation.FIELD,
     DirectiveLocation.FRAGMENT_SPREAD,
@@ -137,7 +139,7 @@ export const GraphQLIncludeDirective = new GraphQLDirective({
   args: {
     if: {
       type: new GraphQLNonNull(GraphQLBoolean),
-      description: 'Included when true.',
+      description: "Included when true.",
     },
   },
 });
@@ -146,9 +148,9 @@ export const GraphQLIncludeDirective = new GraphQLDirective({
  * Used to conditionally skip (exclude) fields or fragments.
  */
 export const GraphQLSkipDirective = new GraphQLDirective({
-  name: 'skip',
+  name: "skip",
   description:
-    'Directs the executor to skip this field or fragment when the `if` argument is true.',
+    "Directs the executor to skip this field or fragment when the `if` argument is true.",
   locations: [
     DirectiveLocation.FIELD,
     DirectiveLocation.FRAGMENT_SPREAD,
@@ -157,7 +159,7 @@ export const GraphQLSkipDirective = new GraphQLDirective({
   args: {
     if: {
       type: new GraphQLNonNull(GraphQLBoolean),
-      description: 'Skipped when true.',
+      description: "Skipped when true.",
     },
   },
 });
@@ -165,20 +167,20 @@ export const GraphQLSkipDirective = new GraphQLDirective({
 /**
  * Constant string used for default reason for a deprecation.
  */
-export const DEFAULT_DEPRECATION_REASON = 'No longer supported';
+export const DEFAULT_DEPRECATION_REASON = "No longer supported";
 
 /**
  * Used to declare element of a GraphQL schema as deprecated.
  */
 export const GraphQLDeprecatedDirective = new GraphQLDirective({
-  name: 'deprecated',
-  description: 'Marks an element of a GraphQL schema as no longer supported.',
+  name: "deprecated",
+  description: "Marks an element of a GraphQL schema as no longer supported.",
   locations: [DirectiveLocation.FIELD_DEFINITION, DirectiveLocation.ENUM_VALUE],
   args: {
     reason: {
       type: GraphQLString,
       description:
-        'Explains why this element was deprecated, usually also including a suggestion for how to access supported similar data. Formatted using the Markdown syntax, as specified by [CommonMark](https://commonmark.org/).',
+        "Explains why this element was deprecated, usually also including a suggestion for how to access supported similar data. Formatted using the Markdown syntax, as specified by [CommonMark](https://commonmark.org/).",
       defaultValue: DEFAULT_DEPRECATION_REASON,
     },
   },
@@ -188,13 +190,13 @@ export const GraphQLDeprecatedDirective = new GraphQLDirective({
  * Used to provide a URL for specifying the behaviour of custom scalar definitions.
  */
 export const GraphQLSpecifiedByDirective = new GraphQLDirective({
-  name: 'specifiedBy',
-  description: 'Exposes a URL that specifies the behaviour of this scalar.',
+  name: "specifiedBy",
+  description: "Exposes a URL that specifies the behaviour of this scalar.",
   locations: [DirectiveLocation.SCALAR],
   args: {
     url: {
       type: new GraphQLNonNull(GraphQLString),
-      description: 'The URL that specifies the behaviour of this scalar.',
+      description: "The URL that specifies the behaviour of this scalar.",
     },
   },
 });
@@ -207,7 +209,7 @@ export const specifiedDirectives = [
   GraphQLSkipDirective,
   GraphQLDeprecatedDirective,
   GraphQLSpecifiedByDirective,
-] as const
+] as const;
 
 export function isSpecifiedDirective(
   directive: GraphQLDirective,

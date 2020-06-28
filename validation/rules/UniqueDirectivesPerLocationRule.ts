@@ -1,18 +1,18 @@
-import { GraphQLError } from '../../error/GraphQLError.ts';
+import { GraphQLError } from "../../error/GraphQLError.ts";
 
-import { Kind } from '../../language/kinds.ts';
-import { ASTVisitor } from '../../language/visitor.ts';
+import { Kind } from "../../language/kinds.ts";
+import { ASTVisitor } from "../../language/visitor.ts";
 import {
   isTypeDefinitionNode,
   isTypeExtensionNode,
-} from '../../language/predicates.ts';
+} from "../../language/predicates.ts";
 
-import { specifiedDirectives } from '../../type/directives.ts';
+import { specifiedDirectives } from "../../type/directives.ts";
 
 import {
   SDLValidationContext,
   ValidationContext,
-} from '../ValidationContext.ts';
+} from "../ValidationContext.ts";
 
 /**
  * Unique directive names per location
@@ -48,7 +48,7 @@ export function UniqueDirectivesPerLocationRule(
     // them all, just listen for entering any node, and check to see if it
     // defines any directives.
     enter(node) {
-      if (!('directives' in node)) {
+      if (!("directives" in node)) {
         return;
       }
 
@@ -71,7 +71,7 @@ export function UniqueDirectivesPerLocationRule(
       if (node.directives === undefined) {
         return;
       }
-      
+
       for (const directive of node.directives) {
         const directiveName = directive.name.value;
 

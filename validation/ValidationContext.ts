@@ -1,30 +1,30 @@
-import { ObjMap } from '../utilities/ObjMap.ts';
+import { ObjMap } from "../utilities/ObjMap.ts";
 
-import { GraphQLError } from '../error/GraphQLError.ts';
+import { GraphQLError } from "../error/GraphQLError.ts";
 
-import { Kind } from '../language/kinds.ts';
-import { ASTVisitor, visit } from '../language/visitor.ts';
+import { Kind } from "../language/kinds.ts";
+import { ASTVisitor, visit } from "../language/visitor.ts";
 import {
-DocumentNode,
-OperationDefinitionNode,
-VariableNode,
-SelectionSetNode,
-FragmentSpreadNode,
-FragmentDefinitionNode,
-} from '../language/ast.ts';
+  DocumentNode,
+  OperationDefinitionNode,
+  VariableNode,
+  SelectionSetNode,
+  FragmentSpreadNode,
+  FragmentDefinitionNode,
+} from "../language/ast.ts";
 
-import { GraphQLSchema } from '../type/schema.ts';
-import { GraphQLDirective } from '../type/directives.ts';
+import { GraphQLSchema } from "../type/schema.ts";
+import { GraphQLDirective } from "../type/directives.ts";
 import {
-GraphQLInputType,
-GraphQLOutputType,
-GraphQLCompositeType,
-GraphQLField,
-GraphQLArgument,
-} from '../type/definition.ts';
+  GraphQLInputType,
+  GraphQLOutputType,
+  GraphQLCompositeType,
+  GraphQLField,
+  GraphQLArgument,
+} from "../type/definition.ts";
 
-import { TypeInfo, visitWithTypeInfo } from '../utilities/TypeInfo.ts';
-import Maybe from '../utilities/Maybe.ts';
+import { TypeInfo, visitWithTypeInfo } from "../utilities/TypeInfo.ts";
+import Maybe from "../utilities/Maybe.ts";
 
 type NodeWithSelectionSet = OperationDefinitionNode | FragmentDefinitionNode;
 type VariableUsage = {
@@ -179,7 +179,11 @@ export class ValidationContext extends ASTValidationContext {
   getVariableUsages(node: NodeWithSelectionSet): VariableUsage[] {
     let usages = this._variableUsages.get(node);
     if (!usages) {
-      const newUsages: {node: VariableNode, type: Maybe<GraphQLInputType>, defaultValue: any}[] = [];
+      const newUsages: {
+        node: VariableNode;
+        type: Maybe<GraphQLInputType>;
+        defaultValue: any;
+      }[] = [];
       const typeInfo = new TypeInfo(this._schema);
       visit(
         node,

@@ -1,18 +1,18 @@
-import didYouMean from '../../utilities/didYouMean.ts';
-import suggestionList from '../../utilities/suggestionList.ts';
+import didYouMean from "../../utilities/didYouMean.ts";
+import suggestionList from "../../utilities/suggestionList.ts";
 
-import { GraphQLError } from '../../error/GraphQLError.ts';
+import { GraphQLError } from "../../error/GraphQLError.ts";
 
-import { Kind } from '../../language/kinds.ts';
-import { ASTVisitor } from '../../language/visitor.ts';
+import { Kind } from "../../language/kinds.ts";
+import { ASTVisitor } from "../../language/visitor.ts";
 
-import { specifiedDirectives } from '../../type/directives.ts';
+import { specifiedDirectives } from "../../type/directives.ts";
 
 import {
   ValidationContext,
   SDLValidationContext,
-} from '../ValidationContext.ts';
-import { GraphQLArgument } from '../../type/definition.ts';
+} from "../ValidationContext.ts";
+import { GraphQLArgument } from "../../type/definition.ts";
 
 /**
  * Known argument names
@@ -35,7 +35,7 @@ export function KnownArgumentNamesRule(context: ValidationContext): ASTVisitor {
         context.reportError(
           new GraphQLError(
             `Unknown argument "${argName}" on field "${parentType.name}.${fieldDef.name}".` +
-            didYouMean(suggestions),
+              didYouMean(suggestions),
             argNode,
           ),
         );
@@ -57,7 +57,9 @@ export function KnownArgumentNamesOnDirectivesRule(
     ? schema.getDirectives()
     : specifiedDirectives;
   for (const directive of definedDirectives) {
-    directiveArgs[directive.name] = directive.args.map((arg: GraphQLArgument) => arg.name);
+    directiveArgs[directive.name] = directive.args.map((arg: GraphQLArgument) =>
+      arg.name
+    );
   }
 
   const astDefinitions = context.getDocument().definitions;
@@ -83,7 +85,7 @@ export function KnownArgumentNamesOnDirectivesRule(
             context.reportError(
               new GraphQLError(
                 `Unknown argument "${argName}" on directive "@${directiveName}".` +
-                didYouMean(suggestions),
+                  didYouMean(suggestions),
                 argNode,
               ),
             );

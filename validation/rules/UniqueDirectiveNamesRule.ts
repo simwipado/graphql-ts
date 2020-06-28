@@ -1,7 +1,7 @@
-import { GraphQLError } from '../../error/GraphQLError.ts';
-import { ASTVisitor } from '../../language/visitor.ts';
+import { GraphQLError } from "../../error/GraphQLError.ts";
+import { ASTVisitor } from "../../language/visitor.ts";
 
-import { SDLValidationContext } from '../ValidationContext.ts';
+import { SDLValidationContext } from "../ValidationContext.ts";
 
 /**
  * Unique directive names

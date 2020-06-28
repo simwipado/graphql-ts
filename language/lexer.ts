@@ -1,9 +1,9 @@
-import { syntaxError } from '../error/syntaxError.ts';
+import { syntaxError } from "../error/syntaxError.ts";
 
-import { Token } from './ast.ts';
-import { Source } from './source.ts';
-import { dedentBlockStringValue } from './blockString.ts';
-import { TokenKindEnum, TokenKind } from './tokenKind.ts';
+import { Token } from "./ast.ts";
+import { Source } from "./source.ts";
+import { dedentBlockStringValue } from "./blockString.ts";
+import { TokenKindEnum, TokenKind } from "./tokenKind.ts";
 
 /**
  * Given a Source object, creates a Lexer for that source.
@@ -96,13 +96,11 @@ export function isPunctuatorTokenKind(kind: TokenKindEnum): boolean {
 function printCharCode(code: number) {
   return (
     // NaN/undefined represents access beyond the end of the file.
-    isNaN(code)
-      ? TokenKind.EOF
-      : // Trust JSON for ASCII.
+    isNaN(code) ? TokenKind.EOF : // Trust JSON for ASCII.
       code < 0x007f
       ? JSON.stringify(String.fromCharCode(code))
       : // Otherwise print the escaped form.
-        `"\\u${('00' + code.toString(16).toUpperCase()).slice(-4)}"`
+        `"\\u${("00" + code.toString(16).toUpperCase()).slice(-4)}"`
   );
 }
 
@@ -267,7 +265,7 @@ function unexpectedCharacterMessage(code: number) {
 
   if (code === 39) {
     // '
-    return 'Unexpected single quote character (\'), did you mean to use a double quote (")?';
+    return "Unexpected single quote character ('), did you mean to use a double quote (\")?";
   }
 
   return `Cannot parse the unexpected character ${printCharCode(code)}.`;
@@ -315,7 +313,13 @@ function positionAfterWhitespace(
  *
  * #[\u0009\u0020-\uFFFF]*
  */
-function readComment(source: Source, start: number, line: number, col: number, prev: Token): Token {
+function readComment(
+  source: Source,
+  start: number,
+  line: number,
+  col: number,
+  prev: Token,
+): Token {
   const body = source.body;
   let code;
   let position = start;
@@ -346,7 +350,14 @@ function readComment(source: Source, start: number, line: number, col: number, p
  * Int:   -?(0|[1-9][0-9]*)
  * Float: -?(0|[1-9][0-9]*)(\.[0-9]+)?((E|e)(+|-)?[0-9]+)?
  */
-function readNumber(source: Source, start: number, firstCode: number, line: number, col: number, prev: Token): Token {
+function readNumber(
+  source: Source,
+  start: number,
+  firstCode: number,
+  line: number,
+  col: number,
+  prev: Token,
+): Token {
   const body = source.body;
   let code = firstCode;
   let position = start;
@@ -440,12 +451,18 @@ function readDigits(source: Source, start: number, firstCode: number) {
  *
  * "([^"\\\u000A\u000D]|(\\(u[0-9a-fA-F]{4}|["\\/bfnrt])))*"
  */
-function readString(source: Source, start: number, line: number, col: number, prev: Token): Token {
+function readString(
+  source: Source,
+  start: number,
+  line: number,
+  col: number,
+  prev: Token,
+): Token {
   const body = source.body;
   let position = start + 1;
   let chunkStart = position;
   let code = 0;
-  let value = '';
+  let value = "";
 
   while (
     position < body.length &&
@@ -487,25 +504,25 @@ function readString(source: Source, start: number, line: number, col: number, pr
           value += '"';
           break;
         case 47:
-          value += '/';
+          value += "/";
           break;
         case 92:
-          value += '\\';
+          value += "\\";
           break;
         case 98:
-          value += '\b';
+          value += "\b";
           break;
         case 102:
-          value += '\f';
+          value += "\f";
           break;
         case 110:
-          value += '\n';
+          value += "\n";
           break;
         case 114:
-          value += '\r';
+          value += "\r";
           break;
         case 116:
-          value += '\t';
+          value += "\t";
           break;
         case 117: {
           // uXXXX
@@ -531,9 +548,11 @@ function readString(source: Source, start: number, line: number, col: number, pr
           throw syntaxError(
             source,
             position,
-            `Invalid character escape sequence: \\${String.fromCharCode(
-              code,
-            )}.`,
+            `Invalid character escape sequence: \\${
+              String.fromCharCode(
+                code,
+              )
+            }.`,
           );
       }
       ++position;
@@ -541,7 +560,7 @@ function readString(source: Source, start: number, line: number, col: number, pr
     }
   }
 
-  throw syntaxError(source, position, 'Unterminated string.');
+  throw syntaxError(source, position, "Unterminated string.");
 }
 
 /**
@@ -549,12 +568,19 @@ function readString(source: Source, start: number, line: number, col: number, pr
  *
  * """("?"?(\\"""|\\(?!=""")|[^"\\]))*"""
  */
-function readBlockString(source: Source, start: number, line: number, col: number, prev: Token, lexer: Lexer): Token {
+function readBlockString(
+  source: Source,
+  start: number,
+  line: number,
+  col: number,
+  prev: Token,
+  lexer: Lexer,
+): Token {
   const body = source.body;
   let position = start + 3;
   let chunkStart = position;
   let code = 0;
-  let rawValue = '';
+  let rawValue = "";
 
   while (position < body.length && !isNaN((code = body.charCodeAt(position)))) {
     // Closing Triple-Quote (""")
@@ -618,7 +644,7 @@ function readBlockString(source: Source, start: number, line: number, col: numbe
     }
   }
 
-  throw syntaxError(source, position, 'Unterminated string.');
+  throw syntaxError(source, position, "Unterminated string.");
 }
 
 /**
@@ -660,7 +686,13 @@ function char2hex(a: number) {
  *
  * [_A-Za-z][_0-9A-Za-z]*
  */
-function readName(source: Source, start:number, line:number, col:number, prev: Token): Token {
+function readName(
+  source: Source,
+  start: number,
+  line: number,
+  col: number,
+  prev: Token,
+): Token {
   const body = source.body;
   const bodyLength = body.length;
   let position = start + 1;
@@ -669,8 +701,8 @@ function readName(source: Source, start:number, line:number, col:number, prev: T
     position !== bodyLength &&
     !isNaN((code = body.charCodeAt(position))) &&
     (code === 95 || // _
-    (code >= 48 && code <= 57) || // 0-9
-    (code >= 65 && code <= 90) || // A-Z
+      (code >= 48 && code <= 57) || // 0-9
+      (code >= 65 && code <= 90) || // A-Z
       (code >= 97 && code <= 122)) // a-z
   ) {
     ++position;
@@ -687,7 +719,7 @@ function readName(source: Source, start:number, line:number, col:number, prev: T
 }
 
 // _ A-Z a-z
-function isNameStart(code:number): boolean {
+function isNameStart(code: number): boolean {
   return (
     code === 95 || (code >= 65 && code <= 90) || (code >= 97 && code <= 122)
   );

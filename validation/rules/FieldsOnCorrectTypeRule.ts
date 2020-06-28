@@ -1,12 +1,12 @@
-import didYouMean from '../../utilities/didYouMean.ts';
-import suggestionList from '../../utilities/suggestionList.ts';
+import didYouMean from "../../utilities/didYouMean.ts";
+import suggestionList from "../../utilities/suggestionList.ts";
 
-import { GraphQLError } from '../../error/GraphQLError.ts';
+import { GraphQLError } from "../../error/GraphQLError.ts";
 
-import { FieldNode } from '../../language/ast.ts';
-import { ASTVisitor } from '../../language/visitor.ts';
+import { FieldNode } from "../../language/ast.ts";
+import { ASTVisitor } from "../../language/visitor.ts";
 
-import { GraphQLSchema } from '../../type/schema.ts';
+import { GraphQLSchema } from "../../type/schema.ts";
 import {
   GraphQLOutputType,
   GraphQLObjectType,
@@ -14,9 +14,9 @@ import {
   isObjectType,
   isInterfaceType,
   isAbstractType,
-} from '../../type/definition.ts';
+} from "../../type/definition.ts";
 
-import { ValidationContext } from '../ValidationContext.ts';
+import { ValidationContext } from "../ValidationContext.ts";
 
 /**
  * Fields on correct type
@@ -39,12 +39,12 @@ export function FieldsOnCorrectTypeRule(
 
           // First determine if there are any suggested types to condition on.
           let suggestion = didYouMean(
-            'to use an inline fragment on',
+            "to use an inline fragment on",
             getSuggestedTypeNames(schema, type, fieldName),
           );
 
           // If there are no suggested types, then perhaps this was a typo?
-          if (suggestion === '') {
+          if (suggestion === "") {
             suggestion = didYouMean(getSuggestedFieldNames(type, fieldName));
           }
 
@@ -52,7 +52,7 @@ export function FieldsOnCorrectTypeRule(
           context.reportError(
             new GraphQLError(
               `Cannot query field "${fieldName}" on type "${type.name}".` +
-              suggestion,
+                suggestion,
               node,
             ),
           );
@@ -79,7 +79,7 @@ function getSuggestedTypeNames(
 
   const suggestedTypes: Set<
     GraphQLObjectType | GraphQLInterfaceType
-    > = new Set();
+  > = new Set();
   const usageCount = Object.create(null);
   for (const possibleType of schema.getPossibleTypes(type)) {
     if (!possibleType.getFields()[fieldName]) {

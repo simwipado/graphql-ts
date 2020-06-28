@@ -1,16 +1,16 @@
-import devAssert from '../utilities/devAssert.ts';
+import devAssert from "../utilities/devAssert.ts";
 
-import { SourceLocation } from '../language/location.ts';
+import { SourceLocation } from "../language/location.ts";
 
-import { GraphQLError } from './GraphQLError.ts';
+import { GraphQLError } from "./GraphQLError.ts";
 
 /**
  * Given a GraphQLError, format it according to the rules described by the
  * Response Format, Errors section of the GraphQL Specification.
  */
 export function formatError(error: GraphQLError): GraphQLFormattedError {
-  devAssert(error, 'Received null or undefined error.');
-  const message = error.message ?? 'An unknown error occurred.';
+  devAssert(error, "Received null or undefined error.");
+  const message = error.message ?? "An unknown error occurred.";
   const locations = error.locations;
   const path = error.path;
   const extensions = error.extensions;
@@ -24,7 +24,7 @@ export function formatError(error: GraphQLError): GraphQLFormattedError {
  * @see https://github.com/graphql/graphql-spec/blob/master/spec/Section%207%20--%20Response.md#errors
  */
 export interface GraphQLFormattedError<
-  TExtensions extends Record<string, any> = Record<string, any>
+  TExtensions extends Record<string, any> = Record<string, any>,
 > {
   /**
    * A short, human-readable summary of the problem that **SHOULD NOT** change

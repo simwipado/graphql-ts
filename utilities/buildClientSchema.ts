@@ -1,21 +1,20 @@
+import inspect from "../utilities/inspect.ts";
+import devAssert from "../utilities/devAssert.ts";
+import keyValMap from "../utilities/keyValMap.ts";
+import isObjectLike from "../utilities/isObjectLike.ts";
 
-import inspect from '../utilities/inspect.ts';
-import devAssert from '../utilities/devAssert.ts';
-import keyValMap from '../utilities/keyValMap.ts';
-import isObjectLike from '../utilities/isObjectLike.ts';
+import { parseValue } from "../language/parser.ts";
 
-import { parseValue } from '../language/parser.ts';
-
-import { GraphQLDirective } from '../type/directives.ts';
-import { specifiedScalarTypes } from '../type/scalars.ts';
-import { introspectionTypes, TypeKind } from '../type/introspection.ts';
+import { GraphQLDirective } from "../type/directives.ts";
+import { specifiedScalarTypes } from "../type/scalars.ts";
+import { introspectionTypes, TypeKind } from "../type/introspection.ts";
 import {
-GraphQLSchemaValidationOptions,
+  GraphQLSchemaValidationOptions,
   GraphQLSchema,
-} from '../type/schema.ts';
+} from "../type/schema.ts";
 import {
-GraphQLType,
-GraphQLNamedType,
+  GraphQLType,
+  GraphQLNamedType,
   isInputType,
   isOutputType,
   GraphQLScalarType,
@@ -29,22 +28,22 @@ GraphQLNamedType,
   assertNullableType,
   assertObjectType,
   assertInterfaceType,
-} from '../type/definition.ts';
+} from "../type/definition.ts";
 
-import { valueFromAST } from './valueFromAST.ts';
+import { valueFromAST } from "./valueFromAST.ts";
 import {
-IntrospectionQuery,
-IntrospectionType,
-IntrospectionScalarType,
-IntrospectionObjectType,
-IntrospectionInterfaceType,
-IntrospectionUnionType,
-IntrospectionEnumType,
-IntrospectionInputObjectType,
-IntrospectionTypeRef,
-IntrospectionNamedTypeRef,
-} from './getIntrospectionQuery.ts';
-import Maybe from '../utilities/Maybe.ts';
+  IntrospectionQuery,
+  IntrospectionType,
+  IntrospectionScalarType,
+  IntrospectionObjectType,
+  IntrospectionInterfaceType,
+  IntrospectionUnionType,
+  IntrospectionEnumType,
+  IntrospectionInputObjectType,
+  IntrospectionTypeRef,
+  IntrospectionNamedTypeRef,
+} from "./getIntrospectionQuery.ts";
+import Maybe from "../utilities/Maybe.ts";
 
 /**
  * Build a GraphQLSchema for use by client tools.
@@ -60,13 +59,15 @@ import Maybe from '../utilities/Maybe.ts';
  */
 export function buildClientSchema(
   introspection: IntrospectionQuery,
-  options: Maybe<GraphQLSchemaValidationOptions>
+  options: Maybe<GraphQLSchemaValidationOptions>,
 ): GraphQLSchema {
   devAssert(
     isObjectLike(introspection) && isObjectLike(introspection.__schema),
-    `Invalid or incomplete introspection result. Ensure that you are passing "data" property of introspection response and no "errors" was returned alongside: ${inspect(
-      introspection,
-    )}.`,
+    `Invalid or incomplete introspection result. Ensure that you are passing "data" property of introspection response and no "errors" was returned alongside: ${
+      inspect(
+        introspection,
+      )
+    }.`,
   );
 
   // Get the schema from the introspection result.
@@ -122,14 +123,14 @@ export function buildClientSchema(
     if (typeRef.kind === TypeKind.LIST) {
       const itemRef = typeRef.ofType;
       if (!itemRef) {
-        throw new Error('Decorated type deeper than introspection query.');
+        throw new Error("Decorated type deeper than introspection query.");
       }
       return new GraphQLList(getType(itemRef));
     }
     if (typeRef.kind === TypeKind.NON_NULL) {
       const nullableRef = typeRef.ofType;
       if (!nullableRef) {
-        throw new Error('Decorated type deeper than introspection query.');
+        throw new Error("Decorated type deeper than introspection query.");
       }
       const nullableType = getType(nullableRef);
       return new GraphQLNonNull(assertNullableType(nullableType));
@@ -358,10 +359,9 @@ export function buildClientSchema(
       );
     }
 
-    const defaultValue =
-      inputValueIntrospection.defaultValue != null
-        ? valueFromAST(parseValue(inputValueIntrospection.defaultValue), type)
-        : undefined;
+    const defaultValue = inputValueIntrospection.defaultValue != null
+      ? valueFromAST(parseValue(inputValueIntrospection.defaultValue), type)
+      : undefined;
     return {
       description: inputValueIntrospection.description,
       type,

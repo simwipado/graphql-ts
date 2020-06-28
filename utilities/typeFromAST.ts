@@ -1,19 +1,19 @@
-import inspect from '../utilities/inspect.ts';
-import invariant from '../utilities/invariant.ts';
+import inspect from "../utilities/inspect.ts";
+import invariant from "../utilities/invariant.ts";
 
-import { Kind } from '../language/kinds.ts';
+import { Kind } from "../language/kinds.ts";
 import {
-NamedTypeNode,
-ListTypeNode,
-TypeNode,
-} from '../language/ast.ts';
+  NamedTypeNode,
+  ListTypeNode,
+  TypeNode,
+} from "../language/ast.ts";
 
-import { GraphQLSchema } from '../type/schema.ts';
+import { GraphQLSchema } from "../type/schema.ts";
 import {
-GraphQLNamedType,
+  GraphQLNamedType,
   GraphQLList,
   GraphQLNonNull,
-} from '../type/definition.ts';
+} from "../type/definition.ts";
 
 /**
  * Given a Schema and an AST node describing a type, return a GraphQLType
@@ -37,8 +37,9 @@ export function typeFromAST(
   typeNode: TypeNode,
 ): GraphQLNonNull<any> | undefined;
 export function typeFromAST(
-  schema: GraphQLSchema, 
-  typeNode: NamedTypeNode | ListTypeNode | TypeNode) {
+  schema: GraphQLSchema,
+  typeNode: NamedTypeNode | ListTypeNode | TypeNode,
+) {
   /* eslint-enable no-redeclare */
   let innerType;
   if (typeNode.kind === Kind.LIST_TYPE) {
@@ -54,5 +55,5 @@ export function typeFromAST(
   }
 
   // Not reachable. All possible type nodes have been considered.
-  invariant(false, 'Unexpected type node: ' + inspect(typeNode));
+  invariant(false, "Unexpected type node: " + inspect(typeNode));
 }

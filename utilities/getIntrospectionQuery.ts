@@ -1,5 +1,5 @@
-import { DirectiveLocationEnum } from '../language/directiveLocation.ts';
-import Maybe from '../utilities/Maybe.ts';
+import { DirectiveLocationEnum } from "../language/directiveLocation.ts";
+import Maybe from "../utilities/Maybe.ts";
 
 export interface IntrospectionOptions {
   // Whether to include descriptions in the introspection result.
@@ -28,16 +28,16 @@ export function getIntrospectionQuery(options?: IntrospectionOptions): string {
     ...options,
   };
 
-  const descriptions = optionsWithDefault.descriptions ? 'description' : '';
+  const descriptions = optionsWithDefault.descriptions ? "description" : "";
   const specifiedByUrl = optionsWithDefault.specifiedByUrl
-    ? 'specifiedByUrl'
-    : '';
+    ? "specifiedByUrl"
+    : "";
   const directiveIsRepeatable = optionsWithDefault.directiveIsRepeatable
-    ? 'isRepeatable'
-    : '';
+    ? "isRepeatable"
+    : "";
   const schemaDescription = optionsWithDefault.schemaDescription
     ? descriptions
-    : '';
+    : "";
 
   return `
     query IntrospectionQuery {
@@ -174,14 +174,14 @@ export type IntrospectionInputType =
   | IntrospectionInputObjectType;
 
 export interface IntrospectionScalarType {
-  kind: 'SCALAR';
+  kind: "SCALAR";
   name: string;
   description?: Maybe<string>;
   specifiedByUrl?: Maybe<string>;
 }
 
 export interface IntrospectionObjectType {
-  kind: 'OBJECT';
+  kind: "OBJECT";
   name: string;
   description?: Maybe<string>;
   fields: IntrospectionField[];
@@ -191,7 +191,7 @@ export interface IntrospectionObjectType {
 }
 
 export interface IntrospectionInterfaceType {
-  kind: 'INTERFACE';
+  kind: "INTERFACE";
   name: string;
   description?: Maybe<string>;
   fields: IntrospectionField[];
@@ -204,7 +204,7 @@ export interface IntrospectionInterfaceType {
 }
 
 export interface IntrospectionUnionType {
-  kind: 'UNION';
+  kind: "UNION";
   name: string;
   description?: Maybe<string>;
   possibleTypes: ReadonlyArray<
@@ -213,30 +213,30 @@ export interface IntrospectionUnionType {
 }
 
 export interface IntrospectionEnumType {
-  kind: 'ENUM';
+  kind: "ENUM";
   name: string;
   description?: Maybe<string>;
   enumValues: IntrospectionEnumValue[];
 }
 
 export interface IntrospectionInputObjectType {
-  kind: 'INPUT_OBJECT';
+  kind: "INPUT_OBJECT";
   name: string;
   description?: Maybe<string>;
   inputFields: IntrospectionInputValue[];
 }
 
 export interface IntrospectionListTypeRef<
-  T extends IntrospectionTypeRef = IntrospectionTypeRef
+  T extends IntrospectionTypeRef = IntrospectionTypeRef,
 > {
-  kind: 'LIST';
+  kind: "LIST";
   ofType: T;
 }
 
 export interface IntrospectionNonNullTypeRef<
-  T extends IntrospectionTypeRef = IntrospectionTypeRef
+  T extends IntrospectionTypeRef = IntrospectionTypeRef,
 > {
-  kind: 'NON_NULL';
+  kind: "NON_NULL";
   ofType: T;
 }
 
@@ -244,29 +244,29 @@ export type IntrospectionTypeRef =
   | IntrospectionNamedTypeRef
   | IntrospectionListTypeRef<any>
   | IntrospectionNonNullTypeRef<
-      IntrospectionNamedTypeRef | IntrospectionListTypeRef<any>
-    >;
+    IntrospectionNamedTypeRef | IntrospectionListTypeRef<any>
+  >;
 
 export type IntrospectionOutputTypeRef =
   | IntrospectionNamedTypeRef<IntrospectionOutputType>
   | IntrospectionListTypeRef<any>
   | IntrospectionNonNullTypeRef<
-      | IntrospectionNamedTypeRef<IntrospectionOutputType>
-      | IntrospectionListTypeRef<any>
-    >;
+    | IntrospectionNamedTypeRef<IntrospectionOutputType>
+    | IntrospectionListTypeRef<any>
+  >;
 
 export type IntrospectionInputTypeRef =
   | IntrospectionNamedTypeRef<IntrospectionInputType>
   | IntrospectionListTypeRef<any>
   | IntrospectionNonNullTypeRef<
-      | IntrospectionNamedTypeRef<IntrospectionInputType>
-      | IntrospectionListTypeRef<any>
-    >;
+    | IntrospectionNamedTypeRef<IntrospectionInputType>
+    | IntrospectionListTypeRef<any>
+  >;
 
 export interface IntrospectionNamedTypeRef<
-  T extends IntrospectionType = IntrospectionType
+  T extends IntrospectionType = IntrospectionType,
 > {
-  kind: T['kind'];
+  kind: T["kind"];
   name: string;
 }
 

@@ -1,9 +1,9 @@
-import { GraphQLError } from '../../error/GraphQLError.ts';
+import { GraphQLError } from "../../error/GraphQLError.ts";
 
-import { ASTVisitor } from '../../language/visitor.ts';
-import { TypeDefinitionNode } from '../../language/ast.ts';
+import { ASTVisitor } from "../../language/visitor.ts";
+import { TypeDefinitionNode } from "../../language/ast.ts";
 
-import { SDLValidationContext } from '../ValidationContext.ts';
+import { SDLValidationContext } from "../ValidationContext.ts";
 
 /**
  * Unique type names

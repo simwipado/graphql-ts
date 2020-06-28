@@ -28,7 +28,7 @@ export function dedentBlockStringValue(rawString: string): string {
   }
 
   // Return a string of the lines joined with U+000A.
-  return lines.join('\n');
+  return lines.join("\n");
 }
 /**
  * @internal
@@ -58,7 +58,7 @@ export function getBlockStringIndentation(
 
 function leadingWhitespace(str: string) {
   let i = 0;
-  while (i < str.length && (str[i] === ' ' || str[i] === '\t')) {
+  while (i < str.length && (str[i] === " " || str[i] === "\t")) {
     i++;
   }
   return i;
@@ -80,24 +80,23 @@ export function printBlockString(
   indentation?: string,
   preferMultipleLines?: boolean,
 ): string {
-  const isSingleLine = value.indexOf('\n') === -1;
-  const hasLeadingSpace = value[0] === ' ' || value[0] === '\t';
+  const isSingleLine = value.indexOf("\n") === -1;
+  const hasLeadingSpace = value[0] === " " || value[0] === "\t";
   const hasTrailingQuote = value[value.length - 1] === '"';
-  const hasTrailingSlash = value[value.length - 1] === '\\';
-  const printAsMultipleLines =
-    !isSingleLine ||
+  const hasTrailingSlash = value[value.length - 1] === "\\";
+  const printAsMultipleLines = !isSingleLine ||
     hasTrailingQuote ||
     hasTrailingSlash ||
     preferMultipleLines;
 
-  let result = '';
+  let result = "";
   // Format a multi-line block quote to account for leading space.
   if (printAsMultipleLines && !(isSingleLine && hasLeadingSpace)) {
-    result += '\n' + indentation;
+    result += "\n" + indentation;
   }
-  result += indentation ? value.replace(/\n/g, '\n' + indentation) : value;
+  result += indentation ? value.replace(/\n/g, "\n" + indentation) : value;
   if (printAsMultipleLines) {
-    result += '\n';
+    result += "\n";
   }
 
   return '"""' + result.replace(/"""/g, '\\"""') + '"""';

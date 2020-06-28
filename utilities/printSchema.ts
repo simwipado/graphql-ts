@@ -1,25 +1,25 @@
-import inspect from '../utilities/inspect.ts';
-import invariant from '../utilities/invariant.ts';
+import inspect from "../utilities/inspect.ts";
+import invariant from "../utilities/invariant.ts";
 
-import { print } from '../language/printer.ts';
-import { printBlockString } from '../language/blockString.ts';
+import { print } from "../language/printer.ts";
+import { printBlockString } from "../language/blockString.ts";
 
-import { GraphQLSchema } from '../type/schema.ts';
-import { isIntrospectionType } from '../type/introspection.ts';
-import { GraphQLString, isSpecifiedScalarType } from '../type/scalars.ts';
+import { GraphQLSchema } from "../type/schema.ts";
+import { isIntrospectionType } from "../type/introspection.ts";
+import { GraphQLString, isSpecifiedScalarType } from "../type/scalars.ts";
 import {
   GraphQLDirective,
   DEFAULT_DEPRECATION_REASON,
   isSpecifiedDirective,
-} from '../type/directives.ts';
+} from "../type/directives.ts";
 import {
-GraphQLNamedType,
-GraphQLScalarType,
-GraphQLEnumType,
-GraphQLObjectType,
-GraphQLInterfaceType,
-GraphQLUnionType,
-GraphQLInputObjectType,
+  GraphQLNamedType,
+  GraphQLScalarType,
+  GraphQLEnumType,
+  GraphQLObjectType,
+  GraphQLInterfaceType,
+  GraphQLUnionType,
+  GraphQLInputObjectType,
   isScalarType,
   isObjectType,
   isInterfaceType,
@@ -29,10 +29,10 @@ GraphQLInputObjectType,
   GraphQLArgument,
   GraphQLField,
   GraphQLEnumValue,
-} from '../type/definition.ts';
+} from "../type/definition.ts";
 
-import { astFromValue } from './astFromValue.ts';
-import Maybe from '../utilities/Maybe.ts';
+import { astFromValue } from "./astFromValue.ts";
+import Maybe from "../utilities/Maybe.ts";
 
 export interface Options {
   /**
@@ -64,7 +64,7 @@ export function printSchema(schema: GraphQLSchema, options?: Options): string {
 
 export function printIntrospectionSchema(
   schema: GraphQLSchema,
-  options?: Options
+  options?: Options,
 ): string {
   return printFilteredSchema(
     schema,
@@ -82,7 +82,7 @@ function printFilteredSchema(
   schema: GraphQLSchema,
   directiveFilter: (type: GraphQLDirective) => boolean,
   typeFilter: (type: GraphQLNamedType) => boolean,
-  options?: Options
+  options?: Options,
 ): string {
   const directives = schema.getDirectives().filter(directiveFilter);
   const types = Object.values(schema.getTypeMap()).filter(typeFilter);
@@ -94,7 +94,7 @@ function printFilteredSchema(
         types.map((type) => printType(type, options)),
       )
       .filter(Boolean)
-      .join('\n\n') + '\n'
+      .join("\n\n") + "\n"
   );
 }
 
@@ -121,7 +121,7 @@ function printSchemaDefinition(schema: GraphQLSchema): string | undefined {
   }
 
   return (
-    printDescription({}, schema) + `schema {\n${operationTypes.join('\n')}\n}`
+    printDescription({}, schema) + `schema {\n${operationTypes.join("\n")}\n}`
   );
 }
 
@@ -139,17 +139,17 @@ function printSchemaDefinition(schema: GraphQLSchema): string | undefined {
  */
 function isSchemaOfCommonNames(schema: GraphQLSchema): boolean {
   const queryType = schema.getQueryType();
-  if (queryType && queryType.name !== 'Query') {
+  if (queryType && queryType.name !== "Query") {
     return false;
   }
 
   const mutationType = schema.getMutationType();
-  if (mutationType && mutationType.name !== 'Mutation') {
+  if (mutationType && mutationType.name !== "Mutation") {
     return false;
   }
 
   const subscriptionType = schema.getSubscriptionType();
-  if (subscriptionType && subscriptionType.name !== 'Subscription') {
+  if (subscriptionType && subscriptionType.name !== "Subscription") {
     return false;
   }
 
@@ -177,7 +177,7 @@ export function printType(type: GraphQLNamedType, options?: Options): string {
   }
 
   // Not reachable. All possible types have been considered.
-  invariant(false, 'Unexpected type: ' + inspect(type));
+  invariant(false, "Unexpected type: " + inspect(type));
   throw Error;
 }
 
@@ -194,8 +194,8 @@ function printImplementedInterfaces(
 ): string {
   const interfaces = type.getInterfaces();
   return interfaces.length
-    ? ' implements ' + interfaces.map((i) => i.name).join(' & ')
-    : '';
+    ? " implements " + interfaces.map((i) => i.name).join(" & ")
+    : "";
 }
 
 function printObject(type: GraphQLObjectType, options?: Options): string {
@@ -218,8 +218,8 @@ function printInterface(type: GraphQLInterfaceType, options?: Options): string {
 
 function printUnion(type: GraphQLUnionType, options?: Options): string {
   const types = type.getTypes();
-  const possibleTypes = types.length ? ' = ' + types.join(' | ') : '';
-  return printDescription(options, type) + 'union ' + type.name + possibleTypes;
+  const possibleTypes = types.length ? " = " + types.join(" | ") : "";
+  return printDescription(options, type) + "union " + type.name + possibleTypes;
 }
 
 function printEnum(type: GraphQLEnumType, options?: Options): string {
@@ -227,8 +227,8 @@ function printEnum(type: GraphQLEnumType, options?: Options): string {
     .getValues()
     .map(
       (value, i) =>
-        printDescription(options, value, '  ', !i) +
-        '  ' +
+        printDescription(options, value, "  ", !i) +
+        "  " +
         value.name +
         printDeprecated(value),
     );
@@ -238,24 +238,30 @@ function printEnum(type: GraphQLEnumType, options?: Options): string {
   );
 }
 
-function printInputObject(type: GraphQLInputObjectType, options?: Options): string {
+function printInputObject(
+  type: GraphQLInputObjectType,
+  options?: Options,
+): string {
   const fields = Object.values(type.getFields()).map(
     (f, i) =>
-      printDescription(options, f, '  ', !i) + '  ' + printInputValue(f),
+      printDescription(options, f, "  ", !i) + "  " + printInputValue(f),
   );
   return (
     printDescription(options, type) + `input ${type.name}` + printBlock(fields)
   );
 }
 
-function printFields(options: Maybe<Options>, type: GraphQLObjectType | GraphQLInterfaceType) {
+function printFields(
+  options: Maybe<Options>,
+  type: GraphQLObjectType | GraphQLInterfaceType,
+) {
   const fields = Object.values(type.getFields()).map(
     (f, i) =>
-      printDescription(options, f, '  ', !i) +
-      '  ' +
+      printDescription(options, f, "  ", !i) +
+      "  " +
       f.name +
-      printArgs(options, f.args, '  ') +
-      ': ' +
+      printArgs(options, f.args, "  ") +
+      ": " +
       String(f.type) +
       printDeprecated(f),
   );
@@ -263,39 +269,43 @@ function printFields(options: Maybe<Options>, type: GraphQLObjectType | GraphQLI
 }
 
 function printBlock(items: string[]) {
-  return items.length !== 0 ? ' {\n' + items.join('\n') + '\n}' : '';
+  return items.length !== 0 ? " {\n" + items.join("\n") + "\n}" : "";
 }
 
-function printArgs(options: Maybe<Options>, args: GraphQLArgument[], indentation = '') {
+function printArgs(
+  options: Maybe<Options>,
+  args: GraphQLArgument[],
+  indentation = "",
+) {
   if (args.length === 0) {
-    return '';
+    return "";
   }
 
   // If every arg does not have a description, print them on one line.
   if (args.every((arg) => !arg.description)) {
-    return '(' + args.map(printInputValue).join(', ') + ')';
+    return "(" + args.map(printInputValue).join(", ") + ")";
   }
 
   return (
-    '(\n' +
+    "(\n" +
     args
       .map(
         (arg, i) =>
-          printDescription(options, arg, '  ' + indentation, !i) +
-          '  ' +
+          printDescription(options, arg, "  " + indentation, !i) +
+          "  " +
           indentation +
           printInputValue(arg),
       )
-      .join('\n') +
-    '\n' +
+      .join("\n") +
+    "\n" +
     indentation +
-    ')'
+    ")"
   );
 }
 
 function printInputValue(arg: GraphQLArgument) {
   const defaultAST = astFromValue(arg.defaultValue, arg.type);
-  let argDecl = arg.name + ': ' + String(arg.type);
+  let argDecl = arg.name + ": " + String(arg.type);
   if (defaultAST) {
     argDecl += ` = ${print(defaultAST)}`;
   }
@@ -305,52 +315,54 @@ function printInputValue(arg: GraphQLArgument) {
 function printDirective(directive: GraphQLDirective, options: Maybe<Options>) {
   return (
     printDescription(options, directive) +
-    'directive @' +
+    "directive @" +
     directive.name +
     printArgs(options, directive.args) +
-    (directive.isRepeatable ? ' repeatable' : '') +
-    ' on ' +
-    directive.locations.join(' | ')
+    (directive.isRepeatable ? " repeatable" : "") +
+    " on " +
+    directive.locations.join(" | ")
   );
 }
 
-function printDeprecated(fieldOrEnumVal: GraphQLField<any, any> | GraphQLEnumValue) {
+function printDeprecated(
+  fieldOrEnumVal: GraphQLField<any, any> | GraphQLEnumValue,
+) {
   if (!fieldOrEnumVal.isDeprecated) {
-    return '';
+    return "";
   }
   const reason = fieldOrEnumVal.deprecationReason;
   const reasonAST = astFromValue(reason, GraphQLString);
   if (reasonAST && reason !== DEFAULT_DEPRECATION_REASON) {
-    return ' @deprecated(reason: ' + print(reasonAST) + ')';
+    return " @deprecated(reason: " + print(reasonAST) + ")";
   }
-  return ' @deprecated';
+  return " @deprecated";
 }
 
 function printSpecifiedByUrl(scalar: GraphQLScalarType) {
   if (scalar.specifiedByUrl == null) {
-    return '';
+    return "";
   }
   const url = scalar.specifiedByUrl;
   const urlAST = astFromValue(url, GraphQLString);
   invariant(
     urlAST,
-    'Unexpected null value returned from `astFromValue` for specifiedByUrl',
+    "Unexpected null value returned from `astFromValue` for specifiedByUrl",
   );
   if (!urlAST) {
     throw Error;
   }
-  return ' @specifiedBy(url: ' + print(urlAST) + ')';
+  return " @specifiedBy(url: " + print(urlAST) + ")";
 }
 
 function printDescription(
   options: Maybe<Options>,
   def: any,
-  indentation = '',
+  indentation = "",
   firstInBlock = true,
 ): string {
   const { description } = def;
   if (description == null) {
-    return '';
+    return "";
   }
 
   if (options?.commentDescriptions === true) {
@@ -358,19 +370,24 @@ function printDescription(
   }
 
   const preferMultipleLines = description.length > 70;
-  const blockString = printBlockString(description, '', preferMultipleLines);
-  const prefix =
-    indentation && !firstInBlock ? '\n' + indentation : indentation;
+  const blockString = printBlockString(description, "", preferMultipleLines);
+  const prefix = indentation && !firstInBlock
+    ? "\n" + indentation
+    : indentation;
 
-  return prefix + blockString.replace(/\n/g, '\n' + indentation) + '\n';
+  return prefix + blockString.replace(/\n/g, "\n" + indentation) + "\n";
 }
 
-function printDescriptionWithComments(description: string, indentation: string, firstInBlock: boolean) {
-  const prefix = indentation && !firstInBlock ? '\n' : '';
+function printDescriptionWithComments(
+  description: string,
+  indentation: string,
+  firstInBlock: boolean,
+) {
+  const prefix = indentation && !firstInBlock ? "\n" : "";
   const comment = description
-    .split('\n')
-    .map((line) => indentation + (line !== '' ? '# ' + line : '#'))
-    .join('\n');
+    .split("\n")
+    .map((line) => indentation + (line !== "" ? "# " + line : "#"))
+    .join("\n");
 
-  return prefix + comment + '\n';
+  return prefix + comment + "\n";
 }

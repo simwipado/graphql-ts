@@ -5,7 +5,7 @@ export default function memoize3<
   A1,
   A2,
   A3,
-  R,
+  R
 >(fn: (arg1: A1, arg2: A2, arg3: A3) => R) {
   let cache0: any;
 

@@ -10,29 +10,28 @@ export default function didYouMean(
 ): string;
 export default function didYouMean(
   firstArg: string | string[],
-  secondArg?: string[]
+  secondArg?: string[],
 ) {
-  const [subMessage, suggestionsArg] =
-    typeof firstArg === 'string'
-      ? [firstArg, secondArg]
-      : [undefined, firstArg];
+  const [subMessage, suggestionsArg] = typeof firstArg === "string"
+    ? [firstArg, secondArg]
+    : [undefined, firstArg];
 
-  let message = ' Did you mean ';
+  let message = " Did you mean ";
   if (subMessage) {
-    message += subMessage + ' ';
+    message += subMessage + " ";
   }
 
-  const suggestions = (suggestionsArg as string []).map((x) => `"${x}"`);
+  const suggestions = (suggestionsArg as string[]).map((x) => `"${x}"`);
   switch (suggestions.length) {
     case 0:
-      return '';
+      return "";
     case 1:
-      return message + suggestions[0] + '?';
+      return message + suggestions[0] + "?";
     case 2:
-      return message + suggestions[0] + ' or ' + suggestions[1] + '?';
+      return message + suggestions[0] + " or " + suggestions[1] + "?";
   }
 
   const selected = suggestions.slice(0, MAX_SUGGESTIONS);
   const lastItem = selected.pop() as string;
-  return message + selected.join(', ') + ', or ' + lastItem + '?';
+  return message + selected.join(", ") + ", or " + lastItem + "?";
 }

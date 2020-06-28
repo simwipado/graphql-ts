@@ -1,20 +1,20 @@
-import { GraphQLError } from '../../error/GraphQLError.ts';
-import { ASTVisitor } from '../../language/visitor.ts';
+import { GraphQLError } from "../../error/GraphQLError.ts";
+import { ASTVisitor } from "../../language/visitor.ts";
 import {
   isObjectType,
   isInterfaceType,
   isInputObjectType,
-} from '../../type/definition.ts';
+} from "../../type/definition.ts";
 
-import { SDLValidationContext } from '../ValidationContext.ts';
-import { 
+import { SDLValidationContext } from "../ValidationContext.ts";
+import {
   InputObjectTypeDefinitionNode,
   InputObjectTypeExtensionNode,
   InterfaceTypeDefinitionNode,
   InterfaceTypeExtensionNode,
   ObjectTypeDefinitionNode,
-  ObjectTypeExtensionNode
-} from '../../language/ast.ts';
+  ObjectTypeExtensionNode,
+} from "../../language/ast.ts";
 
 /**
  * Unique field definition names
@@ -37,12 +37,15 @@ export function UniqueFieldDefinitionNamesRule(
     ObjectTypeExtension: checkFieldUniqueness,
   };
 
-  function checkFieldUniqueness(node: InputObjectTypeDefinitionNode |
-    InputObjectTypeExtensionNode |
-    InterfaceTypeDefinitionNode |
-    InterfaceTypeExtensionNode |
-    ObjectTypeDefinitionNode |
-    ObjectTypeExtensionNode) {
+  function checkFieldUniqueness(
+    node:
+      | InputObjectTypeDefinitionNode
+      | InputObjectTypeExtensionNode
+      | InterfaceTypeDefinitionNode
+      | InterfaceTypeExtensionNode
+      | ObjectTypeDefinitionNode
+      | ObjectTypeExtensionNode,
+  ) {
     const typeName = node.name.value;
 
     if (!knownFieldNames[typeName]) {

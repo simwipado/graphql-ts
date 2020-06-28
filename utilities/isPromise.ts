@@ -4,5 +4,5 @@
  */
 
 export default function isPromis(value: any): value is Promise<any> {
-  return typeof value?.then === 'function';
+  return typeof value?.then === "function";
 }

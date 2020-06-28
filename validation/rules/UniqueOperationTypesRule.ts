@@ -1,8 +1,11 @@
-import { GraphQLError } from '../../error/GraphQLError.ts';
-import { ASTVisitor } from '../../language/visitor.ts';
+import { GraphQLError } from "../../error/GraphQLError.ts";
+import { ASTVisitor } from "../../language/visitor.ts";
 
-import { SDLValidationContext } from '../ValidationContext.ts';
-import { SchemaDefinitionNode, SchemaExtensionNode } from '../../language/ast.ts';
+import { SDLValidationContext } from "../ValidationContext.ts";
+import {
+  SchemaDefinitionNode,
+  SchemaExtensionNode,
+} from "../../language/ast.ts";
 
 /**
  * Unique operation types
@@ -27,7 +30,9 @@ export function UniqueOperationTypesRule(
     SchemaExtension: checkOperationTypes,
   };
 
-  function checkOperationTypes(node: SchemaDefinitionNode | SchemaExtensionNode) {
+  function checkOperationTypes(
+    node: SchemaDefinitionNode | SchemaExtensionNode,
+  ) {
     // istanbul ignore next (See https://github.com/graphql/graphql-js/issues/2203)
     const operationTypesNodes = node.operationTypes ?? [];
 

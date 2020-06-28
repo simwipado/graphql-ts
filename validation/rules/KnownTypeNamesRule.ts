@@ -1,22 +1,22 @@
-import didYouMean from '../../utilities/didYouMean.ts';
-import suggestionList from '../../utilities/suggestionList.ts';
+import didYouMean from "../../utilities/didYouMean.ts";
+import suggestionList from "../../utilities/suggestionList.ts";
 
-import { GraphQLError } from '../../error/GraphQLError.ts';
+import { GraphQLError } from "../../error/GraphQLError.ts";
 
-import { ASTNode } from '../../language/ast.ts';
-import { ASTVisitor } from '../../language/visitor.ts';
+import { ASTNode } from "../../language/ast.ts";
+import { ASTVisitor } from "../../language/visitor.ts";
 import {
   isTypeDefinitionNode,
   isTypeSystemDefinitionNode,
   isTypeSystemExtensionNode,
-} from '../../language/predicates.ts';
+} from "../../language/predicates.ts";
 
-import { specifiedScalarTypes } from '../../type/scalars.ts';
+import { specifiedScalarTypes } from "../../type/scalars.ts";
 
 import {
   ValidationContext,
   SDLValidationContext,
-} from '../ValidationContext.ts';
+} from "../ValidationContext.ts";
 
 /**
  * Known type names

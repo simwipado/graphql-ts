@@ -1,14 +1,13 @@
+import keyMap from "../../utilities/keyMap.ts";
+import inspect from "../../utilities/inspect.ts";
+import didYouMean from "../../utilities/didYouMean.ts";
+import suggestionList from "../../utilities/suggestionList.ts";
 
-import keyMap from '../../utilities/keyMap.ts';
-import inspect from '../../utilities/inspect.ts';
-import didYouMean from '../../utilities/didYouMean.ts';
-import suggestionList from '../../utilities/suggestionList.ts';
+import { GraphQLError } from "../../error/GraphQLError.ts";
 
-import { GraphQLError } from '../../error/GraphQLError.ts';
-
-import { print } from '../../language/printer.ts';
-import { ValueNode } from '../../language/ast.ts';
-import { ASTVisitor } from '../../language/visitor.ts';
+import { print } from "../../language/printer.ts";
+import { ValueNode } from "../../language/ast.ts";
+import { ASTVisitor } from "../../language/visitor.ts";
 
 import {
   isLeafType,
@@ -18,9 +17,9 @@ import {
   isRequiredInputField,
   getNullableType,
   getNamedType,
-} from '../../type/definition.ts';
+} from "../../type/definition.ts";
 
-import { ValidationContext } from '../ValidationContext.ts';
+import { ValidationContext } from "../ValidationContext.ts";
 
 /**
  * Value literals of correct type
@@ -73,7 +72,7 @@ export function ValuesOfCorrectTypeRule(
         context.reportError(
           new GraphQLError(
             `Field "${node.name.value}" is not defined by type "${parentType.name}".` +
-            didYouMean(suggestions),
+              didYouMean(suggestions),
             node,
           ),
         );
@@ -143,7 +142,7 @@ function isValidValueNode(context: ValidationContext, node: ValueNode): void {
       context.reportError(
         new GraphQLError(
           `Expected value of type "${typeStr}", found ${print(node)}; ` +
-          error.message,
+            error.message,
           node,
           undefined,
           undefined,

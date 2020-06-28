@@ -1,7 +1,7 @@
-import { GraphQLError } from '../../error/GraphQLError.ts';
-import { ASTVisitor } from '../../language/visitor.ts';
+import { GraphQLError } from "../../error/GraphQLError.ts";
+import { ASTVisitor } from "../../language/visitor.ts";
 
-import { ValidationContext } from '../ValidationContext.ts';
+import { ValidationContext } from "../ValidationContext.ts";
 
 /**
  * No undefined variables

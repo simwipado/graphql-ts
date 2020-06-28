@@ -1,4 +1,4 @@
-import { PromiseOrValue } from '../utilities/PromiseOrValue.ts';
+import { PromiseOrValue } from "../utilities/PromiseOrValue.ts";
 
 /**
  * Given an AsyncIterable and a callback function, return an AsyncIterator
@@ -7,13 +7,13 @@ import { PromiseOrValue } from '../utilities/PromiseOrValue.ts';
 export default function mapAsyncIterator<T, U>(
   iterable: AsyncIterable<T>,
   callback: (arg: T) => PromiseOrValue<U>,
-  rejectCallback?: (arg: any) => PromiseOrValue<U>
+  rejectCallback?: (arg: any) => PromiseOrValue<U>,
 ): AsyncGenerator<U, void, void> {
   const iteratorMethod = iterable[Symbol.asyncIterator];
   const iterator: any = iteratorMethod.call(iterable);
   let $return: any;
   let abruptClose: (error: any) => any;
-  if (typeof iterator.return === 'function') {
+  if (typeof iterator.return === "function") {
     $return = iterator.return;
     abruptClose = (error) => {
       const rethrow = () => Promise.reject(error);
@@ -47,7 +47,7 @@ export default function mapAsyncIterator<T, U>(
         : Promise.resolve({ value: undefined, done: true });
     },
     throw(error) {
-      if (typeof iterator.throw === 'function') {
+      if (typeof iterator.throw === "function") {
         return iterator.throw(error).then(mapResult, mapReject);
       }
       return Promise.reject(error).catch(abruptClose);

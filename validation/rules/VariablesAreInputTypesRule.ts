@@ -1,14 +1,14 @@
-import { GraphQLError } from '../../error/GraphQLError.ts';
+import { GraphQLError } from "../../error/GraphQLError.ts";
 
-import { print } from '../../language/printer.ts';
-import { ASTVisitor } from '../../language/visitor.ts';
-import { VariableDefinitionNode } from '../../language/ast.ts';
+import { print } from "../../language/printer.ts";
+import { ASTVisitor } from "../../language/visitor.ts";
+import { VariableDefinitionNode } from "../../language/ast.ts";
 
-import { isInputType } from '../../type/definition.ts';
+import { isInputType } from "../../type/definition.ts";
 
-import { typeFromAST } from '../../utilities/typeFromAST.ts';
+import { typeFromAST } from "../../utilities/typeFromAST.ts";
 
-import { ValidationContext } from '../ValidationContext.ts';
+import { ValidationContext } from "../ValidationContext.ts";
 
 /**
  * Variables are input types

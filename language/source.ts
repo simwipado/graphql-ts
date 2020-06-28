@@ -1,4 +1,4 @@
-import devAssert from '../utilities/devAssert.ts';
+import devAssert from "../utilities/devAssert.ts";
 
 interface Location {
   line: number;
@@ -20,7 +20,7 @@ export class Source {
 
   constructor(
     body: string,
-    name = 'GraphQL request',
+    name = "GraphQL request",
     locationOffset: Location = { line: 1, column: 1 },
   ) {
     this.body = body;
@@ -28,15 +28,15 @@ export class Source {
     this.locationOffset = locationOffset;
     devAssert(
       this.locationOffset.line > 0,
-      'line in locationOffset is 1-indexed and must be positive.',
+      "line in locationOffset is 1-indexed and must be positive.",
     );
     devAssert(
       this.locationOffset.column > 0,
-      'column in locationOffset is 1-indexed and must be positive.',
+      "column in locationOffset is 1-indexed and must be positive.",
     );
   }
 
   get [Symbol.toStringTag](): string {
-    return 'Source';
+    return "Source";
   }
 }

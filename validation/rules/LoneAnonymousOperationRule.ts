@@ -1,9 +1,9 @@
-import { GraphQLError } from '../../error/GraphQLError.ts';
+import { GraphQLError } from "../../error/GraphQLError.ts";
 
-import { Kind } from '../../language/kinds.ts';
-import { ASTVisitor } from '../../language/visitor.ts';
+import { Kind } from "../../language/kinds.ts";
+import { ASTVisitor } from "../../language/visitor.ts";
 
-import { ASTValidationContext } from '../ValidationContext.ts';
+import { ASTValidationContext } from "../ValidationContext.ts";
 
 /**
  * Lone anonymous operation
@@ -25,7 +25,7 @@ export function LoneAnonymousOperationRule(
       if (!node.name && operationCount > 1) {
         context.reportError(
           new GraphQLError(
-            'This anonymous operation must be the only defined operation.',
+            "This anonymous operation must be the only defined operation.",
             node,
           ),
         );

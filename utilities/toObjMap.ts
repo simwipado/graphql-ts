@@ -1,14 +1,15 @@
-
 import {
-ObjMap,
-ObjMapLike,
-ReadOnlyObjMap,
-ReadOnlyObjMapLike,
-} from './ObjMap.ts';
+  ObjMap,
+  ObjMapLike,
+  ReadOnlyObjMap,
+  ReadOnlyObjMapLike,
+} from "./ObjMap.ts";
 
 export function toObjMap<T>(obj: ObjMapLike<T>): ObjMap<T>;
 export function toObjMap<T>(obj: ReadOnlyObjMapLike<T>): ReadOnlyObjMap<T>;
-export default function toObjMap<T>(obj: ObjMapLike<T> | ReadOnlyObjMapLike<T>) {
+export default function toObjMap<T>(
+  obj: ObjMapLike<T> | ReadOnlyObjMapLike<T>,
+) {
   if (Object.getPrototypeOf(obj) === null) {
     return obj;
   }

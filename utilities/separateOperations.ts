@@ -1,11 +1,11 @@
-import { ObjMap } from '../utilities/ObjMap.ts';
+import { ObjMap } from "../utilities/ObjMap.ts";
 
-import { Kind } from '../language/kinds.ts';
-import { visit } from '../language/visitor.ts';
+import { Kind } from "../language/kinds.ts";
+import { visit } from "../language/visitor.ts";
 import {
-DocumentNode,
-OperationDefinitionNode,
-} from '../language/ast.ts';
+  DocumentNode,
+  OperationDefinitionNode,
+} from "../language/ast.ts";
 
 /**
  * separateOperations accepts a single AST document which may contain many
@@ -67,7 +67,7 @@ type DepGraph = ObjMap<ObjMap<boolean>>;
 
 // Provides the empty string for anonymous operations.
 function opName(operation: OperationDefinitionNode): string {
-  return operation.name ? operation.name.value : '';
+  return operation.name ? operation.name.value : "";
 }
 
 // From a dependency graph, collects a list of transitive dependencies by

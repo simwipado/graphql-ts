@@ -1,6 +1,6 @@
-import { Location } from './ast.ts';
-import { Source } from './source.ts';
-import { SourceLocation, getLocation } from './location.ts';
+import { Location } from "./ast.ts";
+import { Source } from "./source.ts";
+import { SourceLocation, getLocation } from "./location.ts";
 
 /**
  * Render a helpful description of the location in the GraphQL Source document.
@@ -46,9 +46,11 @@ export function printSourceLocation(
       locationStr +
       printPrefixedLines([
         [`${lineNum}`, subLines[0]],
-        ...(subLines.slice(1, subLineIndex + 1).map((subLine) => ['', subLine]) as [string, string][]),
-        [' ', whitespace(subLineColumnNum - 1) + '^'],
-        ['', subLines[subLineIndex + 1]],
+        ...(subLines.slice(1, subLineIndex + 1).map((
+          subLine,
+        ) => ["", subLine]) as [string, string][]),
+        [" ", whitespace(subLineColumnNum - 1) + "^"],
+        ["", subLines[subLineIndex + 1]],
       ])
     );
   }
@@ -59,7 +61,7 @@ export function printSourceLocation(
       // Lines specified like this: ["prefix", "string"],
       [`${lineNum - 1}`, lines[lineIndex - 1]],
       [`${lineNum}`, locationLine],
-      ['', whitespace(columnNum - 1) + '^'],
+      ["", whitespace(columnNum - 1) + "^"],
       [`${lineNum + 1}`, lines[lineIndex + 1]],
     ])
   );
@@ -72,13 +74,13 @@ function printPrefixedLines(lines: [string, string][]): string {
   return existingLines
     .map(
       ([prefix, line]) =>
-        leftPad(padLen, prefix) + (line ? ' | ' + line : ' |'),
+        leftPad(padLen, prefix) + (line ? " | " + line : " |"),
     )
-    .join('\n');
+    .join("\n");
 }
 
 function whitespace(len: number): string {
-  return Array(len + 1).join(' ');
+  return Array(len + 1).join(" ");
 }
 
 function leftPad(len: number, str: string): string {

@@ -1,7 +1,7 @@
-import { GraphQLError } from '../../error/GraphQLError.ts';
-import { ASTVisitor } from '../../language/visitor.ts';
+import { GraphQLError } from "../../error/GraphQLError.ts";
+import { ASTVisitor } from "../../language/visitor.ts";
 
-import { SDLValidationContext } from '../ValidationContext.ts';
+import { SDLValidationContext } from "../ValidationContext.ts";
 
 /**
  * Lone Schema definition
@@ -12,8 +12,7 @@ export function LoneSchemaDefinitionRule(
   context: SDLValidationContext,
 ): ASTVisitor {
   const oldSchema = context.getSchema();
-  const alreadyDefined =
-    oldSchema?.astNode ??
+  const alreadyDefined = oldSchema?.astNode ??
     oldSchema?.getQueryType() ??
     oldSchema?.getMutationType() ??
     oldSchema?.getSubscriptionType();
@@ -24,7 +23,7 @@ export function LoneSchemaDefinitionRule(
       if (alreadyDefined) {
         context.reportError(
           new GraphQLError(
-            'Cannot define a new schema within a schema extension.',
+            "Cannot define a new schema within a schema extension.",
             node,
           ),
         );
@@ -33,7 +32,7 @@ export function LoneSchemaDefinitionRule(
 
       if (schemaDefinitionsCount > 0) {
         context.reportError(
-          new GraphQLError('Must provide only one schema definition.', node),
+          new GraphQLError("Must provide only one schema definition.", node),
         );
       }
       ++schemaDefinitionsCount;

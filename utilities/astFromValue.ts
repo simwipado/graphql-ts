@@ -1,21 +1,21 @@
-import inspect from '../utilities/inspect.ts';
-import invariant from '../utilities/invariant.ts';
-import isObjectLike from '../utilities/isObjectLike.ts';
-import isCollection from '../utilities/isCollection.ts';
+import inspect from "../utilities/inspect.ts";
+import invariant from "../utilities/invariant.ts";
+import isObjectLike from "../utilities/isObjectLike.ts";
+import isCollection from "../utilities/isCollection.ts";
 
-import { Kind } from '../language/kinds.ts';
-import { ValueNode } from '../language/ast.ts';
+import { Kind } from "../language/kinds.ts";
+import { ValueNode } from "../language/ast.ts";
 
-import { GraphQLID } from '../type/scalars.ts';
+import { GraphQLID } from "../type/scalars.ts";
 import {
-GraphQLInputType,
+  GraphQLInputType,
   isLeafType,
   isEnumType,
   isInputObjectType,
   isListType,
   isNonNullType,
-} from '../type/definition.ts';
-import Maybe from '../utilities/Maybe.ts';
+} from "../type/definition.ts";
+import Maybe from "../utilities/Maybe.ts";
 
 /**
  * Produces a GraphQL Value AST given a JavaScript object.
@@ -38,7 +38,10 @@ import Maybe from '../utilities/Maybe.ts';
  * | null          | NullValue            |
  *
  */
-export function astFromValue(value: any, type: GraphQLInputType): Maybe<ValueNode> {
+export function astFromValue(
+  value: any,
+  type: GraphQLInputType,
+): Maybe<ValueNode> {
   if (isNonNullType(type)) {
     const astValue = astFromValue(value, type.ofType);
     if (astValue?.kind === Kind.NULL) {
@@ -105,19 +108,19 @@ export function astFromValue(value: any, type: GraphQLInputType): Maybe<ValueNod
     }
 
     // Others serialize based on their corresponding JavaScript scalar types.
-    if (typeof serialized === 'boolean') {
+    if (typeof serialized === "boolean") {
       return { kind: Kind.BOOLEAN, value: serialized };
     }
 
     // JavaScript numbers can be Int or Float values.
-    if (typeof serialized === 'number' && isFinite(serialized)) {
+    if (typeof serialized === "number" && isFinite(serialized)) {
       const stringNum = String(serialized);
       return integerStringRegExp.test(stringNum)
         ? { kind: Kind.INT, value: stringNum }
         : { kind: Kind.FLOAT, value: stringNum };
     }
 
-    if (typeof serialized === 'string') {
+    if (typeof serialized === "string") {
       // Enum types use Enum literals.
       if (isEnumType(type)) {
         return { kind: Kind.ENUM, value: serialized };
@@ -138,7 +141,7 @@ export function astFromValue(value: any, type: GraphQLInputType): Maybe<ValueNod
   }
 
   // Not reachable. All possible input types have been considered.
-  invariant(false, 'Unexpected input type: ' + inspect(type));
+  invariant(false, "Unexpected input type: " + inspect(type));
 }
 
 /**

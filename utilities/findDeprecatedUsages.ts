@@ -1,12 +1,12 @@
-import { GraphQLError } from '../error/GraphQLError.ts';
+import { GraphQLError } from "../error/GraphQLError.ts";
 
-import { visit } from '../language/visitor.ts';
-import { DocumentNode } from '../language/ast.ts';
+import { visit } from "../language/visitor.ts";
+import { DocumentNode } from "../language/ast.ts";
 
-import { getNamedType } from '../type/definition.ts';
-import { GraphQLSchema } from '../type/schema.ts';
+import { getNamedType } from "../type/definition.ts";
+import { GraphQLSchema } from "../type/schema.ts";
 
-import { TypeInfo, visitWithTypeInfo } from './TypeInfo.ts';
+import { TypeInfo, visitWithTypeInfo } from "./TypeInfo.ts";
 
 /**
  * A validation rule which reports deprecated usages.

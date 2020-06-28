@@ -1,15 +1,15 @@
-import invariant from '../utilities/invariant.ts';
-import isPromise from '../utilities/isPromise.ts';
+import invariant from "../utilities/invariant.ts";
+import isPromise from "../utilities/isPromise.ts";
 
-import { parse } from '../language/parser.ts';
-import { execute } from '../execution/execute.ts';
-import { GraphQLSchema } from '../type/schema.ts';
+import { parse } from "../language/parser.ts";
+import { execute } from "../execution/execute.ts";
+import { GraphQLSchema } from "../type/schema.ts";
 
 import {
-IntrospectionQuery,
-IntrospectionOptions,
+  IntrospectionQuery,
+  IntrospectionOptions,
   getIntrospectionQuery,
-} from './getIntrospectionQuery.ts';
+} from "./getIntrospectionQuery.ts";
 
 /**
  * Build an IntrospectionQuery from a GraphQLSchema
@@ -22,7 +22,7 @@ IntrospectionOptions,
  */
 export function introspectionFromSchema(
   schema: GraphQLSchema,
-  options?: IntrospectionOptions
+  options?: IntrospectionOptions,
 ): IntrospectionQuery {
   const optionsWithDefaults = {
     directiveIsRepeatable: true,

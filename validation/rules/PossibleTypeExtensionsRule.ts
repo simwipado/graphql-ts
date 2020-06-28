@@ -1,13 +1,13 @@
-import inspect from '../../utilities/inspect.ts';
-import invariant from '../../utilities/invariant.ts';
-import didYouMean from '../../utilities/didYouMean.ts';
-import suggestionList from '../../utilities/suggestionList.ts';
+import inspect from "../../utilities/inspect.ts";
+import invariant from "../../utilities/invariant.ts";
+import didYouMean from "../../utilities/didYouMean.ts";
+import suggestionList from "../../utilities/suggestionList.ts";
 
-import { GraphQLError } from '../../error/GraphQLError.ts';
+import { GraphQLError } from "../../error/GraphQLError.ts";
 
-import { Kind } from '../../language/kinds.ts';
-import { ASTVisitor } from '../../language/visitor.ts';
-import { isTypeDefinitionNode } from '../../language/predicates.ts';
+import { Kind } from "../../language/kinds.ts";
+import { ASTVisitor } from "../../language/visitor.ts";
+import { isTypeDefinitionNode } from "../../language/predicates.ts";
 
 import {
   isScalarType,
@@ -16,17 +16,17 @@ import {
   isUnionType,
   isEnumType,
   isInputObjectType,
-} from '../../type/definition.ts';
+} from "../../type/definition.ts";
 
-import { SDLValidationContext } from '../ValidationContext.ts';
-import { 
+import { SDLValidationContext } from "../ValidationContext.ts";
+import {
   ScalarTypeExtensionNode,
   ObjectTypeExtensionNode,
   InterfaceTypeExtensionNode,
   UnionTypeExtensionNode,
   EnumTypeExtensionNode,
-  InputObjectTypeExtensionNode
-} from '../../language/ast.ts';
+  InputObjectTypeExtensionNode,
+} from "../../language/ast.ts";
 
 /**
  * Possible type extension
@@ -54,12 +54,15 @@ export function PossibleTypeExtensionsRule(
     InputObjectTypeExtension: checkExtension,
   };
 
-  function checkExtension(node: ScalarTypeExtensionNode |
-    ObjectTypeExtensionNode |
-    InterfaceTypeExtensionNode |
-    UnionTypeExtensionNode |
-    EnumTypeExtensionNode |
-    InputObjectTypeExtensionNode) {
+  function checkExtension(
+    node:
+      | ScalarTypeExtensionNode
+      | ObjectTypeExtensionNode
+      | InterfaceTypeExtensionNode
+      | UnionTypeExtensionNode
+      | EnumTypeExtensionNode
+      | InputObjectTypeExtensionNode,
+  ) {
     const typeName = node.name.value;
     const defNode = definedTypes[typeName];
     const existingType = schema?.getType(typeName);
@@ -91,7 +94,7 @@ export function PossibleTypeExtensionsRule(
       context.reportError(
         new GraphQLError(
           `Cannot extend type "${typeName}" because it is not defined.` +
-          didYouMean(suggestedTypes),
+            didYouMean(suggestedTypes),
           node.name,
         ),
       );
@@ -129,25 +132,25 @@ function typeToExtKind(type: any) {
   }
 
   // Not reachable. All possible types have been considered.
-  invariant(false, 'Unexpected type: ' + inspect(type));
+  invariant(false, "Unexpected type: " + inspect(type));
 }
 
 function extensionKindToTypeName(kind: any) {
   switch (kind) {
     case Kind.SCALAR_TYPE_EXTENSION:
-      return 'scalar';
+      return "scalar";
     case Kind.OBJECT_TYPE_EXTENSION:
-      return 'object';
+      return "object";
     case Kind.INTERFACE_TYPE_EXTENSION:
-      return 'interface';
+      return "interface";
     case Kind.UNION_TYPE_EXTENSION:
-      return 'union';
+      return "union";
     case Kind.ENUM_TYPE_EXTENSION:
-      return 'enum';
+      return "enum";
     case Kind.INPUT_OBJECT_TYPE_EXTENSION:
-      return 'input object';
+      return "input object";
   }
 
   // Not reachable. All possible types have been considered.
-  invariant(false, 'Unexpected kind: ' + inspect(kind));
+  invariant(false, "Unexpected kind: " + inspect(kind));
 }

@@ -1,19 +1,18 @@
+import keyMap from "../utilities/keyMap.ts";
+import inspect from "../utilities/inspect.ts";
+import invariant from "../utilities/invariant.ts";
 
-import keyMap from '../utilities/keyMap.ts';
-import inspect from '../utilities/inspect.ts';
-import invariant from '../utilities/invariant.ts';
-
-import { Kind } from '../language/kinds.ts';
-import { ValueNode } from '../language/ast.ts';
+import { Kind } from "../language/kinds.ts";
+import { ValueNode } from "../language/ast.ts";
 
 import {
-GraphQLInputType,
+  GraphQLInputType,
   isLeafType,
   isInputObjectType,
   isListType,
   isNonNullType,
-} from '../type/definition.ts';
-import Maybe from '../utilities/Maybe.ts';
+} from "../type/definition.ts";
+import Maybe from "../utilities/Maybe.ts";
 
 /**
  * Produces a JavaScript value given a GraphQL Value AST.
@@ -38,7 +37,7 @@ import Maybe from '../utilities/Maybe.ts';
 export function valueFromAST(
   valueNode: Maybe<ValueNode>,
   type: GraphQLInputType,
-  variables?: Maybe<{ [key: string]: any }>
+  variables?: Maybe<{ [key: string]: any }>,
 ): any {
   if (!valueNode) {
     // When there is no node, then there is also no value.
@@ -145,7 +144,7 @@ export function valueFromAST(
   }
 
   // Not reachable. All possible input types have been considered.
-  invariant(false, 'Unexpected input type: ' + inspect(type));
+  invariant(false, "Unexpected input type: " + inspect(type));
 }
 
 // Returns true if the provided valueNode is a variable which is not defined

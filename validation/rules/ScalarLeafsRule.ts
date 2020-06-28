@@ -1,13 +1,13 @@
-import inspect from '../../utilities/inspect.ts';
+import inspect from "../../utilities/inspect.ts";
 
-import { GraphQLError } from '../../error/GraphQLError.ts';
+import { GraphQLError } from "../../error/GraphQLError.ts";
 
-import { FieldNode } from '../../language/ast.ts';
-import { ASTVisitor } from '../../language/visitor.ts';
+import { FieldNode } from "../../language/ast.ts";
+import { ASTVisitor } from "../../language/visitor.ts";
 
-import { getNamedType, isLeafType } from '../../type/definition.ts';
+import { getNamedType, isLeafType } from "../../type/definition.ts";
 
-import { ValidationContext } from '../ValidationContext.ts';
+import { ValidationContext } from "../ValidationContext.ts";
 
 /**
  * Scalar leafs

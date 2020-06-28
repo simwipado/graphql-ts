@@ -20,16 +20,16 @@
  * @return {boolean} true if Iterable or Array-like Object.
  */
 export default function isCollection(obj: any): boolean {
-  if (obj == null || typeof obj !== 'object') {
+  if (obj == null || typeof obj !== "object") {
     return false;
   }
 
   // Is Array like?
   const length = obj.length;
-  if (typeof length === 'number' && length >= 0 && length % 1 === 0) {
+  if (typeof length === "number" && length >= 0 && length % 1 === 0) {
     return true;
   }
 
   // Is Iterable?
-  return typeof obj[Symbol.iterator] === 'function';
+  return typeof obj[Symbol.iterator] === "function";
 }

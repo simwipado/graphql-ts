@@ -5,4 +5,4 @@
  * or
  *   import { LoneSchemaDefinitionRule } from 'graphql/validation'
  */
-export { LoneSchemaDefinitionRule as LoneSchemaDefinition } from './LoneSchemaDefinitionRule.ts';
+export { LoneSchemaDefinitionRule as LoneSchemaDefinition } from "./LoneSchemaDefinitionRule.ts";

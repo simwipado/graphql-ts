@@ -1,13 +1,16 @@
 // FIXME:
 // flowlint uninitialized-instance-property:off
 
-import isObjectLike from '../utilities/isObjectLike.ts';
+import isObjectLike from "../utilities/isObjectLike.ts";
 
-import { ASTNode } from '../language/ast.ts';
-import { Source } from '../language/source.ts';
-import { SourceLocation, getLocation } from '../language/location.ts';
-import { printLocation, printSourceLocation } from '../language/printLocation.ts';
-import Maybe from '../utilities/Maybe.ts';
+import { ASTNode } from "../language/ast.ts";
+import { Source } from "../language/source.ts";
+import { SourceLocation, getLocation } from "../language/location.ts";
+import {
+  printLocation,
+  printSourceLocation,
+} from "../language/printLocation.ts";
+import Maybe from "../utilities/Maybe.ts";
 
 /**
  * A GraphQLError describes an Error found during the parse, validate, or
@@ -23,7 +26,7 @@ export class GraphQLError extends Error {
    *
    * Note: should be treated as readonly, despite invariant usage.
    */
-  message: string = '';
+  message: string = "";
 
   /**
    * An array of { line, column } locations within the source GraphQL document
@@ -87,9 +90,7 @@ export class GraphQLError extends Error {
 
     // Compute list of blame nodes.
     const _nodes = Array.isArray(nodes)
-      ? nodes.length !== 0
-        ? nodes
-        : undefined
+      ? nodes.length !== 0 ? nodes : undefined
       : nodes
       ? [nodes]
       : undefined;
@@ -134,7 +135,7 @@ export class GraphQLError extends Error {
     }
 
     Object.defineProperties(this, {
-      name: { value: 'GraphQLError' },
+      name: { value: "GraphQLError" },
       message: {
         value: message,
         // By being enumerable, JSON.stringify will include `message` in the
@@ -186,7 +187,7 @@ export class GraphQLError extends Error {
 
     // Include (non-enumerable) stack trace.
     if (originalError?.stack) {
-      Object.defineProperty(this, 'stack', {
+      Object.defineProperty(this, "stack", {
         value: originalError.stack,
         writable: true,
         configurable: true,
@@ -195,10 +196,10 @@ export class GraphQLError extends Error {
     }
 
     // istanbul ignore next (See: https://github.com/graphql/graphql-js/issues/2317)
-    if ('captureStackTrace' in Error) {
+    if ("captureStackTrace" in Error) {
       (Error as any).captureStackTrace(this, GraphQLError);
     } else {
-      Object.defineProperty(this, 'stack', {
+      Object.defineProperty(this, "stack", {
         value: Error().stack,
         writable: true,
         configurable: true,
@@ -213,7 +214,7 @@ export class GraphQLError extends Error {
   // FIXME: workaround to not break chai comparisons, should be remove in v16
   // $FlowFixMe Flow doesn't support computed properties yet
   get [Symbol.toStringTag](): string {
-    return 'Object';
+    return "Object";
   }
 }
 
@@ -227,12 +228,12 @@ export function printError(error: GraphQLError): string {
   if (error.nodes) {
     for (const node of error.nodes) {
       if (node.loc) {
-        output += '\n\n' + printLocation(node.loc);
+        output += "\n\n" + printLocation(node.loc);
       }
     }
   } else if (error.source && error.locations) {
     for (const location of error.locations) {
-      output += '\n\n' + printSourceLocation(error.source, location);
+      output += "\n\n" + printSourceLocation(error.source, location);
     }
   }
 

@@ -1,12 +1,12 @@
 /* eslint-disable prefer-rest-params */
-import inspect from '../utilities/inspect.ts';
+import inspect from "../utilities/inspect.ts";
 
-import { 
-  ASTNode, 
+import {
+  ASTNode,
   ASTKindToNode,
   isNode,
-} from './ast.ts';
-import Maybe from '../utilities/Maybe.ts';
+} from "./ast.ts";
+import Maybe from "../utilities/Maybe.ts";
 
 /**
  * A visitor is provided to visit, it contains the collection of
@@ -60,29 +60,29 @@ export type VisitorKeyMap<T> = { [P in keyof T]: (keyof T[P])[] };
 export const QueryDocumentKeys: VisitorKeyMap<ASTKindToNode> = {
   Name: [],
 
-  Document: ['definitions'],
+  Document: ["definitions"],
   OperationDefinition: [
-    'name',
-    'variableDefinitions',
-    'directives',
-    'selectionSet',
+    "name",
+    "variableDefinitions",
+    "directives",
+    "selectionSet",
   ],
-  VariableDefinition: ['variable', 'type', 'defaultValue', 'directives'],
-  Variable: ['name'],
-  SelectionSet: ['selections'],
-  Field: ['alias', 'name', 'arguments', 'directives', 'selectionSet'],
-  Argument: ['name', 'value'],
+  VariableDefinition: ["variable", "type", "defaultValue", "directives"],
+  Variable: ["name"],
+  SelectionSet: ["selections"],
+  Field: ["alias", "name", "arguments", "directives", "selectionSet"],
+  Argument: ["name", "value"],
 
-  FragmentSpread: ['name', 'directives'],
-  InlineFragment: ['typeCondition', 'directives', 'selectionSet'],
+  FragmentSpread: ["name", "directives"],
+  InlineFragment: ["typeCondition", "directives", "selectionSet"],
   FragmentDefinition: [
-    'name',
+    "name",
     // Note: fragment variable definitions are experimental and may be changed
     // or removed in the future.
-    'variableDefinitions',
-    'typeCondition',
-    'directives',
-    'selectionSet',
+    "variableDefinitions",
+    "typeCondition",
+    "directives",
+    "selectionSet",
   ],
 
   IntValue: [],
@@ -91,57 +91,57 @@ export const QueryDocumentKeys: VisitorKeyMap<ASTKindToNode> = {
   BooleanValue: [],
   NullValue: [],
   EnumValue: [],
-  ListValue: ['values'],
-  ObjectValue: ['fields'],
-  ObjectField: ['name', 'value'],
+  ListValue: ["values"],
+  ObjectValue: ["fields"],
+  ObjectField: ["name", "value"],
 
-  Directive: ['name', 'arguments'],
+  Directive: ["name", "arguments"],
 
-  NamedType: ['name'],
-  ListType: ['type'],
-  NonNullType: ['type'],
+  NamedType: ["name"],
+  ListType: ["type"],
+  NonNullType: ["type"],
 
-  SchemaDefinition: ['description', 'directives', 'operationTypes'],
-  OperationTypeDefinition: ['type'],
+  SchemaDefinition: ["description", "directives", "operationTypes"],
+  OperationTypeDefinition: ["type"],
 
-  ScalarTypeDefinition: ['description', 'name', 'directives'],
+  ScalarTypeDefinition: ["description", "name", "directives"],
   ObjectTypeDefinition: [
-    'description',
-    'name',
-    'interfaces',
-    'directives',
-    'fields',
+    "description",
+    "name",
+    "interfaces",
+    "directives",
+    "fields",
   ],
-  FieldDefinition: ['description', 'name', 'arguments', 'type', 'directives'],
+  FieldDefinition: ["description", "name", "arguments", "type", "directives"],
   InputValueDefinition: [
-    'description',
-    'name',
-    'type',
-    'defaultValue',
-    'directives',
+    "description",
+    "name",
+    "type",
+    "defaultValue",
+    "directives",
   ],
   InterfaceTypeDefinition: [
-    'description',
-    'name',
-    'interfaces',
-    'directives',
-    'fields',
+    "description",
+    "name",
+    "interfaces",
+    "directives",
+    "fields",
   ],
-  UnionTypeDefinition: ['description', 'name', 'directives', 'types'],
-  EnumTypeDefinition: ['description', 'name', 'directives', 'values'],
-  EnumValueDefinition: ['description', 'name', 'directives'],
-  InputObjectTypeDefinition: ['description', 'name', 'directives', 'fields'],
+  UnionTypeDefinition: ["description", "name", "directives", "types"],
+  EnumTypeDefinition: ["description", "name", "directives", "values"],
+  EnumValueDefinition: ["description", "name", "directives"],
+  InputObjectTypeDefinition: ["description", "name", "directives", "fields"],
 
-  DirectiveDefinition: ['description', 'name', 'arguments', 'locations'],
+  DirectiveDefinition: ["description", "name", "arguments", "locations"],
 
-  SchemaExtension: ['directives', 'operationTypes'],
+  SchemaExtension: ["directives", "operationTypes"],
 
-  ScalarTypeExtension: ['name', 'directives'],
-  ObjectTypeExtension: ['name', 'interfaces', 'directives', 'fields'],
-  InterfaceTypeExtension: ['name', 'interfaces', 'directives', 'fields'],
-  UnionTypeExtension: ['name', 'directives', 'types'],
-  EnumTypeExtension: ['name', 'directives', 'values'],
-  InputObjectTypeExtension: ['name', 'directives', 'fields'],
+  ScalarTypeExtension: ["name", "directives"],
+  ObjectTypeExtension: ["name", "interfaces", "directives", "fields"],
+  InterfaceTypeExtension: ["name", "interfaces", "directives", "fields"],
+  UnionTypeExtension: ["name", "directives", "types"],
+  EnumTypeExtension: ["name", "directives", "values"],
+  InputObjectTypeExtension: ["name", "directives", "fields"],
 };
 
 export const BREAK: any = {};
@@ -418,26 +418,26 @@ export function getVisitFn(
 ): Maybe<VisitFn<any>> {
   const kindVisitor = (visitor as any)[kind];
   if (kindVisitor) {
-    if (!isLeaving && typeof kindVisitor === 'function') {
+    if (!isLeaving && typeof kindVisitor === "function") {
       // { Kind() {} }
       return kindVisitor;
     }
     const kindSpecificVisitor = isLeaving
       ? kindVisitor.leave
       : kindVisitor.enter;
-    if (typeof kindSpecificVisitor === 'function') {
+    if (typeof kindSpecificVisitor === "function") {
       // { Kind: { enter() {}, leave() {} } }
       return kindSpecificVisitor;
     }
   } else {
     const specificVisitor = isLeaving ? visitor.leave : visitor.enter;
     if (specificVisitor) {
-      if (typeof specificVisitor === 'function') {
+      if (typeof specificVisitor === "function") {
         // { enter() {}, leave() {} }
         return specificVisitor;
       }
       const specificKindVisitor = (specificVisitor as any)[kind];
-      if (typeof specificKindVisitor === 'function') {
+      if (typeof specificKindVisitor === "function") {
         // { enter: { Kind() {} }, leave: { Kind() {} } }
         return specificKindVisitor;
       }

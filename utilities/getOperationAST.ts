@@ -1,9 +1,9 @@
-import { Kind } from '../language/kinds.ts';
+import { Kind } from "../language/kinds.ts";
 import {
-DocumentNode,
-OperationDefinitionNode,
-} from '../language/ast.ts';
-import Maybe from '../utilities/Maybe.ts';
+  DocumentNode,
+  OperationDefinitionNode,
+} from "../language/ast.ts";
+import Maybe from "../utilities/Maybe.ts";
 
 /**
  * Returns an operation AST given a document AST and optionally an operation

@@ -1,4 +1,4 @@
-import { ObjMap } from './ObjMap.ts';
+import { ObjMap } from "./ObjMap.ts";
 
 /**
  * This function transforms a JS object `ObjMap<Promise<T>>` into
@@ -16,6 +16,6 @@ export default function promiseForObject<T>(
     values.reduce((resolvedObject, value, i) => {
       resolvedObject[keys[i]] = value;
       return resolvedObject;
-    }, Object.create(null)),
+    }, Object.create(null))
   );
 }

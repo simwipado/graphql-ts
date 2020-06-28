@@ -1,9 +1,9 @@
-import { GraphQLError } from '../../error/GraphQLError.ts';
+import { GraphQLError } from "../../error/GraphQLError.ts";
 
-import { ASTVisitor } from '../../language/visitor.ts';
-import { VariableDefinitionNode } from '../../language/ast.ts';
+import { ASTVisitor } from "../../language/visitor.ts";
+import { VariableDefinitionNode } from "../../language/ast.ts";
 
-import { ASTValidationContext } from '../ValidationContext.ts';
+import { ASTValidationContext } from "../ValidationContext.ts";
 
 /**
  * Unique variable names

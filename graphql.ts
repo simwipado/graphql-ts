@@ -1,20 +1,20 @@
-import isPromise from './utilities/isPromise.ts';
-import { PromiseOrValue } from './utilities/PromiseOrValue.ts';
+import isPromise from "./utilities/isPromise.ts";
+import { PromiseOrValue } from "./utilities/PromiseOrValue.ts";
 
-import { parse } from './language/parser.ts';
-import { Source } from './language/source.ts';
+import { parse } from "./language/parser.ts";
+import { Source } from "./language/source.ts";
 
-import { validate } from './validation/validate.ts';
+import { validate } from "./validation/validate.ts";
 
-import { validateSchema } from './type/validate.ts';
-import { GraphQLSchema } from './type/schema.ts';
+import { validateSchema } from "./type/validate.ts";
+import { GraphQLSchema } from "./type/schema.ts";
 import {
-GraphQLFieldResolver,
-GraphQLTypeResolver,
-} from './type/definition.ts';
+  GraphQLFieldResolver,
+  GraphQLTypeResolver,
+} from "./type/definition.ts";
 
-import { ExecutionResult, execute } from './execution/execute.ts';
-import Maybe from './utilities/Maybe.ts';
+import { ExecutionResult, execute } from "./execution/execute.ts";
+import Maybe from "./utilities/Maybe.ts";
 
 /**
  * This is the primary entry point function for fulfilling GraphQL operations
@@ -64,7 +64,7 @@ export type GraphQLArgs = {
   operationName?: Maybe<string>;
   fieldResolver?: Maybe<GraphQLFieldResolver<any, any>>;
   typeResolver?: Maybe<GraphQLTypeResolver<any, any>>;
-}
+};
 
 export function graphql(args: GraphQLArgs): Promise<ExecutionResult>;
 export function graphql(
@@ -92,19 +92,17 @@ export function graphql(
   return new Promise((resolve) =>
     resolve(
       // Extract arguments from object args if provided.
-      'schema' in argsOrSchema
-        ? graphqlImpl(argsOrSchema)
-        : graphqlImpl({
-            schema: argsOrSchema,
-            source: source as string | Source,
-            rootValue,
-            contextValue,
-            variableValues,
-            operationName,
-            fieldResolver,
-            typeResolver,
-          }),
-    ),
+      "schema" in argsOrSchema ? graphqlImpl(argsOrSchema) : graphqlImpl({
+        schema: argsOrSchema,
+        source: source as string | Source,
+        rootValue,
+        contextValue,
+        variableValues,
+        operationName,
+        fieldResolver,
+        typeResolver,
+      }),
+    )
   );
 }
 
@@ -137,23 +135,22 @@ export function graphqlSync(
 ) {
   /* eslint-enable no-redeclare */
   // Extract arguments from object args if provided.
-  const result =
-    'schema' in argsOrSchema
-      ? graphqlImpl(argsOrSchema)
-      : graphqlImpl({
-          schema: argsOrSchema,
-          source: source as Source | string,
-          rootValue,
-          contextValue,
-          variableValues,
-          operationName,
-          fieldResolver,
-          typeResolver,
-        });
+  const result = "schema" in argsOrSchema
+    ? graphqlImpl(argsOrSchema)
+    : graphqlImpl({
+      schema: argsOrSchema,
+      source: source as Source | string,
+      rootValue,
+      contextValue,
+      variableValues,
+      operationName,
+      fieldResolver,
+      typeResolver,
+    });
 
   // Assert that the execution was synchronous.
   if (isPromise(result)) {
-    throw new Error('GraphQL execution failed to complete synchronously.');
+    throw new Error("GraphQL execution failed to complete synchronously.");
   }
 
   return result;

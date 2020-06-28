@@ -1,15 +1,15 @@
-import inspect from '../../utilities/inspect.ts';
+import inspect from "../../utilities/inspect.ts";
 
-import { GraphQLError } from '../../error/GraphQLError.ts';
+import { GraphQLError } from "../../error/GraphQLError.ts";
 
-import { ASTVisitor } from '../../language/visitor.ts';
+import { ASTVisitor } from "../../language/visitor.ts";
 
-import { isCompositeType } from '../../type/definition.ts';
+import { isCompositeType } from "../../type/definition.ts";
 
-import { typeFromAST } from '../../utilities/typeFromAST.ts';
-import { doTypesOverlap } from '../../utilities/typeComparators.ts';
+import { typeFromAST } from "../../utilities/typeFromAST.ts";
+import { doTypesOverlap } from "../../utilities/typeComparators.ts";
 
-import { ValidationContext } from '../ValidationContext.ts';
+import { ValidationContext } from "../ValidationContext.ts";
 
 /**
  * Possible fragment spread

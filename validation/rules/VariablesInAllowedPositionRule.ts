@@ -1,19 +1,19 @@
-import inspect from '../../utilities/inspect.ts';
+import inspect from "../../utilities/inspect.ts";
 
-import { GraphQLError } from '../../error/GraphQLError.ts';
+import { GraphQLError } from "../../error/GraphQLError.ts";
 
-import { Kind } from '../../language/kinds.ts';
-import { ValueNode } from '../../language/ast.ts';
-import { ASTVisitor } from '../../language/visitor.ts';
+import { Kind } from "../../language/kinds.ts";
+import { ValueNode } from "../../language/ast.ts";
+import { ASTVisitor } from "../../language/visitor.ts";
 
-import { GraphQLSchema } from '../../type/schema.ts';
-import { GraphQLType, isNonNullType } from '../../type/definition.ts';
+import { GraphQLSchema } from "../../type/schema.ts";
+import { GraphQLType, isNonNullType } from "../../type/definition.ts";
 
-import { typeFromAST } from '../../utilities/typeFromAST.ts';
-import { isTypeSubTypeOf } from '../../utilities/typeComparators.ts';
+import { typeFromAST } from "../../utilities/typeFromAST.ts";
+import { isTypeSubTypeOf } from "../../utilities/typeComparators.ts";
 
-import { ValidationContext } from '../ValidationContext.ts';
-import Maybe from '../../utilities/Maybe.ts';
+import { ValidationContext } from "../ValidationContext.ts";
+import Maybe from "../../utilities/Maybe.ts";
 
 /**
  * Variables passed to field arguments conform to type
@@ -84,8 +84,8 @@ function allowedVariableUsage(
   locationDefaultValue: Maybe<any>,
 ): boolean {
   if (isNonNullType(locationType) && !isNonNullType(varType)) {
-    const hasNonNullVariableDefaultValue =
-      varDefaultValue != null && varDefaultValue.kind !== Kind.NULL;
+    const hasNonNullVariableDefaultValue = varDefaultValue != null &&
+      varDefaultValue.kind !== Kind.NULL;
     const hasLocationDefaultValue = locationDefaultValue !== undefined;
     if (!hasNonNullVariableDefaultValue && !hasLocationDefaultValue) {
       return false;

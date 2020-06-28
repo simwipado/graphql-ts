@@ -1,7 +1,7 @@
-import { GraphQLError } from '../../error/GraphQLError.ts';
-import { ASTVisitor } from '../../language/visitor.ts';
+import { GraphQLError } from "../../error/GraphQLError.ts";
+import { ASTVisitor } from "../../language/visitor.ts";
 
-import { ASTValidationContext } from '../ValidationContext.ts';
+import { ASTValidationContext } from "../ValidationContext.ts";
 
 /**
  * Unique operation names

@@ -1,13 +1,13 @@
-import inspect from '../utilities/inspect.ts';
-import { addPath, pathToArray } from '../utilities/Path.ts';
+import inspect from "../utilities/inspect.ts";
+import { addPath, pathToArray } from "../utilities/Path.ts";
 
-import { GraphQLError } from '../error/GraphQLError.ts';
-import { locatedError } from '../error/locatedError.ts';
+import { GraphQLError } from "../error/GraphQLError.ts";
+import { locatedError } from "../error/locatedError.ts";
 
-import { DocumentNode } from '../language/ast.ts';
+import { DocumentNode } from "../language/ast.ts";
 
 import {
-ExecutionResult,
+  ExecutionResult,
   assertValidExecutionArguments,
   buildExecutionContext,
   buildResolveInfo,
@@ -15,15 +15,15 @@ ExecutionResult,
   execute,
   getFieldDef,
   resolveFieldValueOrError,
-} from '../execution/execute.ts';
+} from "../execution/execute.ts";
 
-import { GraphQLSchema } from '../type/schema.ts';
-import { GraphQLFieldResolver } from '../type/definition.ts';
+import { GraphQLSchema } from "../type/schema.ts";
+import { GraphQLFieldResolver } from "../type/definition.ts";
 
-import { getOperationRootType } from '../utilities/getOperationRootType.ts';
+import { getOperationRootType } from "../utilities/getOperationRootType.ts";
 
-import mapAsyncIterator from './mapAsyncIterator.ts';
-import Maybe from '../utilities/Maybe.ts';
+import mapAsyncIterator from "./mapAsyncIterator.ts";
+import Maybe from "../utilities/Maybe.ts";
 
 export interface SubscriptionArgs {
   schema: GraphQLSchema;
@@ -82,18 +82,18 @@ export function subscribe(
 ) {
   /* eslint-enable no-redeclare */
   // Extract arguments from object args if provided.
-  return 'schema' in argsOrSchema
+  return "schema" in argsOrSchema
     ? subscribeImpl(argsOrSchema)
     : subscribeImpl({
-        schema: argsOrSchema,
-        document: document as DocumentNode,
-        rootValue,
-        contextValue,
-        variableValues,
-        operationName,
-        fieldResolver,
-        subscribeFieldResolver,
-      });
+      schema: argsOrSchema,
+      document: document as DocumentNode,
+      rootValue,
+      contextValue,
+      variableValues,
+      operationName,
+      fieldResolver,
+      subscribeFieldResolver,
+    });
 }
 
 /**
@@ -155,11 +155,11 @@ function subscribeImpl(
     // Note: Flow can't refine isAsyncIterable, so explicit casts are used.
     isAsyncIterable(resultOrStream)
       ? mapAsyncIterator(
-          resultOrStream,
-          mapSourceToResponse,
-          reportGraphQLError,
-        )
-      : resultOrStream,
+        resultOrStream,
+        mapSourceToResponse,
+        reportGraphQLError,
+      )
+      : resultOrStream
   );
 }
 
@@ -280,7 +280,7 @@ export function createSourceEventStream(
       }
 
       throw new Error(
-        'Subscription field must return Async Iterable. ' +
+        "Subscription field must return Async Iterable. " +
           `Received: ${inspect(eventStream)}.`,
       );
     });
@@ -299,9 +299,9 @@ export function createSourceEventStream(
  * either implementing a `Symbol.asyncIterator` or `"@@asyncIterator"` method.
  */
 function isAsyncIterable(maybeAsyncIterable: any): boolean {
-  if (maybeAsyncIterable == null || typeof maybeAsyncIterable !== 'object') {
+  if (maybeAsyncIterable == null || typeof maybeAsyncIterable !== "object") {
     return false;
   }
 
-  return typeof maybeAsyncIterable[Symbol.asyncIterator] === 'function';
+  return typeof maybeAsyncIterable[Symbol.asyncIterator] === "function";
 }

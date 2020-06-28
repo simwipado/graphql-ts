@@ -1,4 +1,4 @@
-import { ObjMap } from './ObjMap.ts';
+import { ObjMap } from "./ObjMap.ts";
 
 /**
  * Creates a keyed JS object from an array, given a function to produce the keys

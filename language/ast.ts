@@ -1,7 +1,7 @@
-import defineInspect from '../utilities/defineInspect.ts';
+import defineInspect from "../utilities/defineInspect.ts";
 
-import { Source } from './source.ts';
-import { TokenKindEnum } from './tokenKind.ts';
+import { Source } from "./source.ts";
+import { TokenKindEnum } from "./tokenKind.ts";
 
 /**
  * Contains a range of UTF-8 character offsets and token references that
@@ -99,7 +99,7 @@ export class Token {
     line: number,
     column: number,
     prev: Token | null,
-    value?: string
+    value?: string,
   ) {
     this.kind = kind;
     this.start = start;
@@ -133,7 +133,7 @@ defineInspect(Token);
  * @internal
  */
 export function isNode(maybeNode: any): maybeNode is ASTNode {
-  return maybeNode != null && typeof maybeNode.kind === 'string';
+  return maybeNode != null && typeof maybeNode.kind === "string";
 }
 
 /**
@@ -236,7 +236,7 @@ export interface ASTKindToNode {
 // Name
 
 export interface NameNode {
-  kind: 'Name';
+  kind: "Name";
   loc?: Location;
   value: string;
 }
@@ -244,7 +244,7 @@ export interface NameNode {
 // Document
 
 export interface DocumentNode {
-  kind: 'Document';
+  kind: "Document";
   loc?: Location;
   definitions: DefinitionNode[];
 }
@@ -259,7 +259,7 @@ export type ExecutableDefinitionNode =
   | FragmentDefinitionNode;
 
 export interface OperationDefinitionNode {
-  kind: 'OperationDefinition';
+  kind: "OperationDefinition";
   loc?: Location;
   operation: OperationTypeNode;
   name?: NameNode;
@@ -268,10 +268,10 @@ export interface OperationDefinitionNode {
   selectionSet: SelectionSetNode;
 }
 
-export type OperationTypeNode = 'query' | 'mutation' | 'subscription';
+export type OperationTypeNode = "query" | "mutation" | "subscription";
 
 export interface VariableDefinitionNode {
-  kind: 'VariableDefinition';
+  kind: "VariableDefinition";
   loc?: Location;
   variable: VariableNode;
   type: TypeNode;
@@ -280,13 +280,13 @@ export interface VariableDefinitionNode {
 }
 
 export interface VariableNode {
-  kind: 'Variable';
+  kind: "Variable";
   loc?: Location;
   name: NameNode;
 }
 
 export interface SelectionSetNode {
-  kind: 'SelectionSet';
+  kind: "SelectionSet";
   loc?: Location;
   selections: SelectionNode[];
 }
@@ -294,7 +294,7 @@ export interface SelectionSetNode {
 export type SelectionNode = FieldNode | FragmentSpreadNode | InlineFragmentNode;
 
 export interface FieldNode {
-  kind: 'Field';
+  kind: "Field";
   loc?: Location;
   alias?: NameNode;
   name: NameNode;
@@ -304,7 +304,7 @@ export interface FieldNode {
 }
 
 export interface ArgumentNode {
-  kind: 'Argument';
+  kind: "Argument";
   loc?: Location;
   name: NameNode;
   value: ValueNode;
@@ -313,14 +313,14 @@ export interface ArgumentNode {
 // Fragments
 
 export interface FragmentSpreadNode {
-  kind: 'FragmentSpread';
+  kind: "FragmentSpread";
   loc?: Location;
   name: NameNode;
   directives: DirectiveNode[];
 }
 
 export interface InlineFragmentNode {
-  kind: 'InlineFragment';
+  kind: "InlineFragment";
   loc?: Location;
   typeCondition: NamedTypeNode;
   directives: DirectiveNode[];
@@ -328,7 +328,7 @@ export interface InlineFragmentNode {
 }
 
 export interface FragmentDefinitionNode {
-  kind: 'FragmentDefinition';
+  kind: "FragmentDefinition";
   loc?: Location;
   name: NameNode;
   // Note: fragment variable definitions are experimental and may be changed
@@ -353,55 +353,55 @@ export type ValueNode =
   | ObjectValueNode;
 
 export interface IntValueNode {
-  kind: 'IntValue';
+  kind: "IntValue";
   loc?: Location;
   value: string;
 }
 
 export interface FloatValueNode {
-  kind: 'FloatValue';
+  kind: "FloatValue";
   loc?: Location;
   value: string;
 }
 
 export interface StringValueNode {
-  kind: 'StringValue';
+  kind: "StringValue";
   loc?: Location;
   value: string;
   block?: boolean;
 }
 
 export interface BooleanValueNode {
-  kind: 'BooleanValue';
+  kind: "BooleanValue";
   loc?: Location;
   value: boolean;
 }
 
 export interface NullValueNode {
-  kind: 'NullValue';
+  kind: "NullValue";
   loc?: Location;
 }
 
 export interface EnumValueNode {
-  kind: 'EnumValue';
+  kind: "EnumValue";
   loc?: Location;
   value: string;
 }
 
 export interface ListValueNode {
-  kind: 'ListValue';
+  kind: "ListValue";
   loc?: Location;
   values: ValueNode[];
 }
 
 export interface ObjectValueNode {
-  kind: 'ObjectValue';
+  kind: "ObjectValue";
   loc?: Location;
   fields: ObjectFieldNode[];
 }
 
 export interface ObjectFieldNode {
-  kind: 'ObjectField';
+  kind: "ObjectField";
   loc?: Location;
   name: NameNode;
   value: ValueNode;
@@ -410,7 +410,7 @@ export interface ObjectFieldNode {
 // Directives
 
 export interface DirectiveNode {
-  kind: 'Directive';
+  kind: "Directive";
   loc?: Location;
   name: NameNode;
   arguments: ArgumentNode[];
@@ -421,19 +421,19 @@ export interface DirectiveNode {
 export type TypeNode = NamedTypeNode | ListTypeNode | NonNullTypeNode;
 
 export interface NamedTypeNode {
-  kind: 'NamedType';
+  kind: "NamedType";
   loc?: Location;
   name: NameNode;
 }
 
 export interface ListTypeNode {
-  kind: 'ListType';
+  kind: "ListType";
   loc?: Location;
   type: TypeNode;
 }
 
 export interface NonNullTypeNode {
-  kind: 'NonNullType';
+  kind: "NonNullType";
   loc?: Location;
   type: NamedTypeNode | ListTypeNode;
 }
@@ -446,7 +446,7 @@ export type TypeSystemDefinitionNode =
   | DirectiveDefinitionNode;
 
 export interface SchemaDefinitionNode {
-  kind: 'SchemaDefinition';
+  kind: "SchemaDefinition";
   loc?: Location;
   description?: StringValueNode;
   directives: DirectiveNode[];
@@ -454,7 +454,7 @@ export interface SchemaDefinitionNode {
 }
 
 export interface OperationTypeDefinitionNode {
-  kind: 'OperationTypeDefinition';
+  kind: "OperationTypeDefinition";
   loc?: Location;
   operation: OperationTypeNode;
   type: NamedTypeNode;
@@ -471,7 +471,7 @@ export type TypeDefinitionNode =
   | InputObjectTypeDefinitionNode;
 
 export interface ScalarTypeDefinitionNode {
-  kind: 'ScalarTypeDefinition';
+  kind: "ScalarTypeDefinition";
   loc?: Location;
   description?: StringValueNode;
   name: NameNode;
@@ -479,7 +479,7 @@ export interface ScalarTypeDefinitionNode {
 }
 
 export interface ObjectTypeDefinitionNode {
-  kind: 'ObjectTypeDefinition';
+  kind: "ObjectTypeDefinition";
   loc?: Location;
   description?: StringValueNode;
   name: NameNode;
@@ -489,7 +489,7 @@ export interface ObjectTypeDefinitionNode {
 }
 
 export interface FieldDefinitionNode {
-  kind: 'FieldDefinition';
+  kind: "FieldDefinition";
   loc?: Location;
   description?: StringValueNode;
   name: NameNode;
@@ -499,7 +499,7 @@ export interface FieldDefinitionNode {
 }
 
 export interface InputValueDefinitionNode {
-  kind: 'InputValueDefinition';
+  kind: "InputValueDefinition";
   loc?: Location;
   description?: StringValueNode;
   name: NameNode;
@@ -509,7 +509,7 @@ export interface InputValueDefinitionNode {
 }
 
 export interface InterfaceTypeDefinitionNode {
-  kind: 'InterfaceTypeDefinition';
+  kind: "InterfaceTypeDefinition";
   loc?: Location;
   description?: StringValueNode;
   name: NameNode;
@@ -519,7 +519,7 @@ export interface InterfaceTypeDefinitionNode {
 }
 
 export interface UnionTypeDefinitionNode {
-  kind: 'UnionTypeDefinition';
+  kind: "UnionTypeDefinition";
   loc?: Location;
   description?: StringValueNode;
   name: NameNode;
@@ -528,7 +528,7 @@ export interface UnionTypeDefinitionNode {
 }
 
 export interface EnumTypeDefinitionNode {
-  kind: 'EnumTypeDefinition';
+  kind: "EnumTypeDefinition";
   loc?: Location;
   description?: StringValueNode;
   name: NameNode;
@@ -537,7 +537,7 @@ export interface EnumTypeDefinitionNode {
 }
 
 export interface EnumValueDefinitionNode {
-  kind: 'EnumValueDefinition';
+  kind: "EnumValueDefinition";
   loc?: Location;
   description?: StringValueNode;
   name: NameNode;
@@ -545,7 +545,7 @@ export interface EnumValueDefinitionNode {
 }
 
 export interface InputObjectTypeDefinitionNode {
-  kind: 'InputObjectTypeDefinition';
+  kind: "InputObjectTypeDefinition";
   loc?: Location;
   description?: StringValueNode;
   name: NameNode;
@@ -556,7 +556,7 @@ export interface InputObjectTypeDefinitionNode {
 // Directive Definitions
 
 export interface DirectiveDefinitionNode {
-  kind: 'DirectiveDefinition';
+  kind: "DirectiveDefinition";
   loc?: Location;
   description?: StringValueNode;
   name: NameNode;
@@ -570,7 +570,7 @@ export interface DirectiveDefinitionNode {
 export type TypeSystemExtensionNode = SchemaExtensionNode | TypeExtensionNode;
 
 export type SchemaExtensionNode = {
-  kind: 'SchemaExtension';
+  kind: "SchemaExtension";
   loc?: Location;
   directives: DirectiveNode[];
   operationTypes: OperationTypeDefinitionNode[];
@@ -587,14 +587,14 @@ export type TypeExtensionNode =
   | InputObjectTypeExtensionNode;
 
 export interface ScalarTypeExtensionNode {
-  kind: 'ScalarTypeExtension';
+  kind: "ScalarTypeExtension";
   loc?: Location;
   name: NameNode;
   directives: DirectiveNode[];
 }
 
 export interface ObjectTypeExtensionNode {
-  kind: 'ObjectTypeExtension';
+  kind: "ObjectTypeExtension";
   loc?: Location;
   name: NameNode;
   interfaces: NamedTypeNode[];
@@ -603,7 +603,7 @@ export interface ObjectTypeExtensionNode {
 }
 
 export interface InterfaceTypeExtensionNode {
-  kind: 'InterfaceTypeExtension';
+  kind: "InterfaceTypeExtension";
   loc?: Location;
   name: NameNode;
   interfaces: NamedTypeNode[];
@@ -612,7 +612,7 @@ export interface InterfaceTypeExtensionNode {
 }
 
 export interface UnionTypeExtensionNode {
-  kind: 'UnionTypeExtension';
+  kind: "UnionTypeExtension";
   loc?: Location;
   name: NameNode;
   directives: DirectiveNode[];
@@ -620,7 +620,7 @@ export interface UnionTypeExtensionNode {
 }
 
 export interface EnumTypeExtensionNode {
-  kind: 'EnumTypeExtension';
+  kind: "EnumTypeExtension";
   loc?: Location;
   name: NameNode;
   directives: DirectiveNode[];
@@ -628,7 +628,7 @@ export interface EnumTypeExtensionNode {
 }
 
 export interface InputObjectTypeExtensionNode {
-  kind: 'InputObjectTypeExtension';
+  kind: "InputObjectTypeExtension";
   loc?: Location;
   name: NameNode;
   directives: DirectiveNode[];

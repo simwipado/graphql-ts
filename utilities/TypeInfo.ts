@@ -1,23 +1,23 @@
-import { Kind } from '../language/kinds.ts';
-import { Visitor, getVisitFn } from '../language/visitor.ts';
+import { Kind } from "../language/kinds.ts";
+import { Visitor, getVisitFn } from "../language/visitor.ts";
 import {
-ASTNode,
-ASTKindToNode,
-FieldNode,
+  ASTNode,
+  ASTKindToNode,
+  FieldNode,
   isNode,
-} from '../language/ast.ts';
+} from "../language/ast.ts";
 
-import { GraphQLSchema } from '../type/schema.ts';
-import { GraphQLDirective } from '../type/directives.ts';
+import { GraphQLSchema } from "../type/schema.ts";
+import { GraphQLDirective } from "../type/directives.ts";
 import {
-GraphQLType,
-GraphQLInputType,
-GraphQLOutputType,
-GraphQLCompositeType,
-GraphQLField,
-GraphQLArgument,
-GraphQLInputField,
-GraphQLEnumValue,
+  GraphQLType,
+  GraphQLInputType,
+  GraphQLOutputType,
+  GraphQLCompositeType,
+  GraphQLField,
+  GraphQLArgument,
+  GraphQLInputField,
+  GraphQLEnumValue,
   isObjectType,
   isInterfaceType,
   isEnumType,
@@ -28,15 +28,15 @@ GraphQLEnumValue,
   isOutputType,
   getNullableType,
   getNamedType,
-} from '../type/definition.ts';
+} from "../type/definition.ts";
 import {
   SchemaMetaFieldDef,
   TypeMetaFieldDef,
   TypeNameMetaFieldDef,
-} from '../type/introspection.ts';
+} from "../type/introspection.ts";
 
-import { typeFromAST } from './typeFromAST.ts';
-import Maybe from '../utilities/Maybe.ts';
+import { typeFromAST } from "./typeFromAST.ts";
+import Maybe from "../utilities/Maybe.ts";
 
 /**
  * TypeInfo is a utility class which, given a GraphQL schema, can keep track
@@ -170,14 +170,14 @@ export class TypeInfo {
       case Kind.OPERATION_DEFINITION: {
         let type: any;
         switch (node.operation) {
-          case 'query':
-          type = schema.getQueryType();
+          case "query":
+            type = schema.getQueryType();
             break;
-          case 'mutation':
-          type = schema.getMutationType();
+          case "mutation":
+            type = schema.getMutationType();
             break;
-          case 'subscription':
-          type = schema.getSubscriptionType();
+          case "subscription":
+            type = schema.getSubscriptionType();
             break;
         }
         this._typeStack.push(isObjectType(type) ? type : undefined);
@@ -221,9 +221,7 @@ export class TypeInfo {
       }
       case Kind.LIST: {
         const listType: any = getNullableType(this.getInputType());
-        const itemType: any = isListType(listType)
-          ? listType.ofType
-          : listType;
+        const itemType: any = isListType(listType) ? listType.ofType : listType;
         // List positions never have a default value.
         this._defaultValueStack.push(undefined);
         this._inputTypeStack.push(isInputType(itemType) ? itemType : undefined);

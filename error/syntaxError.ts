@@ -1,6 +1,6 @@
-import { Source } from '../language/source.ts';
+import { Source } from "../language/source.ts";
 
-import { GraphQLError } from './GraphQLError.ts';
+import { GraphQLError } from "./GraphQLError.ts";
 
 /**
  * Produces a GraphQLError representing a syntax error, containing useful

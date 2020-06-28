@@ -1,12 +1,12 @@
-import { GraphQLError } from '../../error/GraphQLError.ts';
-import { ASTVisitor } from '../../language/visitor.ts';
-import { isEnumType } from '../../type/definition.ts';
+import { GraphQLError } from "../../error/GraphQLError.ts";
+import { ASTVisitor } from "../../language/visitor.ts";
+import { isEnumType } from "../../type/definition.ts";
 
-import { SDLValidationContext } from '../ValidationContext.ts';
-import { 
-  EnumTypeDefinitionNode, 
+import { SDLValidationContext } from "../ValidationContext.ts";
+import {
+  EnumTypeDefinitionNode,
   EnumTypeExtensionNode,
-} from '../../language/ast.ts';
+} from "../../language/ast.ts";
 
 /**
  * Unique enum value names
@@ -25,7 +25,9 @@ export function UniqueEnumValueNamesRule(
     EnumTypeExtension: checkValueUniqueness,
   };
 
-  function checkValueUniqueness(node: EnumTypeDefinitionNode | EnumTypeExtensionNode) {
+  function checkValueUniqueness(
+    node: EnumTypeDefinitionNode | EnumTypeExtensionNode,
+  ) {
     const typeName = node.name.value;
 
     if (!knownValueNames[typeName]) {

@@ -1,22 +1,22 @@
-import inspect from '../../utilities/inspect.ts';
-import invariant from '../../utilities/invariant.ts';
+import inspect from "../../utilities/inspect.ts";
+import invariant from "../../utilities/invariant.ts";
 
-import { GraphQLError } from '../../error/GraphQLError.ts';
+import { GraphQLError } from "../../error/GraphQLError.ts";
 
-import { Kind } from '../../language/kinds.ts';
-import { ASTVisitor } from '../../language/visitor.ts';
-import { OperationTypeNode } from '../../language/ast.ts';
+import { Kind } from "../../language/kinds.ts";
+import { ASTVisitor } from "../../language/visitor.ts";
+import { OperationTypeNode } from "../../language/ast.ts";
 import {
   DirectiveLocationEnum,
   DirectiveLocation,
-} from '../../language/directiveLocation.ts';
+} from "../../language/directiveLocation.ts";
 
-import { specifiedDirectives } from '../../type/directives.ts';
+import { specifiedDirectives } from "../../type/directives.ts";
 
 import {
   ValidationContext,
   SDLValidationContext,
-} from '../ValidationContext.ts';
+} from "../ValidationContext.ts";
 
 /**
  * Known directives
@@ -124,14 +124,14 @@ function getDirectiveLocationForOperation(
   operation: OperationTypeNode,
 ): DirectiveLocationEnum {
   switch (operation) {
-    case 'query':
+    case "query":
       return DirectiveLocation.QUERY;
-    case 'mutation':
+    case "mutation":
       return DirectiveLocation.MUTATION;
-    case 'subscription':
+    case "subscription":
       return DirectiveLocation.SUBSCRIPTION;
   }
 
   // Not reachable. All possible types have been considered.
-  invariant(false, 'Unexpected operation: ' + inspect(operation));
+  invariant(false, "Unexpected operation: " + inspect(operation));
 }

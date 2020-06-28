@@ -1,8 +1,8 @@
-import { GraphQLError } from '../../error/GraphQLError.ts';
-import { ASTVisitor } from '../../language/visitor.ts';
+import { GraphQLError } from "../../error/GraphQLError.ts";
+import { ASTVisitor } from "../../language/visitor.ts";
 
-import { ValidationContext } from '../ValidationContext.ts';
-import { VariableDefinitionNode } from '../../language/ast.ts';
+import { ValidationContext } from "../ValidationContext.ts";
+import { VariableDefinitionNode } from "../../language/ast.ts";
 
 /**
  * No unused variables

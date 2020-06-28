@@ -1,9 +1,12 @@
-import { GraphQLError } from '../../error/GraphQLError.ts';
+import { GraphQLError } from "../../error/GraphQLError.ts";
 
-import { ASTVisitor } from '../../language/visitor.ts';
-import { FragmentDefinitionNode, FragmentSpreadNode } from '../../language/ast.ts';
+import { ASTVisitor } from "../../language/visitor.ts";
+import {
+  FragmentDefinitionNode,
+  FragmentSpreadNode,
+} from "../../language/ast.ts";
 
-import { ASTValidationContext } from '../ValidationContext.ts';
+import { ASTValidationContext } from "../ValidationContext.ts";
 
 export function NoFragmentCyclesRule(
   context: ASTValidationContext,
@@ -59,12 +62,12 @@ export function NoFragmentCyclesRule(
         const viaPath = cyclePath
           .slice(0, -1)
           .map((s) => '"' + s.name.value + '"')
-          .join(', ');
+          .join(", ");
 
         context.reportError(
           new GraphQLError(
             `Cannot spread fragment "${spreadName}" within itself` +
-            (viaPath !== '' ? ` via ${viaPath}.` : '.'),
+              (viaPath !== "" ? ` via ${viaPath}.` : "."),
             cyclePath,
           ),
         );

@@ -1,17 +1,17 @@
-import inspect from '../../utilities/inspect.ts';
-import { ObjMap } from '../../utilities/ObjMap.ts';
+import inspect from "../../utilities/inspect.ts";
+import { ObjMap } from "../../utilities/ObjMap.ts";
 
-import { GraphQLError } from '../../error/GraphQLError.ts';
+import { GraphQLError } from "../../error/GraphQLError.ts";
 
-import { Kind } from '../../language/kinds.ts';
-import { print } from '../../language/printer.ts';
-import { ASTVisitor } from '../../language/visitor.ts';
+import { Kind } from "../../language/kinds.ts";
+import { print } from "../../language/printer.ts";
+import { ASTVisitor } from "../../language/visitor.ts";
 import {
   SelectionSetNode,
   FieldNode,
   ArgumentNode,
   FragmentDefinitionNode,
-} from '../../language/ast.ts';
+} from "../../language/ast.ts";
 
 import {
   GraphQLNamedType,
@@ -24,12 +24,12 @@ import {
   isObjectType,
   isListType,
   isInterfaceType,
-} from '../../type/definition.ts';
+} from "../../type/definition.ts";
 
-import { typeFromAST } from '../../utilities/typeFromAST.ts';
+import { typeFromAST } from "../../utilities/typeFromAST.ts";
 
-import { ValidationContext } from '../ValidationContext.ts';
-import Maybe from '../../utilities/Maybe.ts';
+import { ValidationContext } from "../ValidationContext.ts";
+import Maybe from "../../utilities/Maybe.ts";
 
 function reasonMessage(reason: ConflictReasonMessage): string {
   if (Array.isArray(reason)) {
@@ -39,7 +39,7 @@ function reasonMessage(reason: ConflictReasonMessage): string {
           `subfields "${responseName}" conflict because ` +
           reasonMessage(subReason),
       )
-      .join(' and ');
+      .join(" and ");
   }
   return reason;
 }
@@ -549,8 +549,7 @@ function findConflict(
   // different Object types. Interface or Union types might overlap - if not
   // in the current state of the schema, then perhaps in some future version,
   // thus may not safely diverge.
-  const areMutuallyExclusive =
-    parentFieldsAreMutuallyExclusive ||
+  const areMutuallyExclusive = parentFieldsAreMutuallyExclusive ||
     (parentType1 !== parentType2 &&
       isObjectType(parentType1) &&
       isObjectType(parentType2));
@@ -574,7 +573,7 @@ function findConflict(
     // Two field calls must have the same arguments.
     if (!sameArguments(args1, args2)) {
       return [
-        [responseName, 'they have differing arguments'],
+        [responseName, "they have differing arguments"],
         [node1],
         [node2],
       ];
@@ -589,9 +588,11 @@ function findConflict(
     return [
       [
         responseName,
-        `they return conflicting types "${inspect(type1)}" and "${inspect(
-          type2,
-        )}"`,
+        `they return conflicting types "${inspect(type1)}" and "${
+          inspect(
+            type2,
+          )
+        }"`,
       ],
       [node1],
       [node2],
@@ -816,7 +817,12 @@ class PairSet {
   }
 }
 
-function _pairSetAdd(data: ObjMap<ObjMap<boolean>>, a: string, b: string, areMutuallyExclusive: boolean) {
+function _pairSetAdd(
+  data: ObjMap<ObjMap<boolean>>,
+  a: string,
+  b: string,
+  areMutuallyExclusive: boolean,
+) {
   let map = data[a];
   if (!map) {
     map = Object.create(null);

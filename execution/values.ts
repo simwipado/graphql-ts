@@ -1,30 +1,30 @@
-import keyMap from '../utilities/keyMap.ts';
-import inspect from '../utilities/inspect.ts';
-import { ObjMap } from '../utilities/ObjMap.ts';
-import printPathArray from '../utilities/printPathArray.ts';
+import keyMap from "../utilities/keyMap.ts";
+import inspect from "../utilities/inspect.ts";
+import { ObjMap } from "../utilities/ObjMap.ts";
+import printPathArray from "../utilities/printPathArray.ts";
 
-import { GraphQLError } from '../error/GraphQLError.ts';
+import { GraphQLError } from "../error/GraphQLError.ts";
 
-import { Kind } from '../language/kinds.ts';
-import { print } from '../language/printer.ts';
+import { Kind } from "../language/kinds.ts";
+import { print } from "../language/printer.ts";
 import {
   FieldNode,
   DirectiveNode,
   VariableDefinitionNode,
-} from '../language/ast.ts';
+} from "../language/ast.ts";
 
-import { GraphQLSchema } from '../type/schema.ts';
-import { GraphQLDirective } from '../type/directives.ts';
+import { GraphQLSchema } from "../type/schema.ts";
+import { GraphQLDirective } from "../type/directives.ts";
 import {
   GraphQLField,
   isInputType,
   isNonNullType,
-} from '../type/definition.ts';
+} from "../type/definition.ts";
 
-import { typeFromAST } from '../utilities/typeFromAST.ts';
-import { valueFromAST } from '../utilities/valueFromAST.ts';
-import { coerceInputValue } from '../utilities/coerceInputValue.ts';
-import Maybe from '../utilities/Maybe.ts';
+import { typeFromAST } from "../utilities/typeFromAST.ts";
+import { valueFromAST } from "../utilities/valueFromAST.ts";
+import { coerceInputValue } from "../utilities/coerceInputValue.ts";
+import Maybe from "../utilities/Maybe.ts";
 
 type CoercedVariableValues =
   | { errors: GraphQLError[]; coerced?: never }
@@ -45,7 +45,7 @@ export function getVariableValues(
   schema: GraphQLSchema,
   varDefNodes: VariableDefinitionNode[],
   inputs: { [key: string]: any },
-  options: Maybe<{ maxErrors?: number }>
+  options: Maybe<{ maxErrors?: number }>,
 ): CoercedVariableValues {
   const errors = [];
   const maxErrors = options?.maxErrors;
@@ -57,7 +57,7 @@ export function getVariableValues(
       (error) => {
         if (maxErrors != null && errors.length >= maxErrors) {
           throw new GraphQLError(
-            'Too many errors processing variables, error limit reached. Execution aborted.',
+            "Too many errors processing variables, error limit reached. Execution aborted.",
           );
         }
         errors.push(error);
@@ -77,9 +77,9 @@ export function getVariableValues(
 function coerceVariableValues(
   schema: GraphQLSchema,
   varDefNodes: VariableDefinitionNode[],
-  inputs: Maybe<{[key: string]: any}>,
+  inputs: Maybe<{ [key: string]: any }>,
   onError: (error: GraphQLError) => void,
-): Maybe<{[key: string]: any}> {
+): Maybe<{ [key: string]: any }> {
   const coercedValues: any = {};
   for (const varDefNode of varDefNodes) {
     const varName = varDefNode.variable.name.value;
@@ -128,14 +128,14 @@ function coerceVariableValues(
       value,
       varType,
       (path, invalidValue, error) => {
-        let prefix =
-          `Variable "$${varName}" got invalid value ` + inspect(invalidValue);
+        let prefix = `Variable "$${varName}" got invalid value ` +
+          inspect(invalidValue);
         if (path.length > 0) {
           prefix += ` at "${varName}${printPathArray(path)}"`;
         }
         onError(
           new GraphQLError(
-            prefix + '; ' + error.message,
+            prefix + "; " + error.message,
             varDefNode,
             undefined,
             undefined,
@@ -163,7 +163,7 @@ function coerceVariableValues(
 export function getArgumentValues(
   def: GraphQLField<any, any> | GraphQLDirective,
   node: FieldNode | DirectiveNode,
-  variableValues: Maybe<ObjMap<any>>
+  variableValues: Maybe<ObjMap<any>>,
 ): { [argument: string]: any } {
   const coercedValues: any = {};
 
@@ -182,7 +182,7 @@ export function getArgumentValues(
       } else if (isNonNullType(argType)) {
         throw new GraphQLError(
           `Argument "${name}" of required type "${inspect(argType)}" ` +
-            'was not provided.',
+            "was not provided.",
           node,
         );
       }
@@ -215,7 +215,7 @@ export function getArgumentValues(
     if (isNull && isNonNullType(argType)) {
       throw new GraphQLError(
         `Argument "${name}" of non-null type "${inspect(argType)}" ` +
-          'must not be null.',
+          "must not be null.",
         valueNode,
       );
     }
@@ -251,11 +251,12 @@ export function getDirectiveValues(
   node: {
     directives?: DirectiveNode[];
   },
-  variableValues?: { [key: string]: any }
+  variableValues?: { [key: string]: any },
 ): undefined | { [key: string]: any } {
-  const directiveNode =
-    node.directives &&
-      node.directives.find((directive) => directive.name.value === directiveDef.name);
+  const directiveNode = node.directives &&
+    node.directives.find((directive) =>
+      directive.name.value === directiveDef.name
+    );
 
   if (directiveNode) {
     return getArgumentValues(directiveDef, directiveNode, variableValues);

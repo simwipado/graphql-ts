@@ -23,27 +23,27 @@
  */
 
 // The GraphQL.js version info.
-export * from './version.ts';
+export * from "./version.ts";
 
 // The primary entry point into fulfilling a GraphQL request.
-export * from './graphql.ts';
+export * from "./graphql.ts";
 
 // Create and operate on GraphQL type definitions and schema.
-export * from './type/mod.ts';
+export * from "./type/mod.ts";
 
 // Parse and operate on GraphQL language source files.
-export * from './language/mod.ts';
+export * from "./language/mod.ts";
 
 // Execute GraphQL queries.
-export * from './execution/mod.ts';
+export * from "./execution/mod.ts";
 
-export * from './subscription/mod.ts';
+export * from "./subscription/mod.ts";
 
 // Validate GraphQL documents.
-export * from './validation/mod.ts';
+export * from "./validation/mod.ts";
 
 // Create, format, and print GraphQL errors.
-export * from './error/mod.ts';
+export * from "./error/mod.ts";
 
 // Utilities for operating on GraphQL type schema and parsed sources.
-export * from './utilities/mod.ts';
+export * from "./utilities/mod.ts";

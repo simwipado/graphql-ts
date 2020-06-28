@@ -1,39 +1,39 @@
-import inspect from '../utilities/inspect.ts';
-import toObjMap from '../utilities/toObjMap.ts';
-import devAssert from '../utilities/devAssert.ts';
-import instanceOf from '../utilities/instanceOf.ts';
-import isObjectLike from '../utilities/isObjectLike.ts';
+import inspect from "../utilities/inspect.ts";
+import toObjMap from "../utilities/toObjMap.ts";
+import devAssert from "../utilities/devAssert.ts";
+import instanceOf from "../utilities/instanceOf.ts";
+import isObjectLike from "../utilities/isObjectLike.ts";
 import {
-ObjMap,
-ReadOnlyObjMap,
-ReadOnlyObjMapLike,
-} from '../utilities/ObjMap.ts';
+  ObjMap,
+  ReadOnlyObjMap,
+  ReadOnlyObjMapLike,
+} from "../utilities/ObjMap.ts";
 
-import { GraphQLError } from '../error/GraphQLError.ts';
+import { GraphQLError } from "../error/GraphQLError.ts";
 import {
-SchemaDefinitionNode,
-SchemaExtensionNode,
-} from '../language/ast.ts';
+  SchemaDefinitionNode,
+  SchemaExtensionNode,
+} from "../language/ast.ts";
 
-import { __Schema } from './introspection.ts';
+import { __Schema } from "./introspection.ts";
 import {
   GraphQLDirective,
   isDirective,
   specifiedDirectives,
-} from './directives.ts';
+} from "./directives.ts";
 import {
-GraphQLType,
-GraphQLNamedType,
-GraphQLAbstractType,
-GraphQLObjectType,
-GraphQLInterfaceType,
+  GraphQLType,
+  GraphQLNamedType,
+  GraphQLAbstractType,
+  GraphQLObjectType,
+  GraphQLInterfaceType,
   isObjectType,
   isInterfaceType,
   isUnionType,
   isInputObjectType,
   getNamedType,
-} from './definition.ts';
-import Maybe from '../utilities/Maybe.ts';
+} from "./definition.ts";
+import Maybe from "../utilities/Maybe.ts";
 
 /**
  * Test if the given value is a GraphQL schema.
@@ -125,8 +125,8 @@ export class GraphQLSchema {
   _typeMap: TypeMap;
   _subTypeMap: ObjMap<ObjMap<boolean>>;
   _implementationsMap: ObjMap<{
-    objects: GraphQLObjectType[],
-    interfaces: GraphQLInterfaceType[],
+    objects: GraphQLObjectType[];
+    interfaces: GraphQLInterfaceType[];
   }>;
 
   // Used as a cache for validateSchema().
@@ -138,7 +138,7 @@ export class GraphQLSchema {
     this.__validationErrors = config.assumeValid === true ? [] : undefined;
 
     // Check for common mistakes during construction to produce early errors.
-    devAssert(isObjectLike(config), 'Must provide configuration object.');
+    devAssert(isObjectLike(config), "Must provide configuration object.");
     devAssert(
       !config.types || Array.isArray(config.types),
       `"types" must be Array if provided but got: ${inspect(config.types)}.`,
@@ -206,7 +206,7 @@ export class GraphQLSchema {
       const typeName = namedType.name;
       devAssert(
         typeName,
-        'One of the provided types for building the Schema is missing a name.',
+        "One of the provided types for building the Schema is missing a name.",
       );
       if (this._typeMap[typeName] !== undefined) {
         throw new Error(
@@ -280,8 +280,8 @@ export class GraphQLSchema {
   getImplementations(
     interfaceType: GraphQLInterfaceType,
   ): {
-    objects: /* Readonly */ GraphQLObjectType[],
-    interfaces: /* Readonly */ GraphQLInterfaceType[],
+    objects: /* Readonly */ GraphQLObjectType[];
+    interfaces: /* Readonly */ GraphQLInterfaceType[];
   } {
     const implementations = this._implementationsMap[interfaceType.name];
     return implementations ?? { objects: [], interfaces: [] };
@@ -327,7 +327,9 @@ export class GraphQLSchema {
   }
 
   getDirective(name: string): Maybe<GraphQLDirective> {
-    const directive = this.getDirectives().find((directive) => directive.name === name);
+    const directive = this.getDirectives().find((directive) =>
+      directive.name === name
+    );
     return directive ? directive : undefined;
   }
 
@@ -348,7 +350,7 @@ export class GraphQLSchema {
 
   // $FlowFixMe Flow doesn't support computed properties yet
   get [Symbol.toStringTag]() {
-    return 'GraphQLSchema';
+    return "GraphQLSchema";
   }
 }
 
@@ -375,19 +377,18 @@ export interface GraphQLSchemaConfig extends GraphQLSchemaValidationOptions {
   extensions?: Maybe<ReadOnlyObjMapLike<any>>;
   astNode?: Maybe<SchemaDefinitionNode>;
   extensionASTNodes?: Maybe<SchemaExtensionNode[]>;
-};
-
-/**
+} /**
  * @internal
  */
+
 export interface GraphQLSchemaNormalizedConfig extends GraphQLSchemaConfig {
-  description: Maybe<string>,
-  types: GraphQLNamedType[],
-  directives: GraphQLDirective[],
-  extensions: Maybe<ReadOnlyObjMap<any>>,
-  extensionASTNodes: SchemaExtensionNode[],
-  assumeValid: boolean,
-};
+  description: Maybe<string>;
+  types: GraphQLNamedType[];
+  directives: GraphQLDirective[];
+  extensions: Maybe<ReadOnlyObjMap<any>>;
+  extensionASTNodes: SchemaExtensionNode[];
+  assumeValid: boolean;
+}
 
 function collectReferencedTypes(
   type: Maybe<GraphQLType>,

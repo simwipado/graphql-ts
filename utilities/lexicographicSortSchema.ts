@@ -1,14 +1,13 @@
+import inspect from "../utilities/inspect.ts";
+import invariant from "../utilities/invariant.ts";
+import keyValMap from "../utilities/keyValMap.ts";
+import { ObjMap } from "../utilities/ObjMap.ts";
 
-import inspect from '../utilities/inspect.ts';
-import invariant from '../utilities/invariant.ts';
-import keyValMap from '../utilities/keyValMap.ts';
-import { ObjMap } from '../utilities/ObjMap.ts';
-
-import { GraphQLSchema } from '../type/schema.ts';
-import { GraphQLDirective } from '../type/directives.ts';
-import { isIntrospectionType } from '../type/introspection.ts';
+import { GraphQLSchema } from "../type/schema.ts";
+import { GraphQLDirective } from "../type/directives.ts";
+import { isIntrospectionType } from "../type/introspection.ts";
 import {
-GraphQLNamedType,
+  GraphQLNamedType,
   GraphQLObjectType,
   GraphQLInterfaceType,
   GraphQLUnionType,
@@ -25,8 +24,8 @@ GraphQLNamedType,
   isEnumType,
   isInputObjectType,
   GraphQLType,
-} from '../type/definition.ts';
-import Maybe from '../utilities/Maybe.ts';
+} from "../type/definition.ts";
+import Maybe from "../utilities/Maybe.ts";
 
 /**
  * Sort GraphQLSchema.
@@ -50,7 +49,9 @@ export function lexicographicSortSchema(schema: GraphQLSchema): GraphQLSchema {
     subscription: replaceMaybeType(schemaConfig.subscription),
   });
 
-  function replaceType(type: GraphQLType): GraphQLList<any> | GraphQLNonNull<any> | GraphQLNamedType {
+  function replaceType(
+    type: GraphQLType,
+  ): GraphQLList<any> | GraphQLNonNull<any> | GraphQLNamedType {
     if (isListType(type)) {
       return new GraphQLList(replaceType(type.ofType));
     } else if (isNonNullType(type)) {
@@ -60,7 +61,7 @@ export function lexicographicSortSchema(schema: GraphQLSchema): GraphQLSchema {
   }
 
   function replaceNamedType<T extends GraphQLNamedType>(type: T): T {
-    return typeMap[type.name] as any
+    return typeMap[type.name] as any;
   }
 
   function replaceMaybeType(maybeType: Maybe<GraphQLObjectType>) {
@@ -145,11 +146,14 @@ export function lexicographicSortSchema(schema: GraphQLSchema): GraphQLSchema {
     }
 
     // Not reachable. All possible types have been considered.
-    invariant(false, 'Unexpected type: ' + inspect(type));
+    invariant(false, "Unexpected type: " + inspect(type));
   }
 }
 
-function sortObjMap<T, R>(map: ObjMap<T>, sortValueFn?: (arg: T) => R): ObjMap<R> {
+function sortObjMap<T, R>(
+  map: ObjMap<T>,
+  sortValueFn?: (arg: T) => R,
+): ObjMap<R> {
   const sortedMap = Object.create(null);
   const sortedKeys = sortBy(Object.keys(map), (x) => x);
   for (const key of sortedKeys) {

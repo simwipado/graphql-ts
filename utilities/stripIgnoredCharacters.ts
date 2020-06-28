@@ -1,12 +1,12 @@
-import inspect from '../utilities/inspect.ts';
+import inspect from "../utilities/inspect.ts";
 
-import { Source } from '../language/source.ts';
-import { TokenKind } from '../language/tokenKind.ts';
-import { Lexer, isPunctuatorTokenKind } from '../language/lexer.ts';
+import { Source } from "../language/source.ts";
+import { TokenKind } from "../language/tokenKind.ts";
+import { Lexer, isPunctuatorTokenKind } from "../language/lexer.ts";
 import {
   dedentBlockStringValue,
   getBlockStringIndentation,
-} from '../language/blockString.ts';
+} from "../language/blockString.ts";
 
 /**
  * Strips characters that are not significant to the validity or execution
@@ -61,7 +61,7 @@ import {
  * """Type description""" type Foo{"""Field description""" bar:String}
  */
 export function stripIgnoredCharacters(source: string | Source): string {
-  const sourceObj = typeof source === 'string' ? new Source(source) : source;
+  const sourceObj = typeof source === "string" ? new Source(source) : source;
   if (!(sourceObj instanceof Source)) {
     throw new TypeError(
       `Must provide string or Source. Received: ${inspect(sourceObj)}.`,
@@ -70,7 +70,7 @@ export function stripIgnoredCharacters(source: string | Source): string {
 
   const body = sourceObj.body;
   const lexer = new Lexer(sourceObj);
-  let strippedBody = '';
+  let strippedBody = "";
 
   let wasLastAddedTokenNonPunctuator = false;
   while (lexer.advance().kind !== TokenKind.EOF) {
@@ -85,7 +85,7 @@ export function stripIgnoredCharacters(source: string | Source): string {
     const isNonPunctuator = !isPunctuatorTokenKind(currentToken.kind);
     if (wasLastAddedTokenNonPunctuator) {
       if (isNonPunctuator || currentToken.kind === TokenKind.SPREAD) {
-        strippedBody += ' ';
+        strippedBody += " ";
       }
     }
 
@@ -109,13 +109,13 @@ function dedentBlockString(blockStr: string) {
 
   const lines = body.split(/\r\n|[\n\r]/g);
   if (getBlockStringIndentation(lines) > 0) {
-    body = '\n' + body;
+    body = "\n" + body;
   }
 
   const lastChar = body[body.length - 1];
   const hasTrailingQuote = lastChar === '"' && body.slice(-4) !== '\\"""';
-  if (hasTrailingQuote || lastChar === '\\') {
-    body += '\n';
+  if (hasTrailingQuote || lastChar === "\\") {
+    body += "\n";
   }
 
   return '"""' + body + '"""';

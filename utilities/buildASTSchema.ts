@@ -1,25 +1,25 @@
-import devAssert from '../utilities/devAssert.ts';
+import devAssert from "../utilities/devAssert.ts";
 
-import { Kind } from '../language/kinds.ts';
-import { Source } from '../language/source.ts';
-import { DocumentNode } from '../language/ast.ts';
-import { ParseOptions, parse } from '../language/parser.ts';
+import { Kind } from "../language/kinds.ts";
+import { Source } from "../language/source.ts";
+import { DocumentNode } from "../language/ast.ts";
+import { ParseOptions, parse } from "../language/parser.ts";
 
-import { assertValidSDL } from '../validation/validate.ts';
+import { assertValidSDL } from "../validation/validate.ts";
 
 import {
-GraphQLSchemaValidationOptions,
+  GraphQLSchemaValidationOptions,
   GraphQLSchema,
-} from '../type/schema.ts';
+} from "../type/schema.ts";
 import {
   GraphQLSkipDirective,
   GraphQLIncludeDirective,
   GraphQLDeprecatedDirective,
   GraphQLSpecifiedByDirective,
-} from '../type/directives.ts';
+} from "../type/directives.ts";
 
-import { extendSchemaImpl } from './extendSchema.ts';
-import Maybe from '../utilities/Maybe.ts';
+import { extendSchemaImpl } from "./extendSchema.ts";
+import Maybe from "../utilities/Maybe.ts";
 
 export interface BuildSchemaOptions extends GraphQLSchemaValidationOptions {
   /**
@@ -38,9 +38,7 @@ export interface BuildSchemaOptions extends GraphQLSchemaValidationOptions {
    * Default: false
    */
   assumeValidSDL: Maybe<boolean>;
-};
-
-/**
+} /**
  * This takes the ast of a schema document produced by the parse function in
  * src/language/parser.js.
  *
@@ -56,13 +54,14 @@ export interface BuildSchemaOptions extends GraphQLSchemaValidationOptions {
  *        Provide true to use preceding comments as the description.
  *
  */
+
 export function buildASTSchema(
   documentAST: DocumentNode,
-  options: BuildSchemaOptions
+  options: BuildSchemaOptions,
 ): GraphQLSchema {
   devAssert(
     documentAST != null && documentAST.kind === Kind.DOCUMENT,
-    'Must provide valid Document AST.',
+    "Must provide valid Document AST.",
   );
 
   if (options?.assumeValid !== true && options?.assumeValidSDL !== true) {
@@ -77,14 +76,14 @@ export function buildASTSchema(
         // Note: While this could make early assertions to get the correctly
         // typed values below, that would throw immediately while type system
         // validation with validateSchema() will produce more actionable results.
-        case 'Query':
-          (config as any).query = type
+        case "Query":
+          (config as any).query = type;
           break;
-        case 'Mutation':
-          (config as any).mutation = type
+        case "Mutation":
+          (config as any).mutation = type;
           break;
-        case 'Subscription':
-          (config as any).subscription = type
+        case "Subscription":
+          (config as any).subscription = type;
           break;
       }
     }
@@ -92,19 +91,19 @@ export function buildASTSchema(
 
   const { directives } = config;
   // If specified directives were not explicitly declared, add them.
-  if (!directives.some((directive) => directive.name === 'skip')) {
+  if (!directives.some((directive) => directive.name === "skip")) {
     directives.push(GraphQLSkipDirective);
   }
 
-  if (!directives.some((directive) => directive.name === 'include')) {
+  if (!directives.some((directive) => directive.name === "include")) {
     directives.push(GraphQLIncludeDirective);
   }
 
-  if (!directives.some((directive) => directive.name === 'deprecated')) {
+  if (!directives.some((directive) => directive.name === "deprecated")) {
     directives.push(GraphQLDeprecatedDirective);
   }
 
-  if (!directives.some((directive) => directive.name === 'specifiedBy')) {
+  if (!directives.some((directive) => directive.name === "specifiedBy")) {
     directives.push(GraphQLSpecifiedByDirective);
   }
 
@@ -119,13 +118,13 @@ const emptySchemaConfig = new GraphQLSchema({ directives: [] }).toConfig();
  */
 export function buildSchema(
   source: string | Source,
-  options: Maybe<BuildSchemaOptions & ParseOptions>
+  options: Maybe<BuildSchemaOptions & ParseOptions>,
 ): GraphQLSchema {
   const document = parse(source, {
     noLocation: options?.noLocation,
     allowLegacySDLEmptyFields: options?.allowLegacySDLEmptyFields,
-    allowLegacySDLImplementsInterfaces:
-      options?.allowLegacySDLImplementsInterfaces,
+    allowLegacySDLImplementsInterfaces: options
+      ?.allowLegacySDLImplementsInterfaces,
     experimentalFragmentVariables: options?.experimentalFragmentVariables,
   });
 

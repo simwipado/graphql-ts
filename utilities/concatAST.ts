@@ -1,4 +1,4 @@
-import { DocumentNode } from '../language/ast.ts';
+import { DocumentNode } from "../language/ast.ts";
 
 /**
  * Provided a collection of ASTs, presumably each from different files,
@@ -7,7 +7,7 @@ import { DocumentNode } from '../language/ast.ts';
  */
 export function concatAST(asts: DocumentNode[]): DocumentNode {
   return {
-    kind: 'Document',
+    kind: "Document",
     definitions: asts.flatMap((ast) => ast.definitions),
   };
 }
