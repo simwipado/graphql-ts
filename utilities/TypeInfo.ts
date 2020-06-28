@@ -335,6 +335,8 @@ export function visitWithTypeInfo(
       typeInfo.enter(node);
       const fn = getVisitFn(visitor, node.kind, /* isLeaving */ false);
       if (fn) {
+        console.log("typeinfo");
+        console.log(fn.name, node);
         const result = fn.apply(visitor, [node] as any);
         if (result !== undefined) {
           typeInfo.leave(node);
