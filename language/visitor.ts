@@ -371,9 +371,6 @@ export function visitInParallel(
 
   return {
     enter(node) {
-      console.log("visitor");
-      console.log(node);
-      console.log(arguments);
       for (let i = 0; i < visitors.length; i++) {
         if (skipping[i] == null) {
           const fn = getVisitFn(visitors[i], node.kind, /* isLeaving */ false);
