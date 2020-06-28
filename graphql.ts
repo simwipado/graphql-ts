@@ -66,42 +66,10 @@ export type GraphQLArgs = {
   typeResolver?: Maybe<GraphQLTypeResolver<any, any>>;
 };
 
-export function graphql(args: GraphQLArgs): Promise<ExecutionResult>;
-export function graphql(
-  argsOrSchema: GraphQLSchema,
-  source: Source | string,
-  rootValue?: any,
-  contextValue?: any,
-  variableValues?: { [key: string]: any },
-  operationName?: string,
-  fieldResolver?: GraphQLFieldResolver<any, any>,
-  typeResolver?: GraphQLTypeResolver<any, any>,
-): Promise<ExecutionResult>;
-export function graphql(
-  argsOrSchema: GraphQLSchema | GraphQLArgs,
-  source?: Source | string,
-  rootValue?: any,
-  contextValue?: any,
-  variableValues?: { [key: string]: any },
-  operationName?: string,
-  fieldResolver?: GraphQLFieldResolver<any, any>,
-  typeResolver?: GraphQLTypeResolver<any, any>,
-): Promise<ExecutionResult> {
-  /* eslint-enable no-redeclare */
-  // Always return a Promise for a consistent API.
+export function graphql(args: GraphQLArgs): Promise<ExecutionResult> {
   return new Promise((resolve) =>
     resolve(
-      // Extract arguments from object args if provided.
-      "schema" in argsOrSchema ? graphqlImpl(argsOrSchema) : graphqlImpl({
-        schema: argsOrSchema,
-        source: source as string | Source,
-        rootValue,
-        contextValue,
-        variableValues,
-        operationName,
-        fieldResolver,
-        typeResolver,
-      }),
+      graphqlImpl(args),
     )
   );
 }
@@ -112,41 +80,8 @@ export function graphql(
  * However, it guarantees to complete synchronously (or throw an error) assuming
  * that all field resolvers are also synchronous.
  */
-export function graphqlSync(args: GraphQLArgs): ExecutionResult;
-export function graphqlSync(
-  schema: GraphQLSchema,
-  source: Source | string,
-  rootValue?: any,
-  contextValue?: any,
-  variableValues?: { [key: string]: any },
-  operationName?: string,
-  fieldResolver?: GraphQLFieldResolver<any, any>,
-  typeResolver?: GraphQLTypeResolver<any, any>,
-): ExecutionResult;
-export function graphqlSync(
-  argsOrSchema: GraphQLSchema | GraphQLArgs,
-  source?: Source | string,
-  rootValue?: any,
-  contextValue?: any,
-  variableValues?: { [key: string]: any },
-  operationName?: string,
-  fieldResolver?: GraphQLFieldResolver<any, any>,
-  typeResolver?: GraphQLTypeResolver<any, any>,
-) {
-  /* eslint-enable no-redeclare */
-  // Extract arguments from object args if provided.
-  const result = "schema" in argsOrSchema
-    ? graphqlImpl(argsOrSchema)
-    : graphqlImpl({
-      schema: argsOrSchema,
-      source: source as Source | string,
-      rootValue,
-      contextValue,
-      variableValues,
-      operationName,
-      fieldResolver,
-      typeResolver,
-    });
+export function graphqlSync(args: GraphQLArgs): ExecutionResult {
+  const result = graphqlImpl(args);
 
   // Assert that the execution was synchronous.
   if (isPromise(result)) {

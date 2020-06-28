@@ -135,42 +135,7 @@ export type ExecutionArgs = {
  *
  * Accepts either an object with named arguments, or individual arguments.
  */
-export function execute(args: ExecutionArgs): PromiseOrValue<ExecutionResult>;
-export function execute(
-  schema: GraphQLSchema,
-  document: DocumentNode,
-  rootValue?: any,
-  contextValue?: any,
-  variableValues?: { [key: string]: any },
-  operationName?: string,
-  fieldResolver?: GraphQLFieldResolver<any, any>,
-  typeResolver?: GraphQLTypeResolver<any, any>,
-): PromiseOrValue<ExecutionResult>;
-export function execute(
-  argsOrSchema: GraphQLSchema | ExecutionArgs,
-  document?: DocumentNode,
-  rootValue?: any,
-  contextValue?: any,
-  variableValues?: { [key: string]: any },
-  operationName?: string,
-  fieldResolver?: GraphQLFieldResolver<any, any>,
-  typeResolver?: GraphQLTypeResolver<any, any>,
-) {
-  /* eslint-enable no-redeclare */
-  // Extract arguments from object args if provided.
-  return "schema" in argsOrSchema ? executeImpl(argsOrSchema) : executeImpl({
-    schema: argsOrSchema,
-    document: document as DocumentNode,
-    rootValue,
-    contextValue,
-    variableValues,
-    operationName,
-    fieldResolver,
-    typeResolver,
-  });
-}
-
-function executeImpl(args: ExecutionArgs): PromiseOrValue<ExecutionResult> {
+export function execute(args: ExecutionArgs): PromiseOrValue<ExecutionResult> {
   const {
     schema,
     document,
