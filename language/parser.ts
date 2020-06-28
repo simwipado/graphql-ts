@@ -21,11 +21,7 @@ import {
   VariableDefinitionNode,
   SelectionSetNode,
   SelectionNode,
-  FieldNode,
   ArgumentNode,
-  FragmentSpreadNode,
-  InlineFragmentNode,
-  FragmentDefinitionNode,
   ValueNode,
   StringValueNode,
   ListValueNode,
@@ -313,13 +309,15 @@ class Parser {
   /**
    * VariableDefinition : Variable : Type DefaultValue? Directives[Const]?
    */
-  parseVariableDefinition(): VariableDefinitionNode {
+  parseVariableDefinition(): any {
     const start = this._lexer.token;
     return {
       kind: Kind.VARIABLE_DEFINITION,
       variable: this.parseVariable(),
       type: (this.expectToken(TokenKind.COLON), this.parseTypeReference()),
-      defaultValue: this.parseValueLiteral(true),
+      defaultValue: this.expectOptionalToken(TokenKind.EQUALS)
+        ? this.parseValueLiteral(true)
+        : undefined,
       directives: this.parseDirectives(true),
       loc: this.loc(start),
     };
@@ -371,7 +369,7 @@ class Parser {
    *
    * Alias : Name :
    */
-  parseField(): FieldNode {
+  parseField(): any {
     const start = this._lexer.token;
 
     const nameOrAlias = this.parseName();
@@ -390,7 +388,9 @@ class Parser {
       name,
       arguments: this.parseArguments(false),
       directives: this.parseDirectives(false),
-      selectionSet: this.parseSelectionSet(),
+      selectionSet: this.peek(TokenKind.BRACE_L)
+        ? this.parseSelectionSet()
+        : undefined,
       loc: this.loc(start),
     };
   }
@@ -438,7 +438,7 @@ class Parser {
    *
    * InlineFragment : ... TypeCondition? Directives? SelectionSet
    */
-  parseFragment(): FragmentSpreadNode | InlineFragmentNode {
+  parseFragment(): any {
     const start = this._lexer.token;
     this.expectToken(TokenKind.SPREAD);
 
@@ -453,7 +453,7 @@ class Parser {
     }
     return {
       kind: Kind.INLINE_FRAGMENT,
-      typeCondition: this.parseNamedType(),
+      typeCondition: hasTypeCondition ? this.parseNamedType() : undefined,
       directives: this.parseDirectives(false),
       selectionSet: this.parseSelectionSet(),
       loc: this.loc(start),
@@ -466,7 +466,7 @@ class Parser {
    *
    * TypeCondition : NamedType
    */
-  parseFragmentDefinition(): FragmentDefinitionNode {
+  parseFragmentDefinition(): any {
     const start = this._lexer.token;
     this.expectKeyword("fragment");
     // Experimental support for defining variables within fragments changes
@@ -490,7 +490,6 @@ class Parser {
       directives: this.parseDirectives(false),
       selectionSet: this.parseSelectionSet(),
       loc: this.loc(start),
-      variableDefinitions: this.parseVariableDefinitions(),
     };
   }
 
