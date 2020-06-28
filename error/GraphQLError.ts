@@ -26,7 +26,7 @@ export class GraphQLError extends Error {
    *
    * Note: should be treated as readonly, despite invariant usage.
    */
-  message: string = "";
+  message = "";
 
   /**
    * An array of { line, column } locations within the source GraphQL document
@@ -195,16 +195,7 @@ export class GraphQLError extends Error {
       return;
     }
 
-    // istanbul ignore next (See: https://github.com/graphql/graphql-js/issues/2317)
-    if ("captureStackTrace" in Error) {
-      (Error as any).captureStackTrace(this, GraphQLError);
-    } else {
-      Object.defineProperty(this, "stack", {
-        value: Error().stack,
-        writable: true,
-        configurable: true,
-      });
-    }
+    Error.captureStackTrace(this, GraphQLError);
   }
 
   toString(): string {
